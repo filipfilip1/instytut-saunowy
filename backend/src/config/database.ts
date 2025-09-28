@@ -3,17 +3,20 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const connectDB = async () => {
+const connectDB = async (): Promise<void> => {
   try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    });
+    const mongoUri = process.env.MONGODB_URI;
+
+    if (!mongoUri) {
+      throw new Error('MONGODB_URI is not defined in environment variables');
+    }
+
+    const conn = await mongoose.connect(mongoUri);
 
     console.log(`✅ MongoDB connected: ${conn.connection.host}`);
 
-    mongoose.connection.on('error', (err) => {
-      console.error('❌ CONNECTION ERROR: The connection to MongoDB was lost during operation: ', err);
+    mongoose.connection.on('error', (err: Error) => {
+      console.error('❌ MongoDB connection error:', err);
     });
 
     mongoose.connection.on('disconnected', () => {
@@ -28,7 +31,7 @@ const connectDB = async () => {
     });
 
   } catch (error) {
-    console.error('❌ FATAL ERROR: Could not establish initial connection to MongoDB: ', error.message);
+    console.error('❌ FATAL ERROR: Could not establish initial connection to MongoDB: ', error);
     process.exit(1);
   }
 };

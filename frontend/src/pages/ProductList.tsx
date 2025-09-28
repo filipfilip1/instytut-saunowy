@@ -41,13 +41,20 @@ const ProductList: React.FC = () => {
 
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [selectedCategory]);
 
   const fetchProducts = async () => {
     try {
       setLoading(true);
       setError(null);
-      const data = await productService.getAllProducts({ page: 1 });
+
+      let data: Product[];
+      if (selectedCategory === 'all') {
+        data = await productService.getAllProducts({ page: 1 });
+      } else {
+        data = await productService.getProductsByCategory(selectedCategory, { page: 1 });
+      }
+
       setProducts(data);
     } catch (err) {
       setError('Nie udało się pobrać produktów. Spróbuj ponownie później.');
@@ -57,9 +64,7 @@ const ProductList: React.FC = () => {
     }
   };
 
-  const filteredProducts = selectedCategory === 'all'
-    ? products
-    : products.filter(product => product.category === selectedCategory);
+  const filteredProducts = products;
 
   const categoryCounts = products.reduce((acc, product) => {
     acc[product.category] = (acc[product.category] || 0) + 1;

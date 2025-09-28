@@ -36,3 +36,9 @@ Thumbs.db
 # Uploaded files
 uploads/
 temp/
+
+# TypeScript
+*.tsbuildinfo
+
+# Logs  
+*.log

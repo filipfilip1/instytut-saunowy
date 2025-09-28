@@ -2,14 +2,15 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import Product from '../models/Product.js';
 import connectDB from '../config/database.js';
+import { IProduct } from '../types/index.js';
 
 dotenv.config();
 
-// Przykładowe dane produktów
+// Dane przykładowych produktów
 const sampleProducts = [
   {
     name: 'Kilt męski tradycyjny',
-    category: 'kilty',
+    category: 'kilty' as const,
     description: 'Wysokiej jakości kilt do sauny, wykonany z miękkiej bawełny frotte. Idealny do sauny fińskiej i infrared. Posiada wygodny pas na rzep oraz praktyczną kieszeń.',
     basePrice: 89.99,
     images: [
@@ -25,8 +26,8 @@ const sampleProducts = [
         id: 'var-size',
         name: 'Rozmiar',
         options: [
-          { id: 'size-m', value: 'M (80-90cm)', stock: 15 },
-          { id: 'size-l', value: 'L (90-100cm)', stock: 20 },
+          { id: 'size-m', value: 'M (80-90cm)', stock: 15, priceModifier: 0 },
+          { id: 'size-l', value: 'L (90-100cm)', stock: 20, priceModifier: 0 },
           { id: 'size-xl', value: 'XL (100-110cm)', stock: 12, priceModifier: 10 },
           { id: 'size-xxl', value: 'XXL (110-120cm)', stock: 8, priceModifier: 15 }
         ]
@@ -39,18 +40,21 @@ const sampleProducts = [
             id: 'color-navy',
             value: 'Granatowy',
             stock: 25,
+            priceModifier: 0,
             image: 'https://images.unsplash.com/photo-1594736797933-d0501ba2fe65?w=800'
           },
           {
             id: 'color-gray',
             value: 'Szary',
             stock: 20,
+            priceModifier: 0,
             image: 'https://images.unsplash.com/photo-1594736797933-d0501ba2fe65?w=800'
           },
           {
             id: 'color-brown',
             value: 'Brązowy',
             stock: 15,
+            priceModifier: 0,
             image: 'https://images.unsplash.com/photo-1594736797933-d0501ba2fe65?w=800'
           }
         ]
@@ -72,7 +76,7 @@ const sampleProducts = [
   },
   {
     name: 'Poncho bambusowe Premium',
-    category: 'poncha',
+    category: 'poncha' as const,
     description: 'Luksusowe poncho z włókna bambusowego. Antybakteryjne, hipoalergiczne i niezwykle miękkie. Idealne na wyjście z sauny lub jako szlafrok.',
     basePrice: 159.99,
     images: [
@@ -88,8 +92,8 @@ const sampleProducts = [
         id: 'var-size',
         name: 'Rozmiar',
         options: [
-          { id: 'size-s-m', value: 'S/M', stock: 10 },
-          { id: 'size-l-xl', value: 'L/XL', stock: 15 },
+          { id: 'size-s-m', value: 'S/M', stock: 10, priceModifier: 0 },
+          { id: 'size-l-xl', value: 'L/XL', stock: 15, priceModifier: 0 },
           { id: 'size-xxl', value: 'XXL', stock: 8, priceModifier: 20 }
         ]
       },
@@ -97,9 +101,9 @@ const sampleProducts = [
         id: 'var-color',
         name: 'Kolor',
         options: [
-          { id: 'color-natural', value: 'Naturalny (beż)', stock: 18 },
-          { id: 'color-white', value: 'Biały', stock: 15 },
-          { id: 'color-anthracite', value: 'Antracyt', stock: 12 }
+          { id: 'color-natural', value: 'Naturalny (beż)', stock: 18, priceModifier: 0 },
+          { id: 'color-white', value: 'Biały', stock: 15, priceModifier: 0 },
+          { id: 'color-anthracite', value: 'Antracyt', stock: 12, priceModifier: 0 }
         ]
       }
     ],
@@ -114,7 +118,7 @@ const sampleProducts = [
   },
   {
     name: 'Kilt damski z koronką',
-    category: 'kilty',
+    category: 'kilty' as const,
     description: 'Elegancki kilt damski ozdobiony delikatną koronką. Wykonany z wysokiej jakości bawełny z dodatkiem modalu dla większej miękkości.',
     basePrice: 99.99,
     images: [
@@ -130,8 +134,8 @@ const sampleProducts = [
         id: 'var-size',
         name: 'Rozmiar',
         options: [
-          { id: 'size-xs-s', value: 'XS/S', stock: 12 },
-          { id: 'size-m-l', value: 'M/L', stock: 18 },
+          { id: 'size-xs-s', value: 'XS/S', stock: 12, priceModifier: 0 },
+          { id: 'size-m-l', value: 'M/L', stock: 18, priceModifier: 0 },
           { id: 'size-xl-xxl', value: 'XL/XXL', stock: 10, priceModifier: 10 }
         ]
       },
@@ -139,9 +143,9 @@ const sampleProducts = [
         id: 'var-color',
         name: 'Kolor',
         options: [
-          { id: 'color-pink', value: 'Pudrowy róż', stock: 15 },
-          { id: 'color-cream', value: 'Kremowy', stock: 20 },
-          { id: 'color-lavender', value: 'Lawendowy', stock: 10 }
+          { id: 'color-pink', value: 'Pudrowy róż', stock: 15, priceModifier: 0 },
+          { id: 'color-cream', value: 'Kremowy', stock: 20, priceModifier: 0 },
+          { id: 'color-lavender', value: 'Lawendowy', stock: 10, priceModifier: 0 }
         ]
       }
     ],
@@ -155,7 +159,7 @@ const sampleProducts = [
   },
   {
     name: 'Ręcznik do sauny XL',
-    category: 'akcesoria',
+    category: 'akcesoria' as const,
     description: 'Duży ręcznik do sauny o wymiarach 80x200cm. Wykonany z chłonnej bawełny egipskiej.',
     basePrice: 79.99,
     images: [
@@ -171,10 +175,10 @@ const sampleProducts = [
         id: 'var-color',
         name: 'Kolor',
         options: [
-          { id: 'color-white', value: 'Biały', stock: 30 },
-          { id: 'color-beige', value: 'Beżowy', stock: 25 },
-          { id: 'color-gray', value: 'Szary', stock: 20 },
-          { id: 'color-navy', value: 'Granatowy', stock: 15 }
+          { id: 'color-white', value: 'Biały', stock: 30, priceModifier: 0 },
+          { id: 'color-beige', value: 'Beżowy', stock: 25, priceModifier: 0 },
+          { id: 'color-gray', value: 'Szary', stock: 20, priceModifier: 0 },
+          { id: 'color-navy', value: 'Granatowy', stock: 15, priceModifier: 0 }
         ]
       }
     ],
@@ -188,7 +192,7 @@ const sampleProducts = [
   },
   {
     name: 'Zestaw Relax Spa',
-    category: 'zestawy',
+    category: 'zestawy' as const,
     description: 'Kompletny zestaw do sauny zawierający: kilt/pareo, ręcznik, kapcie oraz kosmetyki naturalne.',
     basePrice: 249.99,
     images: [
@@ -204,9 +208,9 @@ const sampleProducts = [
         id: 'var-type',
         name: 'Wariant',
         options: [
-          { id: 'type-men', value: 'Męski', stock: 8 },
-          { id: 'type-women', value: 'Damski', stock: 10 },
-          { id: 'type-unisex', value: 'Unisex', stock: 12 }
+          { id: 'type-men', value: 'Męski', stock: 8, priceModifier: 0 },
+          { id: 'type-women', value: 'Damski', stock: 10, priceModifier: 0 },
+          { id: 'type-unisex', value: 'Unisex', stock: 12, priceModifier: 0 }
         ]
       }
     ],
@@ -221,7 +225,7 @@ const sampleProducts = [
   },
   {
     name: 'Bluza After Sauna',
-    category: 'bluzy',
+    category: 'bluzy' as const,
     description: 'Komfortowa bluza z kapturem, idealna na relaks po saunie. Luźny krój i miękki materiał zapewniają maksymalny komfort.',
     basePrice: 139.99,
     images: [
@@ -237,10 +241,10 @@ const sampleProducts = [
         id: 'var-size',
         name: 'Rozmiar',
         options: [
-          { id: 'size-s', value: 'S', stock: 8 },
-          { id: 'size-m', value: 'M', stock: 12 },
-          { id: 'size-l', value: 'L', stock: 15 },
-          { id: 'size-xl', value: 'XL', stock: 10 },
+          { id: 'size-s', value: 'S', stock: 8, priceModifier: 0 },
+          { id: 'size-m', value: 'M', stock: 12, priceModifier: 0 },
+          { id: 'size-l', value: 'L', stock: 15, priceModifier: 0 },
+          { id: 'size-xl', value: 'XL', stock: 10, priceModifier: 0 },
           { id: 'size-xxl', value: 'XXL', stock: 5, priceModifier: 15 }
         ]
       },
@@ -248,9 +252,9 @@ const sampleProducts = [
         id: 'var-color',
         name: 'Kolor',
         options: [
-          { id: 'color-gray-melange', value: 'Szary melanż', stock: 20 },
-          { id: 'color-navy', value: 'Granatowy', stock: 15 },
-          { id: 'color-forest', value: 'Leśna zieleń', stock: 10 }
+          { id: 'color-gray-melange', value: 'Szary melanż', stock: 20, priceModifier: 0 },
+          { id: 'color-navy', value: 'Granatowy', stock: 15, priceModifier: 0 },
+          { id: 'color-forest', value: 'Leśna zieleń', stock: 10, priceModifier: 0 }
         ]
       }
     ],
@@ -264,23 +268,23 @@ const sampleProducts = [
   }
 ];
 
-const seedProducts = async () => {
+const seedProducts = async (): Promise<void> => {
   try {
     await connectDB();
-
 
     await Product.deleteMany({});
     console.log('🗑️  Usunięto istniejące produkty');
 
-    const products = [];
+    const products: IProduct[] = [];
     for (const productData of sampleProducts) {
       const product = new Product(productData);
       await product.save();
       products.push(product);
+      console.log(`✅ Dodano: ${product.name}`);
     }
-    console.log(`✅ Dodano ${products.length} produktów`);
 
-    console.log('\n📦 Dodane produkty:');
+    console.log(`\n📦 Podsumowanie: Dodano ${products.length} produktów`);
+    console.log('\n📋 Lista produktów:');
     products.forEach(product => {
       console.log(`   - ${product.name} (${product.category}) - ${product.basePrice} PLN`);
     });
