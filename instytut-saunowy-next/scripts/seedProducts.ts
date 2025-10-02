@@ -1,10 +1,6 @@
 import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-import Product from '../models/Product.js';
-import connectDB from '../config/database.js';
-import { IProduct } from '../types/index.js';
-
-dotenv.config();
+import Product from '../lib/models/Product';
+import connectDB from '../lib/mongodb';
 
 // Dane przykładowych produktów
 const sampleProducts = [
@@ -275,7 +271,7 @@ const seedProducts = async (): Promise<void> => {
     await Product.deleteMany({});
     console.log('🗑️  Usunięto istniejące produkty');
 
-    const products: IProduct[] = [];
+    const products = [];
     for (const productData of sampleProducts) {
       const product = new Product(productData);
       await product.save();
@@ -289,9 +285,12 @@ const seedProducts = async (): Promise<void> => {
       console.log(`   - ${product.name} (${product.category}) - ${product.basePrice} PLN`);
     });
 
+    await mongoose.connection.close();
+    console.log('\n✅ Połączenie z bazą zamknięte');
     process.exit(0);
   } catch (error) {
     console.error('❌ Błąd podczas seedowania:', error);
+    await mongoose.connection.close();
     process.exit(1);
   }
 };
