@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useCart } from '@/contexts/CartContext';
+import LoginButton from '@/components/auth/LoginButton';
 
 const Header = () => {
   const pathname = usePathname();
@@ -63,8 +64,12 @@ const Header = () => {
             </Link>
           </div>
 
-          {/* Cart & Mobile Menu */}
+          {/* Cart, Login & Mobile Menu */}
           <div className="flex items-center space-x-4">
+            {/* Login Button */}
+            <LoginButton />
+
+            {/* Cart */}
             <Link
               href="/koszyk"
               className="relative p-2 text-gray-700 hover:text-wood-600 transition-colors"
