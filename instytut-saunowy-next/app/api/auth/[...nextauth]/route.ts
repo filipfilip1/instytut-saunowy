@@ -50,11 +50,9 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: 'jwt',
   },
-  // We use the default NextAuth page (we do not have custom pages)
-  // pages: {
-  //   signIn: '/auth/signin',
-  //   error: '/auth/error',
-  // },
+  pages: {
+    signIn: '/auth/signin',
+  },
   callbacks: {
     async signIn({ user, account, profile }) {
       if (!user.email) return false;

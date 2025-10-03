@@ -3,7 +3,6 @@ import { NextResponse } from 'next/server';
 
 export default withAuth(
   function middleware(req) {
-    // Sprawdź rolę dla panelu admina
     if (req.nextUrl.pathname.startsWith('/admin')) {
       const token = req.nextauth.token;
 
