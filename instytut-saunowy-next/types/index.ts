@@ -68,6 +68,39 @@ export interface CartItem {
   pricePerItem: number;
 }
 
+// Order Types
+export interface IOrderItem {
+  productId: string;
+  productName: string;
+  variantSelections: Record<string, string>;
+  quantity: number;
+  pricePerItem: number;
+}
+
+export interface IShippingAddress {
+  name: string;
+  email: string;
+  phone: string;
+  street: string;
+  city: string;
+  zipCode: string;
+  country: string;
+}
+
+export interface IOrder {
+  _id: string;
+  userId?: string;
+  guestEmail?: string;
+  items: IOrderItem[];
+  shippingAddress: IShippingAddress;
+  total: number;
+  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  paymentMethod: string;
+  paymentStatus: 'pending' | 'paid' | 'failed';
+  trackingNumber?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
 // API Response Types
 export interface ApiResponse<T = any> {
   status: 'success' | 'error';
@@ -90,3 +123,4 @@ export interface ProductQuery {
   page?: number;
   search?: string;
 }
+

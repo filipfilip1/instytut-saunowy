@@ -1,40 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
-
-export interface IOrder extends Document {
-  // For logged-in users
-  userId?: mongoose.Types.ObjectId;
-
-  // For guests
-  guestEmail?: string;
-
-  // Common
-  items: Array<{
-    productId: string;
-    productName: string;
-    variantSelections: Record<string, string>;
-    quantity: number;
-    pricePerItem: number;
-  }>;
-
-  shippingAddress: {
-    name: string;
-    email: string;
-    phone: string;
-    street: string;
-    city: string;
-    zipCode: string;
-    country: string;
-  };
-
-  total: number;
-  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
-  paymentMethod: string;
-  paymentStatus: 'pending' | 'paid' | 'failed';
-  trackingNumber?: string;
-
-  createdAt: Date;
-  updatedAt: Date;
-}
+import { IOrder } from '@/types';
 
 const orderSchema = new Schema<IOrder>(
   {
