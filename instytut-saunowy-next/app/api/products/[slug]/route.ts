@@ -4,12 +4,13 @@ import Product from '@/lib/models/Product';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { slug: string } }
+  { params }: { params: Promise<{ slug: string }> }
 ) {
   try {
     await dbConnect();
+    const { slug } = await params;
 
-    const product = await Product.findBySlug(params.slug);
+    const product = await Product.findBySlug(slug);
 
     if (!product) {
       return NextResponse.json(

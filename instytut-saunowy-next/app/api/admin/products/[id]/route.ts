@@ -4,39 +4,88 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import dbConnect from '@/lib/mongodb';
 import Product from '@/lib/models/Product';
 
-export async function DELETE(
+async function isAdmin() {
+  const session = await getServerSession(authOptions);
+  return session?.user?.role === 'admin';
+}
+
+export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  if (!await isAdmin()) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
   try {
-    const session = await getServerSession(authOptions);
-    if (!session || session.user.role !== 'admin') {
-      return NextResponse.json(
-        { status: 'error', message: 'Brak uprawnień' },
-        { status: 403 }
-      );
-    }
-
     await dbConnect();
-
-    const product = await Product.findByIdAndDelete(params.id);
+    const { id } = await params;
+    const product = await Product.findById(id);
 
     if (!product) {
-      return NextResponse.json(
-        { status: 'error', message: 'Produkt nie znaleziony' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'Product not found' }, { status: 404 });
     }
 
-    return NextResponse.json({
-      status: 'success',
-      message: 'Produkt usunięty'
-    });
+    return NextResponse.json({ data: product });
   } catch (error) {
-    console.error('Error deleting product:', error);
-    return NextResponse.json(
-      { status: 'error', message: 'Błąd serwera' },
-      { status: 500 }
+    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+  }
+}
+
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  if (!await isAdmin()) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  try {
+    await dbConnect();
+    const { id } = await params;
+    const data = await request.json();
+
+    const product = await Product.findByIdAndUpdate(
+      id,
+      data,
+      { new: true, runValidators: true }
     );
+
+    if (!product) {
+      return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({ data: product });
+  } catch (error) {
+    return NextResponse.json({ error: 'Server error' }, { status: 500 });
+  }
+}
+
+// Soft delete
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  if (!await isAdmin()) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  try {
+    await dbConnect();
+    const { id } = await params;
+
+    const product = await Product.findByIdAndUpdate(
+      id,
+      { isActive: false },
+      { new: true }
+    );
+
+    if (!product) {
+      return NextResponse.json({ error: 'Product not found' }, { status: 404 });
+    }
+
+    return NextResponse.json({ message: 'Product deleted' });
+  } catch (error) {
+    return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }

@@ -185,7 +185,7 @@ productSchema.statics.findByCategory = async function (
 };
 
 // Indexes
-productSchema.index({ slug: 1 });
+// slug już ma unique: true w schemacie (linia 46), nie trzeba osobnego indexu
 productSchema.index({ category: 1, isActive: 1 });
 productSchema.index({ name: 'text', description: 'text' });
 
