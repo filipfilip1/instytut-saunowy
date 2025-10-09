@@ -66,7 +66,8 @@ const productSchema = new Schema<IProductDocument>({
     url: String,
     alt: String,
     isPrimary: Boolean,
-    variantId: String
+    variantId: String,
+    cloudinaryPublicId: String  // Required for removal from Cloudinary
   }],
   variants: [productVariantSchema],
   features: [String],
@@ -185,7 +186,6 @@ productSchema.statics.findByCategory = async function (
 };
 
 // Indexes
-// slug już ma unique: true w schemacie (linia 46), nie trzeba osobnego indexu
 productSchema.index({ category: 1, isActive: 1 });
 productSchema.index({ name: 'text', description: 'text' });
 

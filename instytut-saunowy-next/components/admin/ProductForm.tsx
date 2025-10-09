@@ -1,8 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { IProduct, ProductCategory } from '@/types';
+import ImageUpload from '@/components/admin/ImageUpload';
 
 interface ProductFormProps {
   product?: IProduct;
@@ -13,6 +14,7 @@ export default function ProductForm({ product, isEdit = false }: ProductFormProp
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [success, setSuccess] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -57,18 +59,25 @@ export default function ProductForm({ product, isEdit = false }: ProductFormProp
     setFormData(prev => ({ ...prev, features: newFeatures }));
   };
 
-  // Handle images
   const handleImageChange = (index: number, field: string, value: string | boolean) => {
-    const newImages = [...images];
-    newImages[index] = { ...newImages[index], [field]: value };
+    console.log('🖼️ handleImageChange called:', { index, field, value });
 
-    if (field === 'isPrimary' && value === true) {
-      newImages.forEach((img, i) => {
-        if (i !== index) img.isPrimary = false;
-      });
-    }
+    // Use functional update to prevent race condition when ImageUpload calls this
+    // twice in quick succession 
+    setImages(prev => {
+      const newImages = [...prev];
+      newImages[index] = { ...newImages[index], [field]: value };
 
-    setImages(newImages);
+      if (field === 'isPrimary' && value === true) {
+        newImages.forEach((img, i) => {
+          if (i !== index) img.isPrimary = false;
+        });
+      }
+
+      console.log('🖼️ New images state:', newImages);
+      console.log('🖼️ Updated image object:', newImages[index]);
+      return newImages;
+    });
   };
 
   const addImage = () => {
@@ -81,15 +90,16 @@ export default function ProductForm({ product, isEdit = false }: ProductFormProp
   };
 
   const removeImage = (index: number) => {
-    const newImages = images.filter((_, i) => i !== index);
-    // Jeśli usuwamy primary, ustaw pierwszy jako primary
-    if (images[index].isPrimary && newImages.length > 0) {
-      newImages[0].isPrimary = true;
-    }
-    setImages(newImages);
+    setImages(prev => {
+      const newImages = prev.filter((_, i) => i !== index);
+
+      if (prev[index].isPrimary && newImages.length > 0) {
+        newImages[0].isPrimary = true;
+      }
+      return newImages;
+    });
   };
 
-  // Handle variants
   const addVariant = () => {
     setVariants(prev => [...prev, {
       id: `var-${Date.now()}`,
@@ -139,8 +149,12 @@ export default function ProductForm({ product, isEdit = false }: ProductFormProp
     setVariants(newVariants);
   };
 
-  // Validate form
   const validateForm = () => {
+    console.log('✅ Validation started');
+    console.log('✅ Current images state:', JSON.stringify(images, null, 2));
+    console.log('✅ Images with URLs:', images.filter(img => img.url));
+    console.log('✅ Images with URLs (JSON):', JSON.stringify(images.filter(img => img.url), null, 2));
+
     const newErrors: Record<string, string> = {};
 
     if (!formData.name) {
@@ -156,16 +170,23 @@ export default function ProductForm({ product, isEdit = false }: ProductFormProp
     if (formData.basePrice < 0) newErrors.basePrice = 'Cena musi być większa od 0';
     if (images.filter(img => img.url).length === 0) newErrors.images = 'Dodaj przynajmniej jedno zdjęcie';
 
+    console.log('✅ Validation errors:', newErrors);
+    console.log('✅ Validation result:', Object.keys(newErrors).length === 0 ? 'PASS' : 'FAIL');
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  // Submit form
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('📤 Form submit started');
 
-    if (!validateForm()) return;
+    if (!validateForm()) {
+      console.log('❌ Validation failed, submission aborted');
+      return;
+    }
 
+    console.log('✅ Validation passed, preparing payload');
     setLoading(true);
 
     try {
@@ -176,11 +197,15 @@ export default function ProductForm({ product, isEdit = false }: ProductFormProp
         features: formData.features.filter(f => f) // Only non-empty features
       };
 
+      console.log('📦 Payload to send:', payload);
+
       const url = isEdit
         ? `/api/admin/products/${product?._id}`
         : '/api/admin/products';
 
       const method = isEdit ? 'PUT' : 'POST';
+
+      console.log(`🚀 Sending ${method} request to ${url}`);
 
       const response = await fetch(url, {
         method,
@@ -188,14 +213,27 @@ export default function ProductForm({ product, isEdit = false }: ProductFormProp
         body: JSON.stringify(payload)
       });
 
+      console.log('📨 Response status:', response.status, response.statusText);
+
       if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        console.log('❌ Response error data:', errorData);
         throw new Error('Błąd podczas zapisywania produktu');
       }
 
-      router.push('/admin/products');
-      router.refresh();
+      const responseData = await response.json();
+      console.log('✅ Success! Response data:', responseData);
+
+      setSuccess(true);
+
+      // Wait 1.5 seconds before redirecting
+      setTimeout(() => {
+        console.log('🔄 Redirecting to /admin/products');
+        router.push('/admin/products');
+        router.refresh();
+      }, 1500);
     } catch (error) {
-      console.error('Error saving product:', error);
+      console.error('❌ Error saving product:', error);
       alert('Wystąpił błąd podczas zapisywania produktu');
     } finally {
       setLoading(false);
@@ -204,6 +242,21 @@ export default function ProductForm({ product, isEdit = false }: ProductFormProp
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
+      {/* Success message */}
+      {success && (
+        <div className="bg-green-50 border border-green-200 text-green-800 px-6 py-4 rounded-lg flex items-center gap-3">
+          <svg className="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+          <div>
+            <p className="font-semibold">
+              {isEdit ? 'Produkt zaktualizowany!' : 'Produkt dodany pomyślnie!'}
+            </p>
+            <p className="text-sm">Przekierowywanie do listy produktów...</p>
+          </div>
+        </div>
+      )}
+
       {/* Basic information */}
       <div className="bg-white rounded-lg shadow p-6">
         <h2 className="text-xl font-semibold mb-6">Podstawowe informacje</h2>
@@ -292,55 +345,72 @@ export default function ProductForm({ product, isEdit = false }: ProductFormProp
         </div>
       </div>
 
-      {/* Photos */}
+      {/* Images */}
       <div className="bg-white rounded-lg shadow p-6">
         <h2 className="text-xl font-semibold mb-6">Zdjęcia produktu</h2>
         {errors.images && <p className="text-red-500 text-sm mb-4">{errors.images}</p>}
 
-        {images.map((image, index) => (
-          <div key={image.id} className="flex gap-4 mb-4">
-            <input
-              type="text"
-              placeholder="URL zdjęcia"
-              value={image.url}
-              onChange={(e) => handleImageChange(index, 'url', e.target.value)}
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg"
-            />
-            <input
-              type="text"
-              placeholder="Opis alternatywny"
-              value={image.alt}
-              onChange={(e) => handleImageChange(index, 'alt', e.target.value)}
-              className="flex-1 px-3 py-2 border border-gray-300 rounded-lg"
-            />
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                checked={image.isPrimary}
-                onChange={(e) => handleImageChange(index, 'isPrimary', e.target.checked)}
-                className="mr-2"
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {images.map((image, index) => (
+            <div key={image.id} className="space-y-3">
+              <ImageUpload
+                value={image.url}
+                onChange={(url, publicId) => {
+                  handleImageChange(index, 'url', url);
+                  if (publicId) {
+                    handleImageChange(index, 'cloudinaryPublicId', publicId);
+                  }
+                }}
+                onRemove={() => {
+                  handleImageChange(index, 'url', '');
+                  handleImageChange(index, 'cloudinaryPublicId', '');
+                }}
+                label={`Zdjęcie ${index + 1}`}
               />
-              Główne
-            </label>
-            {images.length > 1 && (
-              <button
-                type="button"
-                onClick={() => removeImage(index)}
-                className="text-red-600 hover:text-red-800"
-              >
-                Usuń
-              </button>
-            )}
-          </div>
-        ))}
 
-        <button
-          type="button"
-          onClick={addImage}
-          className="text-blue-600 hover:text-blue-800 font-medium"
-        >
-          + Dodaj zdjęcie
-        </button>
+              <input
+                type="text"
+                placeholder="Opis alternatywny (alt text)"
+                value={image.alt}
+                onChange={(e) => handleImageChange(index, 'alt', e.target.value)}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm"
+              />
+
+              <div className="flex items-center justify-between">
+                <label className="flex items-center text-sm cursor-pointer">
+                  <input
+                    type="radio"
+                    name="primaryImage"
+                    checked={image.isPrimary}
+                    onChange={() => handleImageChange(index, 'isPrimary', true)}
+                    className="mr-2"
+                  />
+                  <span className="font-medium text-gray-700">Główne zdjęcie</span>
+                </label>
+
+                {images.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => removeImage(index)}
+                    className="text-red-600 hover:text-red-800 text-sm font-medium"
+                  >
+                    Usuń
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {images.length < 6 && (
+          <button
+            type="button"
+            onClick={addImage}
+            className="mt-6 text-blue-600 hover:text-blue-800 font-medium"
+          >
+            + Dodaj kolejne zdjęcie (max 6)
+          </button>
+        )}
       </div>
 
       {/* Variants */}

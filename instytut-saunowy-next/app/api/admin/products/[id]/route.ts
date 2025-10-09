@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import dbConnect from '@/lib/mongodb';
 import Product from '@/lib/models/Product';
+import cloudinary from '@/lib/cloudinary';
 
 async function isAdmin() {
   const session = await getServerSession(authOptions);
@@ -61,7 +62,7 @@ export async function PUT(
   }
 }
 
-// Soft delete
+// Soft delete with photo cleanup from Cloudinary
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -74,18 +75,31 @@ export async function DELETE(
     await dbConnect();
     const { id } = await params;
 
-    const product = await Product.findByIdAndUpdate(
-      id,
-      { isActive: false },
-      { new: true }
-    );
+    const product = await Product.findById(id);
 
     if (!product) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 });
     }
 
+    // Delete all photos from Cloudinary
+    if (product.images && product.images.length > 0) {
+      const deletePromises = product.images
+        .filter((img: any) => img.cloudinaryPublicId)
+        .map((img: any) => {
+          return cloudinary.uploader.destroy(img.cloudinaryPublicId).catch((err) => {
+            console.error(`Failed to delete image ${img.cloudinaryPublicId}:`, err);
+          });
+        });
+
+      await Promise.all(deletePromises);
+    }
+
+    // Soft delete produktu
+    await Product.findByIdAndUpdate(id, { isActive: false });
+
     return NextResponse.json({ message: 'Product deleted' });
   } catch (error) {
+    console.error('Delete error:', error);
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }

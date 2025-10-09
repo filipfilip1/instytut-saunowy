@@ -19,6 +19,7 @@ export interface IProductImage {
   alt: string;
   isPrimary: boolean;
   variantId?: string;
+  cloudinaryPublicId?: string;
 }
 
 export interface IProductSEO {
