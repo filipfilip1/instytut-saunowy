@@ -29,6 +29,7 @@ lerna-debug.log*
 .vscode/
 *.swp
 *.swo
+.claude
 
 # OS generated files
 Thumbs.db

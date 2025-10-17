@@ -1,8 +1,8 @@
+import 'dotenv/config';
 import mongoose from 'mongoose';
 import Product from '../lib/models/Product';
 import connectDB from '../lib/mongodb';
 
-// Dane przykładowych produktów
 const sampleProducts = [
   {
     name: 'Kilt męski tradycyjny',
@@ -264,35 +264,31 @@ const sampleProducts = [
   }
 ];
 
-const seedProducts = async (): Promise<void> => {
-  try {
-    await connectDB();
+export async function seedProducts(): Promise<void> {
+  await Product.deleteMany({});
 
-    await Product.deleteMany({});
-    console.log('🗑️  Usunięto istniejące produkty');
-
-    const products = [];
-    for (const productData of sampleProducts) {
-      const product = new Product(productData);
-      await product.save();
-      products.push(product);
-      console.log(`✅ Dodano: ${product.name}`);
-    }
-
-    console.log(`\n📦 Podsumowanie: Dodano ${products.length} produktów`);
-    console.log('\n📋 Lista produktów:');
-    products.forEach(product => {
-      console.log(`   - ${product.name} (${product.category}) - ${product.basePrice} PLN`);
-    });
-
-    await mongoose.connection.close();
-    console.log('\n✅ Połączenie z bazą zamknięte');
-    process.exit(0);
-  } catch (error) {
-    console.error('❌ Błąd podczas seedowania:', error);
-    await mongoose.connection.close();
-    process.exit(1);
+  const products = [];
+  for (const productData of sampleProducts) {
+    const product = new Product(productData);
+    await product.save();
+    products.push(product);
   }
-};
 
-seedProducts();
+  console.log(`📦 Seeded ${products.length} products`);
+}
+
+
+if (require.main === module) {
+  (async () => {
+    try {
+      await connectDB();
+      await seedProducts();
+      await mongoose.connection.close();
+      process.exit(0);
+    } catch (error) {
+      console.error('❌ Seeding failed:', error);
+      await mongoose.connection.close();
+      process.exit(1);
+    }
+  })();
+}
