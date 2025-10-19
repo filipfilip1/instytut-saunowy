@@ -4,6 +4,7 @@ import { IOrder } from '@/types';
 import Order from '@/lib/models/Order';
 import User from '@/lib/models/User';
 import Link from 'next/link';
+import { getOrderStatusConfig } from '@/lib/constants/orderStatuses';
 
 
 async function getStats() {
@@ -130,28 +131,28 @@ export default async function AdminDashboard() {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {stats.recentOrders.map((order: IOrder) => (
-                <tr key={order._id}>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    #{order._id.slice(-6).toUpperCase()}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {order.shippingAddress?.email || order.guestEmail || 'N/A'}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {new Date(order.createdAt).toLocaleDateString('pl-PL')}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`
-                      px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                      ${order.status === 'delivered' ? 'bg-green-100 text-green-800' : ''}
-                      ${order.status === 'processing' ? 'bg-yellow-100 text-yellow-800' : ''}
-                      ${order.status === 'pending' ? 'bg-gray-100 text-gray-800' : ''}
-                      ${order.status === 'cancelled' ? 'bg-red-100 text-red-800' : ''}
-                    `}>
-                      {order.status}
-                    </span>
-                  </td>
+              {stats.recentOrders.map((order: IOrder) => {
+                const statusConfig = getOrderStatusConfig(order.status);
+
+                return (
+                  <tr key={order._id}>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      #{order._id.slice(-6).toUpperCase()}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {order.shippingAddress?.email || order.guestEmail || 'N/A'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {new Date(order.createdAt).toLocaleDateString('pl-PL')}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`
+                        px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                        ${statusConfig.color}
+                      `}>
+                        {statusConfig.icon} {statusConfig.label}
+                      </span>
+                    </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     {formatPrice(order.total)}
                   </td>
@@ -164,7 +165,8 @@ export default async function AdminDashboard() {
                     </Link>
                   </td>
                 </tr>
-              ))}
+              );
+            })}
             </tbody>
           </table>
         </div>

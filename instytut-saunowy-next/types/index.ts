@@ -1,3 +1,5 @@
+import { OrderStatus, PaymentStatus } from '@/lib/constants/orderStatuses';
+
 // Product Types
 export interface IVariantOption {
   id: string;
@@ -95,13 +97,14 @@ export interface IOrder {
   items: IOrderItem[];
   shippingAddress: IShippingAddress;
   total: number;
-  status: 'pending' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  status: OrderStatus;
   paymentMethod: string;
-  paymentStatus: 'pending' | 'paid' | 'failed';
+  paymentStatus: PaymentStatus;
   trackingNumber?: string;
   createdAt: Date;
   updatedAt: Date;
 }
+
 // API Response Types
 export interface ApiResponse<T = any> {
   status: 'success' | 'error';
@@ -124,4 +127,3 @@ export interface ProductQuery {
   page?: number;
   search?: string;
 }
-

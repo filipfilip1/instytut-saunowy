@@ -1,5 +1,6 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import { IOrder } from '@/types';
+import { ORDER_STATUSES, PAYMENT_STATUSES } from '@/lib/constants/orderStatuses';
 
 const orderSchema = new Schema<IOrder>(
   {
@@ -43,7 +44,7 @@ const orderSchema = new Schema<IOrder>(
 
     status: {
       type: String,
-      enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled'],
+      enum: ORDER_STATUSES,
       default: 'pending',
     },
 
@@ -54,7 +55,7 @@ const orderSchema = new Schema<IOrder>(
 
     paymentStatus: {
       type: String,
-      enum: ['pending', 'paid', 'failed'],
+      enum: PAYMENT_STATUSES,
       default: 'pending',
     },
 
