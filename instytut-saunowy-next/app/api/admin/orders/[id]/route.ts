@@ -33,6 +33,11 @@ export async function GET(
         { status: 404 }
       );
     }
+
+    return NextResponse.json({
+      status: 'success',
+      data: order,
+    });
   } catch (error) {
     console.error('Error fetching order: ', error);
     return NextResponse.json(
@@ -42,11 +47,11 @@ export async function GET(
   }
 }
 
-export async function Patch(
+export async function PATCH(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  if (!(await isAdmin)) {
+  if (!(await isAdmin())) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

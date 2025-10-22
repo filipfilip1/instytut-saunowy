@@ -1,4 +1,8 @@
-import 'dotenv/config';
+import dotenv from 'dotenv';
+import { resolve } from 'path';
+
+dotenv.config({ path: resolve(process.cwd(), '.env.local') });
+
 import mongoose from 'mongoose';
 import Order from '../lib/models/Order';
 import Product from '../lib/models/Product';

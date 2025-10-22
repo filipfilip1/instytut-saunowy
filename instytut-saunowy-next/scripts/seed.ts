@@ -1,6 +1,11 @@
-import 'dotenv/config';
+import dotenv from 'dotenv';
+import { resolve } from 'path';
+
+dotenv.config({ path: resolve(process.cwd(), '.env.local') });
+
 import mongoose from 'mongoose';
 import connectDB from '../lib/mongodb';
+import { seedUsers } from './seedUsers';
 import { seedProducts } from './seedProducts';
 import { seedOrders } from './seedOrders';
 
@@ -11,8 +16,9 @@ async function runAllSeeders() {
   try {
     await connectDB();
 
-    await seedProducts();
-    await seedOrders();
+    await seedUsers();    // First: create users (customers)
+    await seedProducts(); // Second: create products
+    await seedOrders();   // Third: create orders (needs users & products)
 
     const duration = ((Date.now() - startTime) / 1000).toFixed(2);
     console.log(`\n✅ Seeding completed in ${duration}s\n`);
