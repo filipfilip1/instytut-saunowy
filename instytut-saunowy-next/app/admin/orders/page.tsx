@@ -1,48 +1,19 @@
-import dbConnect from '@/lib/mongodb';
-import Order from '@/lib/models/Order';
 import { IOrder } from '@/types';
 import Link from 'next/link';
 import OrderStatusBadge from '@/components/admin/OrderStatusBadge';
-import { ORDER_STATUSES, OrderStatus } from '@/lib/constants/orderStatuses';
+import { getOrdersWithStats } from '@/lib/services/orderService';
 
 async function getOrders() {
-  await dbConnect();
-
-  const orders = await Order.find()
-    .populate('userId', 'name email')
-    .sort('-createdAt')
-    .limit(50)
-    .lean();
-
-  const stats = await Order.aggregate([
-    {
-      $group: {
-        _id: '$status',
-        count: { $sum: 1 },
-      },
-    },
-  ]);
-
-  const statusCounts: Record<OrderStatus, number> = ORDER_STATUSES.reduce(
-    (acc, status) => ({ ...acc, [status]: 0 }),
-    {} as Record<OrderStatus, number>
-  );
-
-  stats.forEach(stat => {
-    if (stat._id in statusCounts) {
-      statusCounts[stat._id as keyof typeof statusCounts] = stat.count;
-    }
+  const result = await getOrdersWithStats({
+    sortBy: '-createdAt',
+    limit: 50,
+    page: 1,
   });
 
-  const revenue = await Order.aggregate([
-    { $match: { paymentStatus: 'paid' } },
-    { $group: { _id: null, total: { $sum: '$total' } } },
-  ]);
-
   return {
-    orders: JSON.parse(JSON.stringify(orders)),
-    stats: statusCounts,
-    revenue: revenue[0]?.total || 0,
+    orders: JSON.parse(JSON.stringify(result.orders)),
+    stats: result.stats.statusCounts,
+    revenue: result.stats.totalRevenue,
   };
 }
 

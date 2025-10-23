@@ -1,10 +1,9 @@
 import React from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import dbConnect from '@/lib/mongodb';
-import Product from '@/lib/models/Product';
 import ProductCard from '@/components/products/ProductCard';
 import { IProduct, ProductCategory } from '@/types';
+import { fetchAllProductsGrouped } from '@/lib/utils/productQueries';
 
 const categoryIcons: Record<ProductCategory | 'all', string> = {
   'all': '🛍️',
@@ -31,22 +30,6 @@ interface PageProps {
   };
 }
 
-async function getProducts(category?: string): Promise<IProduct[]> {
-  await dbConnect();
-
-  const query: any = { isActive: true };
-  if (category) {
-    query.category = category;
-  }
-
-  const products = await Product.find(query)
-    .sort('-createdAt')
-    .limit(20)
-    .lean();
-
-  return JSON.parse(JSON.stringify(products));
-}
-
 export default async function CategoryPage({ params }: PageProps) {
   const validCategories = ['kilty', 'poncha', 'spodnie', 'bluzy', 'akcesoria', 'zestawy'];
 
@@ -55,8 +38,10 @@ export default async function CategoryPage({ params }: PageProps) {
   }
 
   const selectedCategory = params.category as ProductCategory;
-  const allProducts = await getProducts();
-  const categoryProducts = await getProducts(selectedCategory);
+
+  // Optimized: single query instead of two separate queries
+  const { all: allProducts, byCategory } = await fetchAllProductsGrouped();
+  const categoryProducts = byCategory[selectedCategory] || [];
 
   const categoryCounts = allProducts.reduce((acc, product) => {
     acc[product.category] = (acc[product.category] || 0) + 1;

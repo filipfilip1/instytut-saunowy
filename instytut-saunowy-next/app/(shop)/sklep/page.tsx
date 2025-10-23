@@ -1,9 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
-import dbConnect from '@/lib/mongodb';
-import Product from '@/lib/models/Product';
 import ProductCard from '@/components/products/ProductCard';
 import { IProduct, ProductCategory } from '@/types';
+import { fetchProducts } from '@/lib/utils/productQueries';
 
 const categoryIcons: Record<ProductCategory | 'all', string> = {
   'all': '🛍️',
@@ -24,18 +23,8 @@ const categoryDescriptions: Record<ProductCategory, string> = {
   'zestawy': 'Kompletne zestawy dla prawdziwych miłośników sauny'
 };
 
-async function getProducts(): Promise<IProduct[]> {
-  await dbConnect();
-  const products = await Product.find({ isActive: true })
-    .sort('-createdAt')
-    .limit(20)
-    .lean();
-
-  return JSON.parse(JSON.stringify(products)); // Or return products;
-}
-
 export default async function ProductListPage() {
-  const products = await getProducts();
+  const products = await fetchProducts({ limit: 20 });
 
   const productCountByCategory = products.reduce((acc, product) => {
     acc[product.category] = (acc[product.category] || 0) + 1;

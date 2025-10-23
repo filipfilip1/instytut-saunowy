@@ -21,11 +21,8 @@ async function getProduct(slug: string): Promise<IProduct | null> {
     return null;
   }
 
-  // Increment views
-  await Product.updateOne(
-    { _id: product._id },
-    { $inc: { 'stats.views': 1 } }
-  );
+  // Increment views using model method
+  await product.incrementViews();
 
   return JSON.parse(JSON.stringify(product));
 }
