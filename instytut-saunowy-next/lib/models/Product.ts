@@ -49,7 +49,7 @@ const productSchema = new Schema<IProductDocument>({
   category: {
     type: String,
     required: [true, 'Kategoria jest wymagana'],
-    enum: ['kilty', 'poncha', 'spodnie', 'bluzy', 'akcesoria', 'zestawy']
+    enum: ['kilty', 'poncha', 'spodnie', 'bluzy', 'akcesoria', 'zestawy', 'pareo', 'kimona', 'spodnice', 'topy']
   },
   description: {
     type: String,
