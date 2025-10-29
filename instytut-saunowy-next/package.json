@@ -24,6 +24,7 @@
     "next-cloudinary": "^6.16.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "recharts": "^3.3.0",
     "slugify": "^1.6.6",
     "zod": "^4.1.12"
   },
