@@ -1,3 +1,4 @@
+import { formatPriceExact } from "@/lib/utils/currency";
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { IOrder } from '@/types';
@@ -20,13 +21,6 @@ export default async function CustomerDetailsPage({ params }: PageProps) {
 
   const { user, orders, stats, topProducts } = result;
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('pl-PL', {
-      style: 'currency',
-      currency: 'PLN',
-      minimumFractionDigits: 2,
-    }).format(price);
-  };
 
   const formatDate = (date: string | Date) => {
     return new Date(date).toLocaleString('pl-PL', {
@@ -98,7 +92,7 @@ export default async function CustomerDetailsPage({ params }: PageProps) {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Wydano łącznie</p>
-              <p className="text-2xl font-bold text-gray-800">{formatPrice(stats.totalSpent)}</p>
+              <p className="text-2xl font-bold text-gray-800">{formatPriceExact(stats.totalSpent)}</p>
             </div>
             <div className="text-3xl">💰</div>
           </div>
@@ -108,7 +102,7 @@ export default async function CustomerDetailsPage({ params }: PageProps) {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Średnia wartość</p>
-              <p className="text-2xl font-bold text-gray-800">{formatPrice(stats.averageOrderValue)}</p>
+              <p className="text-2xl font-bold text-gray-800">{formatPriceExact(stats.averageOrderValue)}</p>
             </div>
             <div className="text-3xl">📊</div>
           </div>
@@ -184,7 +178,7 @@ export default async function CustomerDetailsPage({ params }: PageProps) {
 
                       <div className="text-right ml-4">
                         <p className="text-lg font-semibold text-gray-900">
-                          {formatPrice(order.total)}
+                          {formatPriceExact(order.total)}
                         </p>
                       </div>
                     </div>
@@ -223,7 +217,7 @@ export default async function CustomerDetailsPage({ params }: PageProps) {
                       </div>
                     </div>
                     <span className="text-sm font-semibold text-gray-900">
-                      {formatPrice(product.total)}
+                      {formatPriceExact(product.total)}
                     </span>
                   </div>
                 ))}

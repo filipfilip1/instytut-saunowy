@@ -1,3 +1,4 @@
+import { formatPriceExact } from "@/lib/utils/currency";
 import Link from 'next/link';
 import { getCustomersWithStats, CustomerWithStats } from '@/lib/services/customerService';
 
@@ -23,13 +24,6 @@ async function getCustomers() {
 export default async function AdminCustomersPage() {
   const { customers, stats } = await getCustomers();
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('pl-PL', {
-      style: 'currency',
-      currency: 'PLN',
-      minimumFractionDigits: 2,
-    }).format(price);
-  };
 
   const formatDate = (date: string | Date | null) => {
     if (!date) return 'Nigdy';
@@ -101,7 +95,7 @@ export default async function AdminCustomersPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Łączny przychód</p>
-              <p className="text-xl font-bold text-gray-800">{formatPrice(stats.totalRevenue)}</p>
+              <p className="text-xl font-bold text-gray-800">{formatPriceExact(stats.totalRevenue)}</p>
             </div>
             <div className="text-3xl">💰</div>
           </div>
@@ -192,11 +186,11 @@ export default async function AdminCustomersPage() {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex flex-col">
                         <span className="text-sm font-semibold text-gray-900">
-                          {formatPrice(customer.stats.totalSpent)}
+                          {formatPriceExact(customer.stats.totalSpent)}
                         </span>
                         {customer.stats.orderCount > 0 && (
                           <span className="text-xs text-gray-500">
-                            śr. {formatPrice(customer.stats.averageOrderValue)}
+                            śr. {formatPriceExact(customer.stats.averageOrderValue)}
                           </span>
                         )}
                       </div>

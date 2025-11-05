@@ -1,3 +1,4 @@
+import { formatPriceExact } from "@/lib/utils/currency";
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import dbConnect from '@/lib/mongodb';
@@ -33,13 +34,6 @@ export default async function OrderDetailsPage({ params }: PageProps) {
     notFound();
   }
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('pl-PL', {
-      style: 'currency',
-      currency: 'PLN',
-      minimumFractionDigits: 2,
-    }).format(price);
-  };
 
   const formatDate = (date: string | Date) => {
     return new Date(date).toLocaleString('pl-PL', {
@@ -130,13 +124,13 @@ export default async function OrderDetailsPage({ params }: PageProps) {
                     )}
 
                     <p className="text-sm text-gray-500 mt-1">
-                      {formatPrice(item.pricePerItem)} × {item.quantity}
+                      {formatPriceExact(item.pricePerItem)} × {item.quantity}
                     </p>
                   </div>
 
                   <div className="text-right">
                     <p className="font-semibold text-gray-900">
-                      {formatPrice(item.pricePerItem * item.quantity)}
+                      {formatPriceExact(item.pricePerItem * item.quantity)}
                     </p>
                   </div>
                 </div>
@@ -148,7 +142,7 @@ export default async function OrderDetailsPage({ params }: PageProps) {
               <div className="flex justify-between items-center">
                 <span className="text-lg font-medium text-gray-700">Suma:</span>
                 <span className="text-2xl font-bold text-gray-900">
-                  {formatPrice(order.total)}
+                  {formatPriceExact(order.total)}
                 </span>
               </div>
             </div>

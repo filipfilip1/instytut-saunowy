@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 import { IOrder } from '@/types';
 import { ORDER_STATUSES, PAYMENT_STATUSES } from '@/lib/constants/orderStatuses';
 
@@ -60,6 +60,12 @@ const orderSchema = new Schema<IOrder>(
     },
 
     trackingNumber: String,
+
+    stripeSessionId: {
+      type: String,
+      unique: true,
+      sparse: true, // Allows null values but enforces uniqueness when present
+    },
   },
   {
     timestamps: true,

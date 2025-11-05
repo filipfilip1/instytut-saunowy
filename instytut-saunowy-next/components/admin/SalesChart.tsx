@@ -1,4 +1,5 @@
 'use client';
+import { formatPriceRounded } from "@/lib/utils/currency";
 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
@@ -11,14 +12,6 @@ interface SalesChartProps {
 }
 
 export default function SalesChart({ data }: SalesChartProps) {
-  const formatPrice = (value: number) => {
-    return new Intl.NumberFormat('pl-PL', {
-      style: 'currency',
-      currency: 'PLN',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(value);
-  };
 
   return (
     <div className="w-full h-80">
@@ -33,7 +26,7 @@ export default function SalesChart({ data }: SalesChartProps) {
           <YAxis
             stroke="#888"
             style={{ fontSize: '12px' }}
-            tickFormatter={(value) => formatPrice(value)}
+            tickFormatter={(value) => formatPriceRounded(value)}
           />
           <Tooltip
             contentStyle={{
@@ -44,7 +37,7 @@ export default function SalesChart({ data }: SalesChartProps) {
             }}
             formatter={(value: number, name: string) => {
               if (name === 'revenue') {
-                return [formatPrice(value), 'Przychód'];
+                return [formatPriceRounded(value), 'Przychód'];
               }
               return [value, 'Zamówienia'];
             }}

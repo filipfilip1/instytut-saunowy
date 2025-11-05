@@ -1,3 +1,4 @@
+import { formatPriceExact } from "@/lib/utils/currency";
 import dbConnect from '@/lib/mongodb';
 import { IProduct } from '@/types';
 import Product from '@/lib/models/Product';
@@ -16,12 +17,6 @@ async function getProducts() {
 export default async function AdminProductsPage() {
   const products = await getProducts();
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('pl-PL', {
-      style: 'currency',
-      currency: 'PLN',
-    }).format(price);
-  };
 
   return (
     <div>
@@ -87,7 +82,7 @@ export default async function AdminProductsPage() {
                   </span>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {formatPrice(product.basePrice)}
+                  {formatPriceExact(product.basePrice)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                   {product.totalStock || 0} szt.

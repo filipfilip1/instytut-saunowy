@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { IProduct } from '@/types';
 import { useCart } from '@/contexts/CartContext';
 import Toast from '@/components/ui/Toast';
+import { formatPriceRounded } from '@/lib/utils/currency';
 
 interface ProductCardProps {
   product: IProduct;
@@ -16,14 +17,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { addToCart } = useCart();
   const [showToast, setShowToast] = useState(false);
 
-  const formatPrice = (price: number): string => {
-    return new Intl.NumberFormat('pl-PL', {
-      style: 'currency',
-      currency: 'PLN',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price);
-  };
 
   const getCategoryLabel = (category: string): string => {
     const labels: Record<string, string> = {
@@ -50,10 +43,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     });
 
     if (minPrice === maxPrice) {
-      return formatPrice(minPrice);
+      return formatPriceRounded(minPrice);
     }
 
-    return `${formatPrice(minPrice)} - ${formatPrice(maxPrice)}`;
+    return `${formatPriceRounded(minPrice)} - ${formatPriceRounded(maxPrice)}`;
   };
 
   const isInStock = product.variants.some(variant =>

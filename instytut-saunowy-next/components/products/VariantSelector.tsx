@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { IProductVariant } from '@/types';
+import { formatPriceRounded, formatPriceModifier } from '@/lib/utils/currency';
 
 interface VariantSelectorProps {
   variants: IProductVariant[];
@@ -41,15 +42,6 @@ const VariantSelector = ({
     return totalPrice;
   };
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('pl-PL', {
-      style: 'currency',
-      currency: 'PLN',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price);
-  };
-
   return (
     <div className="space-y-6">
       {variants.map(variant => (
@@ -81,7 +73,7 @@ const VariantSelector = ({
                   {option.value}
                   {option.priceModifier && option.priceModifier > 0 && (
                     <span className="text-xs ml-1">
-                      (+{formatPrice(option.priceModifier)})
+                      (+{formatPriceRounded(option.priceModifier)})
                     </span>
                   )}
                 </button>
@@ -143,7 +135,7 @@ const VariantSelector = ({
         <div className="flex justify-between items-center">
           <span className="text-lg font-medium text-gray-700">Cena:</span>
           <span className="text-2xl font-bold text-gray-900">
-            {formatPrice(calculatePrice())}
+            {formatPriceRounded(calculatePrice())}
           </span>
         </div>
       </div>

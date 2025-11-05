@@ -7,6 +7,7 @@ import { IProduct } from '@/types';
 import { useCart } from '@/contexts/CartContext';
 import VariantSelector from '@/components/products/VariantSelector';
 import Toast from '@/components/ui/Toast';
+import { formatPriceRounded } from '@/lib/utils/currency';
 
 interface ProductDetailClientProps {
   product: IProduct;
@@ -45,15 +46,6 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
     });
 
     return totalPrice * quantity;
-  };
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('pl-PL', {
-      style: 'currency',
-      currency: 'PLN',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price);
   };
 
   const handleAddToCart = () => {
@@ -116,11 +108,11 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
 
               <div className="flex items-center gap-4 mb-6">
                 <span className="text-3xl font-bold text-gray-900">
-                  {formatPrice(calculatePrice() / quantity)}
+                  {formatPriceRounded(calculatePrice() / quantity)}
                 </span>
                 {product.priceRange && product.priceRange.min !== product.priceRange.max && (
                   <span className="text-sm text-gray-500">
-                    (zakres: {formatPrice(product.priceRange.min)} - {formatPrice(product.priceRange.max)})
+                    (zakres: {formatPriceRounded(product.priceRange.min)} - {formatPriceRounded(product.priceRange.max)})
                   </span>
                 )}
               </div>
@@ -174,7 +166,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">Cena całkowita:</span>
                     <span className="text-2xl font-bold text-gray-900">
-                      {formatPrice(calculatePrice())}
+                      {formatPriceRounded(calculatePrice())}
                     </span>
                   </div>
                 </div>

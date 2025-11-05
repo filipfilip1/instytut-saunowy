@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import { orderQuerySchema } from '@/lib/validation/orders';
+import { orderQuerySchema } from '@/lib/schemas/orders';
 import { getOrdersWithStats } from '@/lib/services/orderService';
 
 async function isAdmin() {
@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(
         {
           error: 'Invalid query parameters',
-          details: validationResult.error.flatten().fieldErrors,
+          details: validationResult.error.format(),
         },
         { status: 400 }
       );

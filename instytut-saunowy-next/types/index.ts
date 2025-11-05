@@ -101,6 +101,7 @@ export interface IOrder {
   paymentMethod: string;
   paymentStatus: PaymentStatus;
   trackingNumber?: string;
+  stripeSessionId?: string;
   createdAt: Date;
   updatedAt: Date;
 }

@@ -1,3 +1,4 @@
+import { formatPriceExact } from "@/lib/utils/currency";
 import { IOrder } from '@/types';
 import Link from 'next/link';
 import OrderStatusBadge from '@/components/admin/OrderStatusBadge';
@@ -20,13 +21,6 @@ async function getOrders() {
 export default async function AdminOrdersPage() {
   const { orders, stats, revenue } = await getOrders();
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('pl-PL', {
-      style: 'currency',
-      currency: 'PLN',
-      minimumFractionDigits: 2,
-    }).format(price);
-  };
 
   const formatDate = (date: string | Date) => {
     return new Date(date).toLocaleString('pl-PL', {
@@ -110,7 +104,7 @@ export default async function AdminOrdersPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Przychód</p>
-              <p className="text-xl font-bold text-gray-800">{formatPrice(revenue)}</p>
+              <p className="text-xl font-bold text-gray-800">{formatPriceExact(revenue)}</p>
             </div>
             <div className="text-3xl">💰</div>
           </div>
@@ -195,7 +189,7 @@ export default async function AdminOrdersPage() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className="text-sm font-semibold text-gray-900">
-                          {formatPrice(order.total)}
+                          {formatPriceExact(order.total)}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">

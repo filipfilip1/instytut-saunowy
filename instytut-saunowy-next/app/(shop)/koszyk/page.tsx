@@ -4,19 +4,11 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/contexts/CartContext';
 import { IProduct, IProductVariant, IVariantOption } from '@/types';
+import { formatPriceRounded } from '@/lib/utils/currency';
 
 export default function CartPage() {
   const router = useRouter();
   const { items, updateQuantity, removeFromCart, getTotal, clearCart } = useCart();
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('pl-PL', {
-      style: 'currency',
-      currency: 'PLN',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price);
-  };
 
   const getVariantDisplay = (product: IProduct, selectedVariants: Record<string, string>) => {
     const displays: string[] = [];
@@ -35,8 +27,7 @@ export default function CartPage() {
   };
 
   const handleCheckout = () => {
-    // TODO: Implementation of the purchasing process
-    alert('Proces zakupowy będzie wkrótce dostępny!');
+    router.push('/checkout');
   };
 
   if (items.length === 0) {
@@ -106,7 +97,7 @@ export default function CartPage() {
                         {getVariantDisplay(item.product, item.selectedVariants)}
                       </p>
                       <p className="text-lg font-medium text-gray-900 mt-2">
-                        {formatPrice(item.pricePerItem)}
+                        {formatPriceRounded(item.pricePerItem)}
                       </p>
                     </div>
 
@@ -150,7 +141,7 @@ export default function CartPage() {
                       </div>
 
                       <p className="text-lg font-semibold text-gray-900 mt-2">
-                        {formatPrice(item.pricePerItem * item.quantity)}
+                        {formatPriceRounded(item.pricePerItem * item.quantity)}
                       </p>
                     </div>
                   </div>
@@ -183,7 +174,7 @@ export default function CartPage() {
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between text-gray-600">
                   <span>Produkty ({items.reduce((sum, item) => sum + item.quantity, 0)})</span>
-                  <span>{formatPrice(getTotal())}</span>
+                  <span>{formatPriceRounded(getTotal())}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Dostawa</span>
@@ -192,7 +183,7 @@ export default function CartPage() {
                 <div className="border-t pt-3">
                   <div className="flex justify-between text-xl font-semibold text-gray-900">
                     <span>Suma</span>
-                    <span>{formatPrice(getTotal())}</span>
+                    <span>{formatPriceRounded(getTotal())}</span>
                   </div>
                 </div>
               </div>

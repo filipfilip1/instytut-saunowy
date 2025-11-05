@@ -1,3 +1,4 @@
+import { formatPriceRounded } from "@/lib/utils/currency";
 import dbConnect from '@/lib/mongodb';
 import Product from '@/lib/models/Product';
 import { IOrder } from '@/types';
@@ -124,14 +125,6 @@ async function getDashboardStats() {
 export default async function AdminDashboard() {
   const stats = await getDashboardStats();
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('pl-PL', {
-      style: 'currency',
-      currency: 'PLN',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(price);
-  };
 
   return (
     <div>
@@ -186,7 +179,7 @@ export default async function AdminDashboard() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-600">Przychód</p>
-              <p className="text-2xl font-bold text-gray-800">{formatPrice(stats.revenue)}</p>
+              <p className="text-2xl font-bold text-gray-800">{formatPriceRounded(stats.revenue)}</p>
             </div>
             <div className="text-3xl">💰</div>
           </div>
@@ -228,7 +221,7 @@ export default async function AdminDashboard() {
                     </div>
                   </div>
                   <span className="text-sm font-semibold text-gray-900">
-                    {formatPrice(product.revenue)}
+                    {formatPriceRounded(product.revenue)}
                   </span>
                 </div>
               ))
@@ -303,7 +296,7 @@ export default async function AdminDashboard() {
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {formatPrice(order.total)}
+                      {formatPriceRounded(order.total)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <Link
