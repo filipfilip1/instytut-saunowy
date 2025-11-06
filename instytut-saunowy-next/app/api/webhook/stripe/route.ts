@@ -5,6 +5,8 @@ import Order from '@/lib/models/Order';
 import Product from '@/lib/models/Product';
 import Stripe from 'stripe';
 import { IProductVariant, IVariantOption } from '@/types';
+import { createInvoice } from '@/lib/services/invoiceService';
+import { sendOrderConfirmationEmail } from '@/lib/services/emailService';
 
 // Disable Next.js body parser for Stripe webhooks
 export const dynamic = 'force-dynamic';
@@ -163,8 +165,37 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
     await mongoSession.commitTransaction();
     console.log('✅ Transaction committed successfully');
 
-    // TODO: Send order confirmation email
-    // await sendOrderConfirmationEmail(order[0]);
+    // 4. Create invoice (Fakturownia)
+    let invoicePdfUrl: string | undefined;
+    try {
+      const invoiceResult = await createInvoice(order[0]);
+      if (invoiceResult.success && invoiceResult.invoicePdfUrl) {
+        invoicePdfUrl = invoiceResult.invoicePdfUrl;
+        console.log('✅ Invoice created:', invoiceResult.invoiceNumber);
+      } else {
+        console.error('⚠️ Failed to create invoice:', invoiceResult.error);
+      }
+    } catch (invoiceError) {
+      // Don't fail the order if invoice creation fails
+      console.error('⚠️ Invoice creation error:', invoiceError);
+    }
+
+    // 5. Send order confirmation email with invoice
+    try {
+      const emailResult = await sendOrderConfirmationEmail({
+        order: order[0],
+        invoicePdfUrl,
+      });
+
+      if (emailResult.success) {
+        console.log('✅ Order confirmation email sent');
+      } else {
+        console.error('⚠️ Failed to send email:', emailResult.error);
+      }
+    } catch (emailError) {
+      // Don't fail the order if email sending fails
+      console.error('⚠️ Email sending error:', emailError);
+    }
   } catch (error) {
     // Rollback transaction if anything fails
     await mongoSession.abortTransaction();
