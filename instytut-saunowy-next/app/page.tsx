@@ -10,6 +10,7 @@ import ThreePillarsSection from '@/components/homepage/ThreePillarsSection';
 import BestsellersSection from '@/components/homepage/BestsellersSection';
 import LatestBlogPostsSection from '@/components/homepage/LatestBlogPostsSection';
 import SocialProofSection from '@/components/homepage/SocialProofSection';
+import SocialFeedSection from '@/components/homepage/SocialFeedSection';
 import HomeClient from './HomeClient';
 
 async function getBestsellingProducts(): Promise<IProduct[]> {
@@ -78,6 +79,9 @@ export default async function Home() {
 
       {/* Social Proof - Reviews */}
       <SocialProofSection />
+
+      {/* Social Media Feed - Instagram & Facebook */}
+      <SocialFeedSection />
 
       {/* Newsletter CTA */}
       <section className="py-20 bg-gradient-to-br from-wood-700 to-wood-900 text-white">
