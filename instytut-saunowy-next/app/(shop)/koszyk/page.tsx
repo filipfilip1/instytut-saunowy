@@ -6,6 +6,7 @@ import { useCart } from '@/contexts/CartContext';
 import { IProduct, IProductVariant, IVariantOption } from '@/types';
 import { formatPriceRounded } from '@/lib/utils/currency';
 import RecentlyViewed from '@/components/products/RecentlyViewed';
+import CartRecommendationsWrapper from './CartRecommendationsWrapper';
 
 export default function CartPage() {
   const router = useRouter();
@@ -227,9 +228,14 @@ export default function CartPage() {
           </div>
         </div>
 
-        {/* Recently Viewed Products */}
+        {/* Cart Recommendations */}
         <div className="mt-12">
-          <RecentlyViewed title="Może Cię zainteresować" maxItems={6} />
+          <CartRecommendationsWrapper />
+        </div>
+
+        {/* Recently Viewed Products */}
+        <div className="mt-8">
+          <RecentlyViewed title="Ostatnio oglądane" maxItems={6} />
         </div>
       </div>
     </div>

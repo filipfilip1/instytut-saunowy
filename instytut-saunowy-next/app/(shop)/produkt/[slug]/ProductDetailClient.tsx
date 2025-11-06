@@ -10,12 +10,14 @@ import Toast from '@/components/ui/Toast';
 import { formatPriceRounded } from '@/lib/utils/currency';
 import { addToRecentlyViewed } from '@/lib/client/recentlyViewed';
 import RecentlyViewed from '@/components/products/RecentlyViewed';
+import ProductRecommendations from '@/components/products/ProductRecommendations';
 
 interface ProductDetailClientProps {
   product: IProduct;
+  allProducts: IProduct[];
 }
 
-export default function ProductDetailClient({ product }: ProductDetailClientProps) {
+export default function ProductDetailClient({ product, allProducts }: ProductDetailClientProps) {
   const router = useRouter();
   const { addToCart } = useCart();
 
@@ -252,8 +254,17 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
         </div>
       </div>
 
-      {/* Recently Viewed Products */}
+      {/* Product Recommendations */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
+        <ProductRecommendations
+          baseProduct={product}
+          allProducts={allProducts}
+          maxItems={6}
+        />
+      </div>
+
+      {/* Recently Viewed Products */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
         <RecentlyViewed excludeProductId={product._id} maxItems={6} />
       </div>
 
