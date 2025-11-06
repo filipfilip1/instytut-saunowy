@@ -160,3 +160,112 @@ export interface IBlogPost {
   updatedAt: Date;
   formattedDate?: string;
 }
+
+// Training Types
+export interface ITraining {
+  _id: string;
+  name: string;
+  slug: string;
+  description: string;
+  shortDescription?: string;
+
+  // Schedule
+  date: Date;
+  duration: number;
+
+  // Location
+  location: {
+    venue: string;
+    address: string;
+    city: string;
+    mapUrl?: string;
+  };
+
+  // Pricing
+  price: number;
+  depositPercentage: number;
+
+  // Capacity
+  maxParticipants: number;
+  currentParticipants: number;
+
+  // Classification
+  category: 'podstawowy' | 'zaawansowany' | 'master' | 'indywidualny';
+  level: 'beginner' | 'intermediate' | 'advanced';
+
+  // Details
+  requirements?: string[];
+  whatYouLearn: string[];
+  agenda?: {
+    time: string;
+    title: string;
+    description: string;
+  }[];
+
+  // Instructor
+  instructor: {
+    name: string;
+    bio?: string;
+    avatar?: string;
+  };
+
+  // Media
+  images: {
+    url: string;
+    alt?: string;
+  }[];
+  featuredImage?: {
+    url: string;
+    alt?: string;
+  };
+
+  // Status
+  status: 'draft' | 'published' | 'cancelled' | 'completed';
+
+  // SEO
+  seo?: {
+    metaTitle?: string;
+    metaDescription?: string;
+    keywords?: string[];
+  };
+
+  createdAt: Date;
+  updatedAt: Date;
+
+  // Virtual properties
+  availableSpots?: number;
+  isFull?: boolean;
+  isAlmostFull?: boolean;
+  shouldShowAvailability?: boolean;
+  depositAmount?: number;
+}
+
+// Training Booking Types
+export interface ITrainingBooking {
+  _id: string;
+  trainingId: string;
+  userId?: string;
+  guestEmail?: string;
+
+  participantInfo: {
+    name: string;
+    email: string;
+    phone: string;
+    experience?: string;
+    specialRequirements?: string;
+  };
+
+  stripeSessionId: string;
+  amount: number;
+  depositAmount: number;
+  paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded';
+
+  status: 'confirmed' | 'cancelled' | 'pending_approval';
+
+  cancelledAt?: Date;
+  cancellationReason?: string;
+  adminNotes?: string;
+
+  createdAt: Date;
+  updatedAt: Date;
+}
