@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useCart } from '@/contexts/CartContext';
 import { IProduct, IProductVariant, IVariantOption } from '@/types';
 import { formatPriceRounded } from '@/lib/utils/currency';
+import RecentlyViewed from '@/components/products/RecentlyViewed';
 
 export default function CartPage() {
   const router = useRouter();
@@ -224,6 +225,11 @@ export default function CartPage() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Recently Viewed Products */}
+        <div className="mt-12">
+          <RecentlyViewed title="Może Cię zainteresować" maxItems={6} />
         </div>
       </div>
     </div>

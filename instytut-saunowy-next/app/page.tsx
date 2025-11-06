@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import HomeClient from './HomeClient';
 
 export default function Home() {
   return (
@@ -163,6 +164,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Recently Viewed Products */}
+      <HomeClient />
 
       {/* CTA */}
       <section className="py-16 bg-gray-50">

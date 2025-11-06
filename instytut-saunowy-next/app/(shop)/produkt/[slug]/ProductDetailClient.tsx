@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { IProduct } from '@/types';
@@ -8,6 +8,8 @@ import { useCart } from '@/contexts/CartContext';
 import VariantSelector from '@/components/products/VariantSelector';
 import Toast from '@/components/ui/Toast';
 import { formatPriceRounded } from '@/lib/utils/currency';
+import { addToRecentlyViewed } from '@/lib/client/recentlyViewed';
+import RecentlyViewed from '@/components/products/RecentlyViewed';
 
 interface ProductDetailClientProps {
   product: IProduct;
@@ -31,6 +33,11 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
   });
   const [quantity, setQuantity] = useState(1);
   const [showAddedMessage, setShowAddedMessage] = useState(false);
+
+  // Track product view in recently viewed
+  useEffect(() => {
+    addToRecentlyViewed(product);
+  }, [product]);
 
   const calculatePrice = () => {
     let totalPrice = product.basePrice;
@@ -243,6 +250,11 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Recently Viewed Products */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
+        <RecentlyViewed excludeProductId={product._id} maxItems={6} />
       </div>
 
       {/* Toast notification */}
