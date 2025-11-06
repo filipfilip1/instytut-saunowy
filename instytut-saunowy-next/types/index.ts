@@ -128,3 +128,35 @@ export interface ProductQuery {
   page?: number;
   search?: string;
 }
+
+// Blog Post Types
+export interface IBlogPost {
+  _id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  author: {
+    name: string;
+    role: string;
+    avatar?: string;
+  };
+  featuredImage: {
+    url: string;
+    alt?: string;
+  };
+  category: 'poradniki' | 'trendy' | 'diy' | 'szkolenia' | 'zdrowie' | 'przepisy';
+  tags: string[];
+  readTime: number;
+  publishedAt: Date;
+  isPublished: boolean;
+  viewCount: number;
+  seo?: {
+    metaTitle?: string;
+    metaDescription?: string;
+    keywords?: string[];
+  };
+  createdAt: Date;
+  updatedAt: Date;
+  formattedDate?: string;
+}
