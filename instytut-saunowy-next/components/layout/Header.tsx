@@ -49,6 +49,20 @@ const Header = () => {
               Sklep
             </Link>
             <Link
+              href="/akademia"
+              className={`font-medium transition-colors ${isActive('/akademia') ? 'text-wood-600' : 'text-gray-700 hover:text-wood-600'
+                }`}
+            >
+              Akademia
+            </Link>
+            <Link
+              href="/zawody-moa"
+              className={`font-medium transition-colors ${isActive('/zawody-moa') ? 'text-wood-600' : 'text-gray-700 hover:text-wood-600'
+                }`}
+            >
+              Zawody MoA
+            </Link>
+            <Link
               href="/o-nas"
               className={`font-medium transition-colors ${isActive('/o-nas') ? 'text-wood-600' : 'text-gray-700 hover:text-wood-600'
                 }`}
@@ -117,6 +131,20 @@ const Header = () => {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Sklep
+              </Link>
+              <Link
+                href="/akademia"
+                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-wood-600 hover:bg-gray-50"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Akademia
+              </Link>
+              <Link
+                href="/zawody-moa"
+                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-wood-600 hover:bg-gray-50"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Zawody MoA
               </Link>
               <Link
                 href="/o-nas"
