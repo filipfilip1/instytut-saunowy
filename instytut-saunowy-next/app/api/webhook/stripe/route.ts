@@ -3,6 +3,8 @@ import { stripe } from '@/lib/stripe';
 import dbConnect from '@/lib/mongodb';
 import Order from '@/lib/models/Order';
 import Product from '@/lib/models/Product';
+import Training from '@/lib/models/Training';
+import TrainingBooking from '@/lib/models/TrainingBooking';
 import Stripe from 'stripe';
 import { IProductVariant, IVariantOption } from '@/types';
 import { createInvoice } from '@/lib/services/invoiceService';
@@ -81,6 +83,19 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
 
   await dbConnect();
 
+  // Check if this is a training booking or product order
+  const checkoutType = session.metadata?.type;
+
+  if (checkoutType === 'training_booking') {
+    // Handle training booking
+    await handleTrainingBooking(session);
+  } else {
+    // Handle product order (default)
+    await handleProductOrder(session);
+  }
+}
+
+async function handleProductOrder(session: Stripe.Checkout.Session) {
   // Parse metadata from session
   const shippingAddress = JSON.parse(session.metadata?.shippingAddress || '{}');
   const items = JSON.parse(session.metadata?.items || '[]');
@@ -201,6 +216,112 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
     await mongoSession.abortTransaction();
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     console.error('❌ Transaction aborted:', errorMessage);
+    throw error;
+  } finally {
+    mongoSession.endSession();
+  }
+}
+
+async function handleTrainingBooking(session: Stripe.Checkout.Session) {
+  console.log('🎓 Training booking session completed:', session.id);
+
+  // Parse metadata from session
+  const trainingId = session.metadata?.trainingId;
+  const participantInfo = JSON.parse(session.metadata?.participantInfo || '{}');
+  const userId = session.metadata?.userId || undefined;
+  const guestEmail = session.metadata?.guestEmail || undefined;
+  const fullAmount = parseFloat(session.metadata?.fullAmount || '0');
+  const depositAmount = parseFloat(session.metadata?.depositAmount || '0');
+
+  if (!trainingId || !participantInfo) {
+    console.error('❌ Missing training metadata in session');
+    return;
+  }
+
+  // Idempotency check: prevent duplicate bookings using session ID
+  const existingBooking = await TrainingBooking.findOne({
+    stripeSessionId: session.id,
+  });
+
+  if (existingBooking) {
+    console.log('⚠️ Training booking already exists for session:', session.id);
+    return;
+  }
+
+  // Start MongoDB transaction for atomic operations
+  const mongoSession = await TrainingBooking.startSession();
+  mongoSession.startTransaction();
+
+  try {
+    // 1. Find training
+    const training = await Training.findById(trainingId).session(mongoSession);
+
+    if (!training) {
+      throw new Error(`Training ${trainingId} not found`);
+    }
+
+    // 2. Check availability (double-check in case of race conditions)
+    if (training.isFull) {
+      throw new Error(`Training ${training.name} is full`);
+    }
+
+    // 3. Increment participant count
+    await training.incrementParticipants(1);
+    console.log(`📈 Participant count increased for training: ${training.name}`);
+
+    // 4. Create booking in database
+    const booking = await TrainingBooking.create(
+      [
+        {
+          trainingId: training._id,
+          userId: userId || undefined,
+          guestEmail: guestEmail || undefined,
+          participantInfo,
+          stripeSessionId: session.id, // For idempotency
+          amount: fullAmount,
+          depositAmount,
+          paymentStatus: 'paid',
+          status: 'confirmed', // Auto-confirm
+          // status: 'pending_approval', // Uncomment for manual approval flow
+        },
+      ],
+      { session: mongoSession }
+    );
+
+    console.log('✅ Training booking created:', booking[0]._id);
+
+    // 5. Commit transaction
+    await mongoSession.commitTransaction();
+    console.log('✅ Transaction committed successfully');
+
+    // TODO: Generate invoice for training booking
+    // Currently we're not generating invoices for trainings, but this can be added later
+    // Uncomment and implement when invoice feature is ready:
+    // let invoicePdfUrl: string | undefined;
+    // try {
+    //   const invoiceResult = await createTrainingInvoice(booking[0], training);
+    //   if (invoiceResult.success && invoiceResult.invoicePdfUrl) {
+    //     invoicePdfUrl = invoiceResult.invoicePdfUrl;
+    //     console.log('✅ Training invoice created:', invoiceResult.invoiceNumber);
+    //   }
+    // } catch (invoiceError) {
+    //   console.error('⚠️ Invoice creation error:', invoiceError);
+    // }
+
+    // TODO: Send training booking confirmation email
+    // Integrate with emailService when email feature is available
+    // await sendTrainingBookingConfirmationEmail({
+    //   booking: booking[0],
+    //   training: training,
+    //   invoicePdfUrl,
+    // });
+    // console.log('✅ Training booking confirmation email sent');
+
+  } catch (error) {
+    // Rollback transaction if anything fails
+    await mongoSession.abortTransaction();
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error('❌ Training booking transaction aborted:', errorMessage);
     throw error;
   } finally {
     mongoSession.endSession();
