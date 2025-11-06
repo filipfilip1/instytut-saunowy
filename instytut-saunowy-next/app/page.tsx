@@ -2,11 +2,13 @@ import React from 'react';
 import Link from 'next/link';
 import dbConnect from '@/lib/mongodb';
 import Product from '@/lib/models/Product';
-import { IProduct } from '@/types';
+import BlogPost from '@/lib/models/BlogPost';
+import { IProduct, IBlogPost } from '@/types';
 import HeroSection from '@/components/homepage/HeroSection';
 import AboutMiniSection from '@/components/homepage/AboutMiniSection';
 import ThreePillarsSection from '@/components/homepage/ThreePillarsSection';
 import BestsellersSection from '@/components/homepage/BestsellersSection';
+import LatestBlogPostsSection from '@/components/homepage/LatestBlogPostsSection';
 import SocialProofSection from '@/components/homepage/SocialProofSection';
 import HomeClient from './HomeClient';
 
@@ -28,8 +30,27 @@ async function getBestsellingProducts(): Promise<IProduct[]> {
   }
 }
 
+async function getLatestBlogPosts(): Promise<IBlogPost[]> {
+  try {
+    await dbConnect();
+
+    // Get latest 3 published blog posts
+    const posts = await BlogPost.find({ isPublished: true })
+      .sort({ publishedAt: -1 })
+      .limit(3)
+      .select('-content')
+      .lean();
+
+    return JSON.parse(JSON.stringify(posts));
+  } catch (error) {
+    console.error('Error fetching latest blog posts:', error);
+    return [];
+  }
+}
+
 export default async function Home() {
   const bestsellingProducts = await getBestsellingProducts();
+  const latestBlogPosts = await getLatestBlogPosts();
 
   return (
     <div className="min-h-screen">
@@ -49,6 +70,11 @@ export default async function Home() {
 
       {/* Recently Viewed Products (from HomeClient) */}
       <HomeClient />
+
+      {/* Latest Blog Posts */}
+      {latestBlogPosts.length > 0 && (
+        <LatestBlogPostsSection posts={latestBlogPosts} />
+      )}
 
       {/* Social Proof - Reviews */}
       <SocialProofSection />
