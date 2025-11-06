@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { getRecentlyViewed, getRecentlyViewedExcluding, RecentlyViewedProduct } from '@/lib/client/recentlyViewed';
 import { formatPriceRounded } from '@/lib/utils/currency';
+import FadeIn from '@/components/animations/FadeIn';
+import HoverCard from '@/components/animations/HoverCard';
 
 interface RecentlyViewedProps {
   /**
@@ -72,13 +74,14 @@ export default function RecentlyViewed({
       {/* Horizontal scrollable grid */}
       <div className="relative">
         <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
-          {products.map((product) => (
-            <Link
-              key={product._id}
-              href={`/produkt/${product.slug}`}
-              className="flex-shrink-0 w-48 group snap-start"
-            >
-              <div className="bg-white rounded-lg border border-gray-200 overflow-hidden transition-all hover:shadow-lg hover:border-gray-300">
+          {products.map((product, index) => (
+            <FadeIn key={product._id} delay={index * 0.1} className="flex-shrink-0 w-48 snap-start">
+              <HoverCard>
+                <Link
+                  href={`/produkt/${product.slug}`}
+                  className="block group"
+                >
+                  <div className="bg-white rounded-lg border border-gray-200 overflow-hidden transition-all hover:shadow-lg hover:border-gray-300">
                 {/* Product Image */}
                 <div className="relative aspect-square bg-gray-100 overflow-hidden">
                   {product.images[0]?.url ? (
@@ -118,6 +121,8 @@ export default function RecentlyViewed({
                 </div>
               </div>
             </Link>
+              </HoverCard>
+            </FadeIn>
           ))}
         </div>
 
