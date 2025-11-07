@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useToast } from '@/hooks/useToast';
 
 interface DeleteProductButtonProps {
   productId: string;
@@ -10,6 +11,7 @@ interface DeleteProductButtonProps {
 
 export default function DeleteProductButton({ productId, productName }: DeleteProductButtonProps) {
   const router = useRouter();
+  const toast = useToast();
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {
@@ -25,13 +27,14 @@ export default function DeleteProductButton({ productId, productName }: DeletePr
       });
 
       if (response.ok) {
+        toast.productDeleted();
         router.refresh();
       } else {
-        alert('Błąd podczas usuwania produktu');
+        toast.error('Błąd podczas usuwania produktu');
       }
     } catch (error) {
       console.error('Error deleting product:', error);
-      alert('Wystąpił błąd');
+      toast.error('Wystąpił błąd');
     } finally {
       setIsDeleting(false);
     }

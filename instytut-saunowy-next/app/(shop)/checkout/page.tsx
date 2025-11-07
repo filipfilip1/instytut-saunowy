@@ -5,9 +5,11 @@ import { useCart } from '@/contexts/CartContext';
 import Link from 'next/link';
 import { checkoutShippingSchema, type CheckoutShippingData } from '@/lib/schemas/checkout';
 import { formatPriceExact } from '@/lib/utils/currency';
+import { useToast } from '@/hooks/useToast';
 
 export default function CheckoutPage() {
   const { items, getTotal } = useCart();
+  const toast = useToast();
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
@@ -60,8 +62,7 @@ export default function CheckoutPage() {
     }
 
     if (items.length === 0) {
-      // TODO: Replace alert with toast notification
-      alert('Koszyk jest pusty!');
+      toast.error('Koszyk jest pusty!');
       return;
     }
 
@@ -97,8 +98,7 @@ export default function CheckoutPage() {
       window.location.href = url;
     } catch (error) {
       console.error('Checkout error:', error);
-      // TODO: Replace alert with toast notification
-      alert(error instanceof Error ? error.message : 'Wystąpił błąd podczas przetwarzania płatności');
+      toast.error(error instanceof Error ? error.message : 'Wystąpił błąd podczas przetwarzania płatności');
     } finally {
       setLoading(false);
     }

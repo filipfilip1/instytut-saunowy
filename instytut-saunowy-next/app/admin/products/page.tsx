@@ -8,8 +8,7 @@ import DeleteProductButton from './DeleteProductButton';
 async function getProducts() {
   await dbConnect();
   const products = await Product.find()
-    .sort('-createdAt')
-    .lean();
+    .sort('-createdAt');
 
   return JSON.parse(JSON.stringify(products));
 }

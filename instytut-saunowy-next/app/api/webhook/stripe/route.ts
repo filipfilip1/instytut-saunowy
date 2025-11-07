@@ -98,14 +98,23 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
     return;
   }
 
-  // Start MongoDB transaction for atomic operations
-  const mongoSession = await Order.startSession();
-  mongoSession.startTransaction();
+  // Check if transactions are enabled (requires MongoDB replica set)
+  const useTransactions = process.env.MONGODB_USE_TRANSACTIONS === 'true';
+  const mongoSession = useTransactions ? await Order.startSession() : null;
 
   try {
+    if (mongoSession) {
+      mongoSession.startTransaction();
+      console.log('🔄 Using MongoDB transactions');
+    } else {
+      console.log('⚠️ Running without transactions (standalone MongoDB)');
+    }
+
     // 1. Update stock levels for all products
     for (const item of items) {
-      const product = await Product.findById(item.productId).session(mongoSession);
+      const product = mongoSession
+        ? await Product.findById(item.productId).session(mongoSession)
+        : await Product.findById(item.productId);
 
       if (!product) {
         throw new Error(`Product ${item.productId} not found`);
@@ -136,42 +145,52 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
         option.stock -= item.quantity;
       }
 
-      await product.save({ session: mongoSession });
+      if (mongoSession) {
+        await product.save({ session: mongoSession });
+      } else {
+        await product.save();
+      }
       console.log(`📦 Stock updated for product: ${product.name}`);
     }
 
     // 2. Create order in database
-    const order = await Order.create(
-      [
-        {
-          items,
-          shippingAddress,
-          total: (session.amount_total || 0) / 100, // Convert from cents to PLN
-          status: 'pending',
-          paymentMethod: 'Stripe',
-          paymentStatus: 'paid',
-          guestEmail: session.customer_email || shippingAddress.email,
-          stripeSessionId: session.id, // Store session ID for idempotency
-        },
-      ],
-      { session: mongoSession }
-    );
+    const orderData = {
+      items,
+      shippingAddress,
+      total: (session.amount_total || 0) / 100, // Convert from cents to PLN
+      status: 'pending',
+      paymentMethod: 'Stripe',
+      paymentStatus: 'paid',
+      guestEmail: session.customer_email || shippingAddress.email,
+      stripeSessionId: session.id, // Store session ID for idempotency
+    };
+
+    const order = mongoSession
+      ? await Order.create([orderData], { session: mongoSession })
+      : await Order.create([orderData]);
 
     console.log('✅ Order created:', order[0]._id);
 
-    // 3. Commit transaction
-    await mongoSession.commitTransaction();
-    console.log('✅ Transaction committed successfully');
+    // 3. Commit transaction (if using transactions)
+    if (mongoSession) {
+      await mongoSession.commitTransaction();
+      console.log('✅ Transaction committed successfully');
+    }
 
     // TODO: Send order confirmation email
     // await sendOrderConfirmationEmail(order[0]);
   } catch (error) {
     // Rollback transaction if anything fails
-    await mongoSession.abortTransaction();
+    if (mongoSession) {
+      await mongoSession.abortTransaction();
+      console.log('🔄 Transaction rolled back');
+    }
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    console.error('❌ Transaction aborted:', errorMessage);
+    console.error('❌ Operation failed:', errorMessage);
     throw error;
   } finally {
-    mongoSession.endSession();
+    if (mongoSession) {
+      mongoSession.endSession();
+    }
   }
 }

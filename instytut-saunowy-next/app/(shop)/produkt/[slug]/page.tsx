@@ -28,7 +28,8 @@ async function getProduct(slug: string): Promise<IProduct | null> {
 }
 
 export default async function ProductDetailPage({ params }: PageProps) {
-  const product = await getProduct(params.slug);
+  const { slug } = await params;
+  const product = await getProduct(slug);
 
   if (!product) {
     notFound();
@@ -72,7 +73,8 @@ export default async function ProductDetailPage({ params }: PageProps) {
 }
 
 export async function generateMetadata({ params }: PageProps) {
-  const product = await getProduct(params.slug);
+  const { slug } = await params;
+  const product = await getProduct(slug);
 
   if (!product) {
     return {

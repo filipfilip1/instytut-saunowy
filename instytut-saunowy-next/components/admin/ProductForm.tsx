@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { IProduct, ProductCategory } from '@/types';
 import ImageUpload from '@/components/admin/ImageUpload';
+import { useToast } from '@/hooks/useToast';
 
 interface ProductFormProps {
   product?: IProduct;
@@ -12,6 +13,7 @@ interface ProductFormProps {
 
 export default function ProductForm({ product, isEdit = false }: ProductFormProps) {
   const router = useRouter();
+  const toast = useToast();
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [success, setSuccess] = useState(false);
@@ -225,6 +227,7 @@ export default function ProductForm({ product, isEdit = false }: ProductFormProp
       console.log('✅ Success! Response data:', responseData);
 
       setSuccess(true);
+      toast.productSaved(formData.name);
 
       // Wait 1.5 seconds before redirecting
       setTimeout(() => {
@@ -234,7 +237,7 @@ export default function ProductForm({ product, isEdit = false }: ProductFormProp
       }, 1500);
     } catch (error) {
       console.error('❌ Error saving product:', error);
-      alert('Wystąpił błąd podczas zapisywania produktu');
+      toast.error('Wystąpił błąd podczas zapisywania produktu');
     } finally {
       setLoading(false);
     }

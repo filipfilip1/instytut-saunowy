@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import imageCompression from 'browser-image-compression';
+import { useToast } from '@/hooks/useToast';
 
 interface ImageUploadProps {
   value: string;
@@ -16,6 +17,7 @@ export default function ImageUpload({
   onRemove,
   label = 'Wybierz zdjęcie'
 }: ImageUploadProps) {
+  const toast = useToast();
   const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState(value);
   const [dragActive, setDragActive] = useState(false);
@@ -31,13 +33,13 @@ export default function ImageUpload({
 
     const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
     if (!validTypes.includes(file.type)) {
-      alert('Dozwolone tylko pliki JPG, PNG lub WebP');
+      toast.error('Dozwolone tylko pliki JPG, PNG lub WebP');
       return;
     }
 
     // Generous 10MB pre-compression limit - we compress to ~1MB below
     if (file.size > 10 * 1024 * 1024) {
-      alert('Plik nie może być większy niż 10MB');
+      toast.error('Plik nie może być większy niż 10MB');
       return;
     }
 
@@ -72,7 +74,7 @@ export default function ImageUpload({
       onChange(data.url, data.publicId);
     } catch (error) {
       console.error('Upload error:', error);
-      alert('Błąd podczas uploadu zdjęcia');
+      toast.error('Błąd podczas uploadu zdjęcia');
     } finally {
       setLoading(false);
     }

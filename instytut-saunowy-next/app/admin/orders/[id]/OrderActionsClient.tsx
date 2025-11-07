@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { IOrder } from '@/types';
+import { useToast } from '@/hooks/useToast';
 
 interface OrderActionsClientProps {
   order: IOrder;
@@ -10,6 +11,7 @@ interface OrderActionsClientProps {
 
 export default function OrderActionsClient({ order }: OrderActionsClientProps) {
   const router = useRouter();
+  const toast = useToast();
   const [loading, setLoading] = useState(false);
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [showTrackingModal, setShowTrackingModal] = useState(false);
@@ -39,7 +41,7 @@ export default function OrderActionsClient({ order }: OrderActionsClientProps) {
       router.refresh();
     } catch (error) {
       console.error('Error updating status:', error);
-      alert('Wystąpił błąd podczas aktualizacji statusu');
+      toast.error('Wystąpił błąd podczas aktualizacji statusu');
     } finally {
       setLoading(false);
     }
@@ -66,7 +68,7 @@ export default function OrderActionsClient({ order }: OrderActionsClientProps) {
       router.refresh();
     } catch (error) {
       console.error('Error updating tracking:', error);
-      alert('Wystąpił błąd podczas aktualizacji numeru przesyłki');
+      toast.error('Wystąpił błąd podczas aktualizacji numeru przesyłki');
     } finally {
       setLoading(false);
     }
