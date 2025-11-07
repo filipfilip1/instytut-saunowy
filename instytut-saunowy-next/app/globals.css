@@ -1,27 +1,81 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
+}
+
 @layer components {
-  .btn-primary {
-    @apply bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors duration-200 disabled:bg-gray-400 disabled:cursor-not-allowed;
+  /* Scandinavian Buttons */
+  .btn-gold {
+    @apply bg-gold-400 hover:bg-gold-500 text-graphite-900 font-medium py-2.5 px-6 rounded-2xl transition-all duration-200 shadow-gold hover:shadow-gold-lg disabled:bg-gray-300 disabled:cursor-not-allowed disabled:shadow-none;
   }
 
-  .btn-secondary {
-    @apply bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-6 rounded-lg transition-colors duration-200;
+  .btn-forest {
+    @apply bg-forest-600 hover:bg-forest-700 text-white font-medium py-2.5 px-6 rounded-2xl transition-all duration-200 shadow-md hover:shadow-lg disabled:bg-gray-400 disabled:cursor-not-allowed;
   }
 
+  .btn-nordic {
+    @apply bg-nordic-600 hover:bg-nordic-700 text-white font-medium py-2.5 px-6 rounded-2xl transition-all duration-200 shadow-nordic hover:shadow-nordic-lg disabled:bg-gray-400 disabled:cursor-not-allowed;
+  }
+
+  .btn-outline-gold {
+    @apply border-2 border-gold-400 text-gold-600 hover:bg-gold-400 hover:text-graphite-900 font-medium py-2 px-6 rounded-2xl transition-all duration-200;
+  }
+
+  .btn-outline-forest {
+    @apply border-2 border-forest-600 text-forest-700 hover:bg-forest-600 hover:text-white font-medium py-2 px-6 rounded-2xl transition-all duration-200;
+  }
+
+  /* Scandinavian Cards */
   .card {
-    @apply bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300;
+    @apply bg-white rounded-3xl shadow-md hover:shadow-xl transition-all duration-300;
   }
 
+  .card-nordic {
+    @apply bg-white rounded-3xl shadow-md hover:shadow-nordic-lg transition-all duration-300 border-2 border-nordic-200 hover:border-nordic-400;
+  }
+
+  .card-gold {
+    @apply bg-white rounded-3xl shadow-md hover:shadow-gold-lg transition-all duration-300 border-2 border-gold-200 hover:border-gold-400;
+  }
+
+  /* Badges */
   .badge {
     @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium;
   }
 
+  .badge-gold {
+    @apply bg-gold-100 text-gold-800 border border-gold-200;
+  }
+
+  .badge-forest {
+    @apply bg-forest-100 text-forest-800 border border-forest-200;
+  }
+
+  .badge-nordic {
+    @apply bg-nordic-100 text-nordic-800 border border-nordic-200;
+  }
+
+  /* Inputs */
   .input {
-    @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all;
+    @apply w-full px-4 py-2.5 border-2 border-cream-400 bg-white rounded-xl focus:ring-2 focus:ring-gold-400 focus:border-gold-400 outline-none transition-all text-graphite-800 placeholder:text-graphite-400;
+  }
+
+  .input-admin {
+    @apply w-full px-4 py-2.5 border-2 border-graphite-200 bg-white rounded-xl focus:ring-2 focus:ring-forest-500 focus:border-forest-500 outline-none transition-all text-graphite-800;
+  }
+
+  /* Section Headers */
+  .section-header {
+    @apply font-serif text-3xl md:text-4xl font-bold text-graphite-900 mb-4;
+  }
+
+  .section-subheader {
+    @apply font-serif text-xl md:text-2xl font-semibold text-graphite-800 mb-3;
   }
 }
 

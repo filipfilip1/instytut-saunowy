@@ -19,16 +19,19 @@ const Header = () => {
   };
 
   return (
-    <nav className="bg-white shadow-sm sticky top-0 z-50">
+    <nav className="bg-white shadow-md sticky top-0 z-50 border-b-2 border-cream-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <div className="flex items-center">
             <Link
               href="/"
-              className="text-2xl font-bold text-wood-700 hover:text-wood-600 transition-colors"
+              className="flex items-center gap-2 group"
             >
-              Instytut Saunowy
+              <div className="text-3xl">🏛️</div>
+              <span className="text-2xl md:text-3xl font-serif font-bold text-graphite-900 group-hover:text-gold-600 transition-colors">
+                Instytut Saunowy
+              </span>
             </Link>
           </div>
 
@@ -36,29 +39,41 @@ const Header = () => {
           <div className="hidden md:flex items-center space-x-8">
             <Link
               href="/"
-              className={`font-medium transition-colors ${isActive('/') ? 'text-wood-600' : 'text-gray-700 hover:text-wood-600'
-                }`}
+              className={`font-medium transition-colors text-base ${
+                isActive('/')
+                  ? 'text-gold-600 font-semibold'
+                  : 'text-graphite-700 hover:text-gold-500'
+              }`}
             >
               Strona główna
             </Link>
             <Link
               href="/sklep"
-              className={`font-medium transition-colors ${isActive('/sklep') ? 'text-wood-600' : 'text-gray-700 hover:text-wood-600'
-                }`}
+              className={`font-medium transition-colors text-base ${
+                isActive('/sklep')
+                  ? 'text-gold-600 font-semibold'
+                  : 'text-graphite-700 hover:text-gold-500'
+              }`}
             >
               Sklep
             </Link>
             <Link
               href="/o-nas"
-              className={`font-medium transition-colors ${isActive('/o-nas') ? 'text-wood-600' : 'text-gray-700 hover:text-wood-600'
-                }`}
+              className={`font-medium transition-colors text-base ${
+                isActive('/o-nas')
+                  ? 'text-gold-600 font-semibold'
+                  : 'text-graphite-700 hover:text-gold-500'
+              }`}
             >
               O nas
             </Link>
             <Link
               href="/kontakt"
-              className={`font-medium transition-colors ${isActive('/kontakt') ? 'text-wood-600' : 'text-gray-700 hover:text-wood-600'
-                }`}
+              className={`font-medium transition-colors text-base ${
+                isActive('/kontakt')
+                  ? 'text-gold-600 font-semibold'
+                  : 'text-graphite-700 hover:text-gold-500'
+              }`}
             >
               Kontakt
             </Link>
@@ -72,7 +87,7 @@ const Header = () => {
             {/* Cart */}
             <Link
               href="/koszyk"
-              className="relative p-2 text-gray-700 hover:text-wood-600 transition-colors"
+              className="relative p-2.5 text-graphite-700 hover:text-gold-600 hover:bg-gold-50 rounded-xl transition-all"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -80,7 +95,7 @@ const Header = () => {
                 />
               </svg>
               {getItemCount() > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                <span className="absolute -top-1 -right-1 bg-forest-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-semibold">
                   {getItemCount()}
                 </span>
               )}
@@ -88,7 +103,7 @@ const Header = () => {
 
             {/* Mobile menu button */}
             <button
-              className="md:hidden p-2 text-gray-700"
+              className="md:hidden p-2 text-graphite-700 hover:text-gold-600 hover:bg-gold-50 rounded-xl transition-all"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -102,32 +117,32 @@ const Header = () => {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t border-gray-200">
+          <div className="md:hidden border-t-2 border-cream-300 bg-cream-50">
             <div className="px-2 pt-2 pb-3 space-y-1">
               <Link
                 href="/"
-                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-wood-600 hover:bg-gray-50"
+                className="block px-4 py-3 rounded-xl text-base font-medium text-graphite-700 hover:text-gold-600 hover:bg-gold-50 transition-all"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Strona główna
               </Link>
               <Link
                 href="/sklep"
-                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-wood-600 hover:bg-gray-50"
+                className="block px-4 py-3 rounded-xl text-base font-medium text-graphite-700 hover:text-gold-600 hover:bg-gold-50 transition-all"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Sklep
               </Link>
               <Link
                 href="/o-nas"
-                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-wood-600 hover:bg-gray-50"
+                className="block px-4 py-3 rounded-xl text-base font-medium text-graphite-700 hover:text-gold-600 hover:bg-gold-50 transition-all"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 O nas
               </Link>
               <Link
                 href="/kontakt"
-                className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-wood-600 hover:bg-gray-50"
+                className="block px-4 py-3 rounded-xl text-base font-medium text-graphite-700 hover:text-gold-600 hover:bg-gold-50 transition-all"
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Kontakt

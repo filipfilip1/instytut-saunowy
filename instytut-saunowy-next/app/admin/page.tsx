@@ -128,99 +128,111 @@ export default async function AdminDashboard() {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">Dashboard</h1>
-        <p className="text-gray-600 mt-1">
+      <div className="mb-10">
+        <h1 className="text-4xl font-serif font-bold text-graphite-900">Dashboard</h1>
+        <p className="text-graphite-600 mt-2 text-lg">
           Przegląd najważniejszych statystyk sklepu
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center justify-between">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
+        <div className="bg-white rounded-2xl shadow-lg p-6 border-2 border-cream-200 hover:border-forest-300 transition-all">
+          <div className="flex items-center justify-between mb-4">
             <div>
-              <p className="text-sm text-gray-600">Produkty</p>
-              <p className="text-2xl font-bold text-gray-800">{stats.productsCount}</p>
+              <p className="text-sm font-medium text-graphite-600 uppercase tracking-wide">Produkty</p>
+              <p className="text-3xl font-serif font-bold text-graphite-900 mt-1">{stats.productsCount}</p>
             </div>
-            <div className="text-3xl">📦</div>
+            <div className="text-4xl bg-forest-100 p-3 rounded-2xl">📦</div>
           </div>
-          <Link href="/admin/products" className="text-blue-600 text-sm mt-2 inline-block hover:underline">
-            Zarządzaj →
+          <Link href="/admin/products" className="text-forest-600 text-sm font-semibold inline-flex items-center gap-1 hover:gap-2 transition-all">
+            Zarządzaj
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
           </Link>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center justify-between">
+        <div className="bg-white rounded-2xl shadow-lg p-6 border-2 border-cream-200 hover:border-nordic-300 transition-all">
+          <div className="flex items-center justify-between mb-4">
             <div>
-              <p className="text-sm text-gray-600">Zamówienia</p>
-              <p className="text-2xl font-bold text-gray-800">{stats.ordersCount}</p>
+              <p className="text-sm font-medium text-graphite-600 uppercase tracking-wide">Zamówienia</p>
+              <p className="text-3xl font-serif font-bold text-graphite-900 mt-1">{stats.ordersCount}</p>
             </div>
-            <div className="text-3xl">🛒</div>
+            <div className="text-4xl bg-nordic-100 p-3 rounded-2xl">🛒</div>
           </div>
-          <Link href="/admin/orders" className="text-blue-600 text-sm mt-2 inline-block hover:underline">
-            Zobacz wszystkie →
+          <Link href="/admin/orders" className="text-nordic-600 text-sm font-semibold inline-flex items-center gap-1 hover:gap-2 transition-all">
+            Zobacz wszystkie
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
           </Link>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center justify-between">
+        <div className="bg-white rounded-2xl shadow-lg p-6 border-2 border-cream-200 hover:border-warmwood-300 transition-all">
+          <div className="flex items-center justify-between mb-4">
             <div>
-              <p className="text-sm text-gray-600">Klienci</p>
-              <p className="text-2xl font-bold text-gray-800">{stats.customersCount}</p>
+              <p className="text-sm font-medium text-graphite-600 uppercase tracking-wide">Klienci</p>
+              <p className="text-3xl font-serif font-bold text-graphite-900 mt-1">{stats.customersCount}</p>
             </div>
-            <div className="text-3xl">👥</div>
+            <div className="text-4xl bg-warmwood-100 p-3 rounded-2xl">👥</div>
           </div>
-          <Link href="/admin/customers" className="text-blue-600 text-sm mt-2 inline-block hover:underline">
-            Przeglądaj →
+          <Link href="/admin/customers" className="text-warmwood-600 text-sm font-semibold inline-flex items-center gap-1 hover:gap-2 transition-all">
+            Przeglądaj
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
           </Link>
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
-          <div className="flex items-center justify-between">
+        <div className="bg-gradient-to-br from-forest-600 to-forest-700 rounded-2xl shadow-lg p-6 text-white">
+          <div className="flex items-center justify-between mb-4">
             <div>
-              <p className="text-sm text-gray-600">Przychód</p>
-              <p className="text-2xl font-bold text-gray-800">{formatPriceRounded(stats.revenue)}</p>
+              <p className="text-sm font-medium text-cream-200 uppercase tracking-wide">Przychód</p>
+              <p className="text-3xl font-serif font-bold mt-1">{formatPriceRounded(stats.revenue)}</p>
             </div>
-            <div className="text-3xl">💰</div>
+            <div className="text-4xl bg-white/20 p-3 rounded-2xl backdrop-blur-sm">💰</div>
           </div>
-          <p className={`text-sm mt-2 font-medium ${stats.revenueChange >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-            {stats.revenueChange >= 0 ? '↗' : '↘'} {Math.abs(stats.revenueChange)}% vs poprzednie 30 dni
+          <p className={`text-sm font-semibold inline-flex items-center gap-1 ${stats.revenueChange >= 0 ? 'text-gold-300' : 'text-warmwood-300'}`}>
+            <span className="text-lg">{stats.revenueChange >= 0 ? '↗' : '↘'}</span>
+            {Math.abs(stats.revenueChange)}% vs poprzednie 30 dni
           </p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        <div className="lg:col-span-2 bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
+        <div className="lg:col-span-2 bg-white rounded-2xl shadow-lg p-8 border border-cream-300">
+          <h2 className="text-2xl font-serif font-semibold text-graphite-900 mb-6">
             Sprzedaż (ostatnie 30 dni)
           </h2>
           <SalesChart data={stats.chartData} />
         </div>
 
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">
+        <div className="bg-white rounded-2xl shadow-lg p-8 border border-cream-300">
+          <h2 className="text-2xl font-serif font-semibold text-graphite-900 mb-6">
             Top 5 Produktów
           </h2>
           <div className="space-y-4">
             {stats.topProducts.length === 0 ? (
-              <p className="text-gray-500 text-center py-8">Brak danych</p>
+              <p className="text-graphite-500 text-center py-12">Brak danych</p>
             ) : (
               stats.topProducts.map((product: any, index: number) => (
-                <div key={product._id} className="flex items-start justify-between">
-                  <div className="flex items-start gap-2">
-                    <span className="text-lg font-bold text-gray-400">
+                <div key={product._id} className="flex items-start justify-between p-3 rounded-xl hover:bg-cream-50 transition-colors">
+                  <div className="flex items-start gap-3">
+                    <span className={`text-xl font-serif font-bold ${
+                      index === 0 ? 'text-gold-500' : index === 1 ? 'text-gold-400' : index === 2 ? 'text-gold-300' : 'text-graphite-400'
+                    }`}>
                       {index + 1}.
                     </span>
                     <div>
-                      <p className="font-medium text-gray-900 text-sm">
+                      <p className="font-semibold text-graphite-900 text-sm">
                         {product.productName}
                       </p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-graphite-500 mt-1">
                         Sprzedano: {product.totalSold} szt.
                       </p>
                     </div>
                   </div>
-                  <span className="text-sm font-semibold text-gray-900">
+                  <span className="text-sm font-bold text-forest-700">
                     {formatPriceRounded(product.revenue)}
                   </span>
                 </div>
@@ -231,77 +243,80 @@ export default async function AdminDashboard() {
       </div>
 
       {/* Recent orders */}
-      <div className="bg-white rounded-lg shadow">
-        <div className="p-6 border-b">
+      <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-cream-300">
+        <div className="p-6 border-b-2 border-cream-300 bg-gradient-to-r from-cream-50 to-white">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold text-gray-800">Ostatnie zamówienia</h2>
-            <Link href="/admin/orders" className="text-blue-600 text-sm hover:underline">
-              Zobacz wszystkie →
+            <h2 className="text-2xl font-serif font-semibold text-graphite-900">Ostatnie zamówienia</h2>
+            <Link href="/admin/orders" className="text-forest-600 text-sm font-semibold inline-flex items-center gap-1 hover:gap-2 transition-all">
+              Zobacz wszystkie
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+              </svg>
             </Link>
           </div>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full">
-            <thead className="bg-gray-50">
+            <thead className="bg-gradient-to-r from-graphite-50 to-cream-100 border-b-2 border-cream-300">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-4 text-left text-xs font-semibold text-graphite-700 uppercase tracking-wider">
                   Nr zamówienia
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-4 text-left text-xs font-semibold text-graphite-700 uppercase tracking-wider">
                   Klient
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-4 text-left text-xs font-semibold text-graphite-700 uppercase tracking-wider">
                   Data
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-4 text-left text-xs font-semibold text-graphite-700 uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-4 text-left text-xs font-semibold text-graphite-700 uppercase tracking-wider">
                   Wartość
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">
+                <th className="px-6 py-4 text-left text-xs font-semibold text-graphite-700 uppercase tracking-wider">
                   Akcje
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
+            <tbody className="bg-white divide-y divide-cream-200">
               {stats.recentOrders.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-8 text-center text-gray-500">
+                  <td colSpan={6} className="px-6 py-12 text-center text-graphite-500">
                     Brak zamówień
                   </td>
                 </tr>
               ) : (
                 stats.recentOrders.map((order: IOrder) => (
-                  <tr key={order._id}>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                  <tr key={order._id} className="hover:bg-cream-50 transition-colors">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-graphite-900">
                       #{order._id.slice(-6).toUpperCase()}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-graphite-600">
                       {order.shippingAddress?.email || order.guestEmail || 'N/A'}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-graphite-600">
                       {new Date(order.createdAt).toLocaleDateString('pl-PL')}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className={`
-                        px-2 inline-flex text-xs leading-5 font-semibold rounded-full
-                        ${order.status === 'delivered' ? 'bg-green-100 text-green-800' : ''}
-                        ${order.status === 'processing' ? 'bg-yellow-100 text-yellow-800' : ''}
-                        ${order.status === 'pending' ? 'bg-gray-100 text-gray-800' : ''}
-                        ${order.status === 'shipped' ? 'bg-blue-100 text-blue-800' : ''}
-                        ${order.status === 'cancelled' ? 'bg-red-100 text-red-800' : ''}
+                        px-3 py-1.5 inline-flex text-xs leading-5 font-semibold rounded-xl border
+                        ${order.status === 'delivered' ? 'bg-forest-100 text-forest-800 border-forest-200' : ''}
+                        ${order.status === 'processing' ? 'bg-gold-100 text-gold-800 border-gold-200' : ''}
+                        ${order.status === 'pending' ? 'bg-cream-200 text-graphite-700 border-cream-300' : ''}
+                        ${order.status === 'shipped' ? 'bg-nordic-100 text-nordic-800 border-nordic-200' : ''}
+                        ${order.status === 'cancelled' ? 'bg-warmwood-100 text-warmwood-800 border-warmwood-200' : ''}
                       `}>
                         {order.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-graphite-900">
                       {formatPriceRounded(order.total)}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold">
                       <Link
                         href={`/admin/orders/${order._id}`}
-                        className="text-blue-600 hover:text-blue-900"
+                        className="text-forest-600 hover:text-forest-800 transition-colors"
                       >
                         Zobacz
                       </Link>

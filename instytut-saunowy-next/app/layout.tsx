@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Inter, Cormorant_Garamond } from 'next/font/google';
 import './globals.css';
 import { CartProvider } from '@/contexts/CartContext';
 import AuthProvider from '@/components/providers/AuthProvider';
@@ -7,7 +7,16 @@ import ToastProvider from '@/components/providers/ToastProvider';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+});
+
+const cormorant = Cormorant_Garamond({
+  weight: ['300', '400', '500', '600', '700'],
+  subsets: ['latin'],
+  variable: '--font-cormorant',
+});
 
 export const metadata: Metadata = {
   title: 'Instytut Saunowy - Odzież do saunowania',
@@ -21,11 +30,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pl">
-      <body className={inter.className}>
+      <body className={`${inter.variable} ${cormorant.variable} font-sans`}>
         <AuthProvider>
           <CartProvider>
             <ToastProvider>
-              <div className="min-h-screen flex flex-col">
+              <div className="min-h-screen flex flex-col bg-cream-200">
                 <Header />
                 <main className="flex-grow">
                   {children}

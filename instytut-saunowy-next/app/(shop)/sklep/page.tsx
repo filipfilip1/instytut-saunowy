@@ -32,14 +32,17 @@ export default async function ProductListPage() {
   }, {} as Record<ProductCategory, number>);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-cream-200">
       {/* Hero section */}
-      <div className="bg-gradient-to-r from-wood-600 to-wood-800 text-white py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-center mb-4">
+      <div className="bg-gradient-to-br from-forest-600 via-nordic-600 to-nordic-700 text-white py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <div className="inline-block mb-4 px-5 py-2 bg-gold-400/20 backdrop-blur-sm rounded-full border border-gold-400/40">
+            <span className="text-gold-200 font-medium">Premium Kolekcja</span>
+          </div>
+          <h1 className="text-5xl md:text-6xl font-serif font-bold mb-6">
             Odzież do Saunowania
           </h1>
-          <p className="text-xl text-center text-wood-100 max-w-2xl mx-auto">
+          <p className="text-xl text-cream-200 max-w-2xl mx-auto leading-relaxed">
             Odkryj naszą kolekcję wysokiej jakości odzieży zaprojektowanej specjalnie
             z myślą o komforcie podczas saunowania
           </p>
@@ -47,12 +50,12 @@ export default async function ProductListPage() {
       </div>
 
       {/* Category filters */}
-      <div className="sticky top-0 bg-white shadow-sm z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex flex-wrap gap-2 justify-center">
+      <div className="sticky top-20 bg-white/95 backdrop-blur-sm shadow-md z-10 border-b-2 border-cream-300">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+          <div className="flex flex-wrap gap-3 justify-center">
             <Link
               href="/sklep"
-              className="px-4 py-2 rounded-full font-medium transition-all bg-blue-600 text-white flex items-center gap-2"
+              className="px-5 py-2.5 rounded-2xl font-semibold transition-all bg-gold-400 text-graphite-900 shadow-gold hover:shadow-gold-lg flex items-center gap-2"
             >
               {categoryIcons.all}
               <span>Wszystkie ({products.length})</span>
@@ -62,12 +65,14 @@ export default async function ProductListPage() {
               <Link
                 key={category}
                 href={`/sklep/${category}`}
-                className="px-4 py-2 rounded-full font-medium transition-all bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center gap-2"
+                className="px-5 py-2.5 rounded-2xl font-medium transition-all bg-cream-200 hover:bg-gold-100 text-graphite-700 hover:text-graphite-900 flex items-center gap-2 shadow-sm hover:shadow-md"
               >
                 <span>{categoryIcons[category]}</span>
                 <span className="capitalize">{category}</span>
                 {productCountByCategory[category] > 0 && (
-                  <span className="text-sm">({productCountByCategory[category] || 0})</span>
+                  <span className="text-sm bg-gold-200 text-gold-800 px-2 py-0.5 rounded-full">
+                    {productCountByCategory[category] || 0}
+                  </span>
                 )}
               </Link>
             ))}
@@ -76,11 +81,15 @@ export default async function ProductListPage() {
       </div>
 
       {/* Product grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {products.length === 0 ? (
-          <div className="text-center py-16">
-            <p className="text-gray-500 text-lg">
-              Brak produktów w sklepie.
+          <div className="text-center py-20">
+            <div className="text-6xl mb-4">🏛️</div>
+            <h3 className="text-2xl font-serif font-semibold text-graphite-900 mb-2">
+              Brak produktów
+            </h3>
+            <p className="text-graphite-600">
+              Wkrótce pojawią się nowe produkty w naszej kolekcji.
             </p>
           </div>
         ) : (

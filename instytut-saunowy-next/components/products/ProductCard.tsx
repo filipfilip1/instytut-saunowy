@@ -69,106 +69,107 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   return (
     <>
-      <Link
-        href={`/produkt/${product.slug}`}
-        className="group bg-white rounded-lg shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden block"
-      >
-        {/* Image */}
-        <div className="relative aspect-[4/5] overflow-hidden bg-gray-100">
-          <img
-            src={primaryImage?.url || `https://via.placeholder.com/400x500?text=${encodeURIComponent(product.name)}`}
-            alt={primaryImage?.alt || product.name}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-          />
+      <div className="group card-nordic overflow-hidden">
+        <Link href={`/produkt/${product.slug}`} className="block">
+          {/* Image */}
+          <div className="relative aspect-[4/5] overflow-hidden bg-cream-100">
+            <img
+              src={primaryImage?.url || `https://via.placeholder.com/400x500?text=${encodeURIComponent(product.name)}`}
+              alt={primaryImage?.alt || product.name}
+              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            />
 
-          {/* Availability Badge */}
-          <div className="absolute top-3 right-3">
-            <span className={`
-              px-3 py-1 text-xs font-semibold rounded-full
-              ${isInStock
-                ? 'bg-green-100 text-green-800'
-                : 'bg-red-100 text-red-800'
-              }
-            `}>
-              {isInStock ? 'Dostępny' : 'Niedostępny'}
-            </span>
+            {/* Availability Badge */}
+            <div className="absolute top-4 right-4">
+              <span className={`
+                px-3 py-1.5 text-xs font-semibold rounded-full shadow-md
+                ${isInStock
+                  ? 'bg-forest-600 text-white'
+                  : 'bg-warmwood-500 text-white'
+                }
+              `}>
+                {isInStock ? 'Dostępny' : 'Niedostępny'}
+              </span>
+            </div>
+
+            {/* Number of variants */}
+            {product.variants.length > 0 && (
+              <div className="absolute bottom-4 left-4 flex gap-2">
+                {product.variants.map(variant => (
+                  <span
+                    key={variant.id}
+                    className="bg-white/95 backdrop-blur-sm px-3 py-1.5 text-xs font-medium text-graphite-800 rounded-xl shadow-md"
+                  >
+                    {variant.options.length} {variant.name.toLowerCase()}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
 
-          {/* Number of variants */}
-          {product.variants.length > 0 && (
-            <div className="absolute bottom-3 left-3 flex gap-1">
-              {product.variants.map(variant => (
-                <span
-                  key={variant.id}
-                  className="bg-white/90 backdrop-blur-sm px-2 py-1 text-xs rounded-md"
-                >
-                  {variant.options.length} {variant.name.toLowerCase()}
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
+          {/* Content */}
+          <div className="p-5">
+            {/* Category */}
+            <span className="badge-nordic text-xs uppercase tracking-wider">
+              {getCategoryLabel(product.category)}
+            </span>
 
-        {/* Content */}
-        <div className="p-4">
-          {/* Category */}
-          <span className="text-xs font-medium text-gray-500 uppercase tracking-wider">
-            {getCategoryLabel(product.category)}
-          </span>
+            {/* Name */}
+            <h3 className="mt-2 text-xl font-serif font-semibold text-graphite-900 group-hover:text-gold-600 transition-colors leading-tight">
+              {product.name}
+            </h3>
 
-          {/* Name */}
-          <h3 className="mt-1 text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
-            {product.name}
-          </h3>
+            {/* Description */}
+            <p className="mt-2 text-sm text-graphite-600 line-clamp-2 leading-relaxed">
+              {product.description}
+            </p>
 
-          {/* Description */}
-          <p className="mt-2 text-sm text-gray-600 line-clamp-2">
-            {product.description}
-          </p>
+            {/* Features */}
+            {product.features && product.features.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {product.features.slice(0, 2).map((feature, index) => (
+                  <span
+                    key={index}
+                    className="text-xs bg-cream-200 text-graphite-700 px-2.5 py-1 rounded-lg"
+                  >
+                    {feature}
+                  </span>
+                ))}
+                {product.features.length > 2 && (
+                  <span className="text-xs text-graphite-500 px-2 py-1">
+                    +{product.features.length - 2} więcej
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+        </Link>
 
-          {/* Features */}
-          {product.features && product.features.length > 0 && (
-            <div className="mt-3 flex flex-wrap gap-1">
-              {product.features.slice(0, 2).map((feature, index) => (
-                <span
-                  key={index}
-                  className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded"
-                >
-                  {feature}
-                </span>
-              ))}
-              {product.features.length > 2 && (
-                <span className="text-xs text-gray-500">
-                  +{product.features.length - 2} więcej
-                </span>
-              )}
-            </div>
-          )}
-
-          {/* Footer with price */}
-          <div className="mt-4 flex items-center justify-between">
-            <span className="text-xl font-bold text-gray-900">
+        {/* Footer with price - outside Link for button interaction */}
+        <div className="px-5 pb-5">
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-2xl font-serif font-bold text-graphite-900">
               {getPriceRange()}
             </span>
             <button
               onClick={handleQuickAdd}
               className={`
-                px-4 py-2 text-sm font-medium rounded-lg transition-all
+                px-5 py-2.5 text-sm font-semibold rounded-2xl transition-all shadow-md
                 ${isInStock
-                  ? 'bg-blue-600 hover:bg-blue-700 text-white'
-                  : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                  ? 'btn-gold'
+                  : 'bg-graphite-200 text-graphite-500 cursor-not-allowed shadow-none'
                 }
               `}
               disabled={!isInStock}
             >
               {isInStock
-                ? (product.variants.length > 0 ? 'Wybierz opcje' : 'Do koszyka')
+                ? (product.variants.length > 0 ? 'Wybierz' : 'Do koszyka')
                 : 'Niedostępny'
               }
             </button>
           </div>
         </div>
-      </Link>
+      </div>
 
       {/* Toast notification */}
       {showToast && (
