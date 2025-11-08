@@ -5,6 +5,8 @@ import Order from '@/lib/models/Order';
 import Product from '@/lib/models/Product';
 import Stripe from 'stripe';
 import { IProductVariant, IVariantOption } from '@/types';
+import { createInvoice } from '@/lib/services/invoiceService';
+import { sendOrderConfirmationEmail } from '@/lib/services/emailService';
 
 // Disable Next.js body parser for Stripe webhooks
 export const dynamic = 'force-dynamic';
@@ -177,8 +179,49 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
       console.log('✅ Transaction committed successfully');
     }
 
-    // TODO: Send order confirmation email
-    // await sendOrderConfirmationEmail(order[0]);
+    // 4. Create invoice (OPTIONAL - only if configured)
+    // NOTE: Currently using Pro Forma invoices for safe testing
+    // Pro Forma = informational document, NOT accounting document
+    // - Does NOT go to tax office/KSeF/JPK
+    // - Fake company data is safe to use
+    // Before production: change 'proforma' → 'vat' in lib/services/invoiceService.ts (line 43)
+    let invoicePdfUrl: string | undefined;
+    if (process.env.FAKTUROWNIA_API_TOKEN) {
+      try {
+        const invoiceResult = await createInvoice(order[0]);
+        if (invoiceResult.success && invoiceResult.invoicePdfUrl) {
+          invoicePdfUrl = invoiceResult.invoicePdfUrl;
+          console.log('✅ Invoice created:', invoiceResult.invoiceNumber);
+        } else {
+          console.warn('⚠️ Invoice creation failed:', invoiceResult.error);
+        }
+      } catch (invoiceError) {
+        // Don't fail order if invoice fails
+        console.warn('⚠️ Invoice creation error (non-critical):', invoiceError);
+      }
+    } else {
+      console.log('ℹ️  Fakturownia not configured - skipping invoice creation');
+    }
+
+    // 5. Send order confirmation email (OPTIONAL - only if configured)
+    if (process.env.RESEND_API_KEY) {
+      try {
+        const emailResult = await sendOrderConfirmationEmail({
+          order: order[0],
+          invoicePdfUrl,
+        });
+        if (emailResult.success) {
+          console.log('✅ Order confirmation email sent');
+        } else {
+          console.warn('⚠️ Email sending failed:', emailResult.error);
+        }
+      } catch (emailError) {
+        // Don't fail order if email fails
+        console.warn('⚠️ Email sending error (non-critical):', emailError);
+      }
+    } else {
+      console.log('ℹ️  Resend not configured - skipping email notification');
+    }
   } catch (error) {
     // Rollback transaction if anything fails
     if (mongoSession) {
