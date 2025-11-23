@@ -81,40 +81,56 @@ export default function CartPage() {
           <div className="lg:col-span-2">
             <div className="bg-white rounded-lg shadow-sm">
               {items.map((item) => (
-                <div key={item.id} className="p-6 border-b last:border-b-0">
-                  <div className="flex gap-4">
-                    {/* Product photo */}
-                    <div className="flex-shrink-0">
-                      <img
-                        src={item.product.images[0]?.url || 'https://via.placeholder.com/100'}
-                        alt={item.product.name}
-                        className="w-24 h-24 object-cover rounded-lg"
-                      />
-                    </div>
+                <div key={item.id} className="p-4 sm:p-6 border-b last:border-b-0">
+                  {/* Mobile: stacked layout, Desktop: side by side */}
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    {/* Product photo and info row */}
+                    <div className="flex gap-3 sm:gap-4 flex-grow">
+                      {/* Product photo */}
+                      <div className="flex-shrink-0">
+                        <img
+                          src={item.product.images[0]?.url || 'https://via.placeholder.com/100'}
+                          alt={item.product.name}
+                          className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-lg"
+                        />
+                      </div>
 
-                    {/* Product information */}
-                    <div className="flex-grow">
-                      <h3 className="font-semibold text-gray-900">
-                        <Link
-                          href={`/produkt/${item.product.slug}`}
-                          className="hover:text-blue-600 transition-colors"
-                        >
-                          {item.product.name}
-                        </Link>
-                      </h3>
-                      <p className="text-sm text-gray-600 mt-1">
-                        {getVariantDisplay(item.product, item.selectedVariants)}
-                      </p>
-                      <p className="text-lg font-medium text-gray-900 mt-2">
-                        {formatPrice(item.pricePerItem)}
-                      </p>
-                    </div>
+                      {/* Product information */}
+                      <div className="flex-grow min-w-0">
+                        <h3 className="font-semibold text-gray-900 text-sm sm:text-base">
+                          <Link
+                            href={`/produkt/${item.product.slug}`}
+                            className="hover:text-blue-600 transition-colors line-clamp-2"
+                          >
+                            {item.product.name}
+                          </Link>
+                        </h3>
+                        <p className="text-xs sm:text-sm text-gray-600 mt-1 line-clamp-1">
+                          {getVariantDisplay(item.product, item.selectedVariants)}
+                        </p>
+                        <p className="text-base sm:text-lg font-medium text-gray-900 mt-1 sm:mt-2">
+                          {formatPrice(item.pricePerItem)}
+                        </p>
+                      </div>
 
-                    {/* Quantity and removal controls */}
-                    <div className="flex flex-col items-end justify-between">
+                      {/* Remove button - top right on mobile */}
                       <button
                         onClick={() => removeFromCart(item.id)}
-                        className="text-gray-400 hover:text-red-600 transition-colors"
+                        className="min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-400 hover:text-red-600 transition-colors sm:hidden"
+                        aria-label="Usuń z koszyka"
+                      >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                      </button>
+                    </div>
+
+                    {/* Quantity and removal controls - buttons min 44x44px for mobile accessibility */}
+                    <div className="flex items-center justify-between sm:flex-col sm:items-end sm:justify-between gap-2">
+                      {/* Remove button - desktop only */}
+                      <button
+                        onClick={() => removeFromCart(item.id)}
+                        className="hidden sm:flex min-w-[44px] min-h-[44px] items-center justify-center text-gray-400 hover:text-red-600 transition-colors"
                         aria-label="Usuń z koszyka"
                       >
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -122,10 +138,10 @@ export default function CartPage() {
                         </svg>
                       </button>
 
-                      <div className="flex items-center gap-2 mt-4">
+                      <div className="flex items-center gap-1 sm:gap-2">
                         <button
                           onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                          className="w-8 h-8 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors"
+                          className="min-w-[44px] min-h-[44px] rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors text-lg font-medium"
                           aria-label="Zmniejsz ilość"
                         >
                           -
@@ -137,19 +153,19 @@ export default function CartPage() {
                             const newQuantity = parseInt(e.target.value) || 0;
                             updateQuantity(item.id, newQuantity);
                           }}
-                          className="w-16 text-center border border-gray-300 rounded-lg px-2 py-1"
+                          className="w-12 sm:w-16 text-center border border-gray-300 rounded-lg px-1 py-2 min-h-[44px]"
                           min="0"
                         />
                         <button
                           onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                          className="w-8 h-8 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors"
+                          className="min-w-[44px] min-h-[44px] rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-50 transition-colors text-lg font-medium"
                           aria-label="Zwiększ ilość"
                         >
                           +
                         </button>
                       </div>
 
-                      <p className="text-lg font-semibold text-gray-900 mt-2">
+                      <p className="text-base sm:text-lg font-semibold text-gray-900 min-w-[80px] text-right">
                         {formatPrice(item.pricePerItem * item.quantity)}
                       </p>
                     </div>

@@ -69,10 +69,11 @@ const Header = () => {
             {/* Login Button */}
             <LoginButton />
 
-            {/* Cart */}
+            {/* Cart - min 44x44px tap target for mobile accessibility */}
             <Link
               href="/koszyk"
-              className="relative p-2 text-gray-700 hover:text-wood-600 transition-colors"
+              className="relative min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-700 hover:text-wood-600 transition-colors"
+              aria-label="Koszyk"
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -80,16 +81,17 @@ const Header = () => {
                 />
               </svg>
               {getItemCount() > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                <span className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
                   {getItemCount()}
                 </span>
               )}
             </Link>
 
-            {/* Mobile menu button */}
+            {/* Mobile menu button - min 44x44px tap target */}
             <button
-              className="md:hidden p-2 text-gray-700"
+              className="md:hidden min-w-[44px] min-h-[44px] flex items-center justify-center text-gray-700"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label={mobileMenuOpen ? "Zamknij menu" : "Otwórz menu"}
             >
               <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}

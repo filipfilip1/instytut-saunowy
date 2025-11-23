@@ -152,15 +152,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             </div>
           )}
 
-          {/* Footer with price */}
-          <div className="mt-4 flex items-center justify-between">
+          {/* Footer with price - button min 44px height for mobile accessibility */}
+          <div className="mt-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
             <span className="text-xl font-bold text-gray-900">
               {getPriceRange()}
             </span>
             <button
               onClick={handleQuickAdd}
               className={`
-                px-4 py-2 text-sm font-medium rounded-lg transition-all
+                px-4 py-2 min-h-[44px] text-sm font-medium rounded-lg transition-all w-full sm:w-auto
                 ${isInStock
                   ? 'bg-blue-600 hover:bg-blue-700 text-white'
                   : 'bg-gray-200 text-gray-500 cursor-not-allowed'

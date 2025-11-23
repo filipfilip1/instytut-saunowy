@@ -81,26 +81,26 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                 <img
                   src={product.images[selectedImage]?.url || 'https://via.placeholder.com/600'}
                   alt={product.images[selectedImage]?.alt || product.name}
-                  className="w-full h-[500px] object-cover rounded-lg"
+                  className="w-full h-[300px] sm:h-[400px] md:h-[500px] object-cover rounded-lg"
                 />
               </div>
 
-              {/* Thumbnails */}
+              {/* Thumbnails - responsive grid */}
               {product.images.length > 1 && (
-                <div className="grid grid-cols-4 gap-2">
+                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
                   {product.images.map((image, index) => (
                     <button
                       key={image.id}
                       onClick={() => setSelectedImage(index)}
                       className={`
-                        relative aspect-w-1 aspect-h-1 rounded-lg overflow-hidden
+                        relative aspect-w-1 aspect-h-1 rounded-lg overflow-hidden min-h-[44px]
                         ${selectedImage === index ? 'ring-2 ring-blue-600' : ''}
                       `}
                     >
                       <img
                         src={image.url}
                         alt={image.alt}
-                        className="w-full h-24 object-cover hover:opacity-80 transition-opacity"
+                        className="w-full h-20 sm:h-24 object-cover hover:opacity-80 transition-opacity"
                       />
                     </button>
                   ))}
@@ -140,15 +140,16 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                 </div>
               )}
 
-              {/* Quantity */}
+              {/* Quantity - buttons min 44x44px for mobile accessibility */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Ilość
                 </label>
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 sm:gap-4">
                   <button
                     onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="w-10 h-10 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-50"
+                    className="min-w-[44px] min-h-[44px] rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-50 text-lg font-medium"
+                    aria-label="Zmniejsz ilość"
                   >
                     -
                   </button>
@@ -156,12 +157,13 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                     type="number"
                     value={quantity}
                     onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                    className="w-20 text-center border border-gray-300 rounded-lg px-3 py-2"
+                    className="w-16 sm:w-20 text-center border border-gray-300 rounded-lg px-2 py-2 min-h-[44px]"
                     min="1"
                   />
                   <button
                     onClick={() => setQuantity(quantity + 1)}
-                    className="w-10 h-10 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-50"
+                    className="min-w-[44px] min-h-[44px] rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-50 text-lg font-medium"
+                    aria-label="Zwiększ ilość"
                   >
                     +
                   </button>

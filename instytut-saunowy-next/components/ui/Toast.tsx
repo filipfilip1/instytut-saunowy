@@ -65,25 +65,25 @@ const Toast = ({
   };
 
   return (
-    <div className={`fixed bottom-4 right-4 z-50 ${getStyles()} rounded-lg shadow-lg p-4 max-w-sm animate-slide-up`}>
-      <div className="flex items-center gap-3">
+    <div className={`fixed bottom-4 left-4 right-4 sm:left-auto sm:right-4 z-50 ${getStyles()} rounded-lg shadow-lg p-4 max-w-sm sm:max-w-md animate-slide-up`}>
+      <div className="flex items-center gap-2 sm:gap-3 flex-wrap sm:flex-nowrap">
         <div className="flex-shrink-0">
           {getIcon()}
         </div>
-        <div className="flex-grow">
-          <p className="font-medium">{message}</p>
+        <div className="flex-grow min-w-0">
+          <p className="font-medium text-sm sm:text-base break-words">{message}</p>
         </div>
         {action && (
           <button
             onClick={action.onClick}
-            className="flex-shrink-0 underline hover:no-underline font-medium"
+            className="flex-shrink-0 underline hover:no-underline font-medium text-sm sm:text-base min-h-[44px] flex items-center"
           >
             {action.label}
           </button>
         )}
         <button
           onClick={onClose}
-          className="flex-shrink-0 ml-2 hover:opacity-80"
+          className="flex-shrink-0 ml-2 hover:opacity-80 min-w-[44px] min-h-[44px] flex items-center justify-center"
           aria-label="Zamknij"
         >
           <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">

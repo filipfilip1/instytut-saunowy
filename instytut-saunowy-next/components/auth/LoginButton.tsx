@@ -13,7 +13,7 @@ export default function LoginButton() {
   if (session) {
     return (
       <div className="relative group">
-        <button className="flex items-center space-x-2">
+        <button className="flex items-center space-x-2 min-w-[44px] min-h-[44px]">
           <img
             src={session.user.image || '/default-avatar.png'}
             alt={session.user.name || 'User'}
@@ -22,32 +22,32 @@ export default function LoginButton() {
           <span className="hidden md:block text-sm">{session.user.name}</span>
         </button>
 
-        {/* Dropdown menu */}
-        <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+        {/* Dropdown menu - responsive width and tap targets */}
+        <div className="absolute right-0 mt-2 w-[calc(100vw-2rem)] sm:w-48 max-w-[200px] bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
           {session.user.role === 'admin' && (
             <Link
               href="/admin"
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 min-h-[44px] flex items-center"
             >
               🔧 Panel admina
             </Link>
           )}
           <Link
             href="/moje-konto"
-            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 min-h-[44px] flex items-center"
           >
             👤 Moje konto
           </Link>
           <Link
             href="/zamowienia"
-            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            className="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 min-h-[44px] flex items-center"
           >
             📦 Moje zamówienia
           </Link>
           <hr className="my-1" />
           <button
             onClick={() => signOut()}
-            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+            className="block w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-gray-100 min-h-[44px] flex items-center"
           >
             🚪 Wyloguj
           </button>
@@ -59,7 +59,7 @@ export default function LoginButton() {
   return (
     <button
       onClick={() => signIn('google')}
-      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 min-h-[44px] rounded-lg text-sm font-medium transition-colors"
     >
       Zaloguj się
     </button>

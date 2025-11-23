@@ -58,7 +58,7 @@ const VariantSelector = ({
             {variant.name}
           </label>
 
-          {/* Variants as buttons (for sizes) */}
+          {/* Variants as buttons (for sizes) - min 44px height for mobile accessibility */}
           {variant.name.toLowerCase().includes('rozmiar') ? (
             <div className="flex flex-wrap gap-2">
               {variant.options.map(option => (
@@ -67,7 +67,7 @@ const VariantSelector = ({
                   onClick={() => handleVariantChange(variant.id, option.id)}
                   disabled={option.stock === 0}
                   className={`
-                    px-4 py-2 border-2 rounded-lg font-medium transition-all
+                    px-4 py-2 min-h-[44px] border-2 rounded-lg font-medium transition-all
                     ${selections[variant.id] === option.id
                       ? 'border-blue-600 bg-blue-50 text-blue-600'
                       : 'border-gray-300 hover:border-gray-400 text-gray-700'
@@ -88,15 +88,15 @@ const VariantSelector = ({
               ))}
             </div>
           ) : (
-            /* Variants as picture cards (for colors/patterns) */
-            <div className="grid grid-cols-3 gap-3">
+            /* Variants as picture cards (for colors/patterns) - responsive grid */
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
               {variant.options.map(option => (
                 <button
                   key={option.id}
                   onClick={() => handleVariantChange(variant.id, option.id)}
                   disabled={option.stock === 0}
                   className={`
-                    relative p-2 border-2 rounded-lg transition-all
+                    relative p-2 border-2 rounded-lg transition-all min-h-[44px]
                     ${selections[variant.id] === option.id
                       ? 'border-blue-600 shadow-lg'
                       : 'border-gray-200 hover:border-gray-300'
@@ -108,7 +108,7 @@ const VariantSelector = ({
                     <img
                       src={option.image}
                       alt={option.value}
-                      className="w-full h-24 object-cover rounded mb-2"
+                      className="w-full h-20 sm:h-24 object-cover rounded mb-2"
                     />
                   )}
                   <span className="block text-sm font-medium">

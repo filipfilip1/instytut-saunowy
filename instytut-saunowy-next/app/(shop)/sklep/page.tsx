@@ -33,26 +33,26 @@ export default async function ProductListPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Hero section */}
-      <div className="bg-gradient-to-r from-wood-600 to-wood-800 text-white py-16">
+      {/* Hero section - responsive text sizing */}
+      <div className="bg-gradient-to-r from-wood-600 to-wood-800 text-white py-12 sm:py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h1 className="text-4xl md:text-5xl font-bold text-center mb-4">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center mb-4">
             Odzież do Saunowania
           </h1>
-          <p className="text-xl text-center text-wood-100 max-w-2xl mx-auto">
+          <p className="text-lg sm:text-xl text-center text-wood-100 max-w-2xl mx-auto">
             Odkryj naszą kolekcję wysokiej jakości odzieży zaprojektowanej specjalnie
             z myślą o komforcie podczas saunowania
           </p>
         </div>
       </div>
 
-      {/* Category filters */}
+      {/* Category filters - horizontally scrollable on mobile */}
       <div className="sticky top-0 bg-white shadow-sm z-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex flex-wrap gap-2 justify-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+          <div className="flex gap-2 overflow-x-auto pb-2 sm:pb-0 sm:flex-wrap sm:justify-center -mx-4 px-4 sm:mx-0 sm:px-0">
             <Link
               href="/sklep"
-              className="px-4 py-2 rounded-full font-medium transition-all bg-blue-600 text-white flex items-center gap-2"
+              className="px-3 sm:px-4 py-2 min-h-[44px] rounded-full font-medium transition-all bg-blue-600 text-white flex items-center gap-2 whitespace-nowrap flex-shrink-0 text-sm sm:text-base"
             >
               {categoryIcons.all}
               <span>Wszystkie ({products.length})</span>
@@ -62,7 +62,7 @@ export default async function ProductListPage() {
               <Link
                 key={category}
                 href={`/sklep/${category}`}
-                className="px-4 py-2 rounded-full font-medium transition-all bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center gap-2"
+                className="px-3 sm:px-4 py-2 min-h-[44px] rounded-full font-medium transition-all bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center gap-2 whitespace-nowrap flex-shrink-0 text-sm sm:text-base"
               >
                 <span>{categoryIcons[category]}</span>
                 <span className="capitalize">{category}</span>
@@ -76,7 +76,7 @@ export default async function ProductListPage() {
       </div>
 
       {/* Product grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
         {products.length === 0 ? (
           <div className="text-center py-16">
             <p className="text-gray-500 text-lg">
