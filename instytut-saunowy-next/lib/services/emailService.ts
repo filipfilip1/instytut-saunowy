@@ -1,99 +1,148 @@
 import { Resend } from 'resend';
 import OrderConfirmationEmail from '@/emails/order-confirmation';
 import { IOrder } from '@/types';
+import React from 'react';
+
+// ============================================
+// Configuration
+// ============================================
+
+const EMAIL_CONFIG = {
+  from: `${process.env.EMAIL_FROM_NAME || 'Instytut Saunowy'} <${process.env.EMAIL_FROM_ADDRESS || 'onboarding@resend.dev'}>`,
+  contactEmail: process.env.EMAIL_CONTACT || 'kontakt@instytut-saunowy.pl',
+  companyName: process.env.EMAIL_FROM_NAME || 'Instytut Saunowy',
+} as const;
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+// ============================================
+// Types
+// ============================================
+
+interface EmailResult {
+  success: boolean;
+  error?: string;
+  messageId?: string;
+}
+
 interface SendOrderEmailParams {
   order: IOrder;
-  invoicePdfUrl?: string; // Optional: URL to invoice PDF
+  invoicePdfUrl?: string;
+}
+
+interface SendEmailOptions {
+  logPrefix: string;
+  to: string[];
+  subject: string;
+  html?: string;
+  react?: React.ReactElement;
+  attachments?: Array<{ filename: string; path: string }>;
+}
+
+// ============================================
+// Helpers
+// ============================================
+
+/**
+ * Generate order number from order ID
+ */
+function getOrderNumber(order: IOrder): string {
+  return order._id.toString().slice(-8).toUpperCase();
 }
 
 /**
- * Send order confirmation email with invoice attachment
+ * Core email sending function with shared logic
  */
-export async function sendOrderConfirmationEmail({
-  order,
-  invoicePdfUrl,
-}: SendOrderEmailParams): Promise<{ success: boolean; error?: string }> {
+async function sendEmail(options: SendEmailOptions): Promise<EmailResult> {
+  const { logPrefix, ...emailOptions } = options;
+
+  // Validate configuration
+  if (!process.env.RESEND_API_KEY) {
+    console.error('❌ RESEND_API_KEY is not configured');
+    return { success: false, error: 'Email service not configured' };
+  }
+
   try {
-    // Validate email configuration
-    if (!process.env.RESEND_API_KEY) {
-      console.error('❌ RESEND_API_KEY is not configured');
-      return { success: false, error: 'Email service not configured' };
-    }
+    console.log(`📧 ${logPrefix}: ${emailOptions.to}`);
 
-    const orderNumber = order._id.toString().slice(-8).toUpperCase();
-    const customerName = order.shippingAddress.name;
-    const customerEmail = order.shippingAddress.email;
-
-    console.log(`📧 Sending order confirmation email to: ${customerEmail}`);
-
-    // Prepare attachments array
-    const attachments: Array<{ filename: string; path: string }> = [];
-
-    // Add invoice PDF if available
-    if (invoicePdfUrl) {
-      attachments.push({
-        filename: `Faktura-${orderNumber}.pdf`,
-        path: invoicePdfUrl,
-      });
-    }
-
-    // Send email via Resend
+    // @ts-expect-error - Resend types are overly strict with discriminated unions
     const { data, error } = await resend.emails.send({
-      from: 'Instytut Saunowy <zamowienia@instytut-saunowy.pl>',
-      to: [customerEmail],
-      subject: `Potwierdzenie zamówienia #${orderNumber}`,
-      react: OrderConfirmationEmail({
-        orderNumber,
-        customerName,
-        items: order.items.map((item) => ({
-          productName: item.productName,
-          quantity: item.quantity,
-          pricePerItem: item.pricePerItem,
-        })),
-        total: order.total,
-        trackingNumber: order.trackingNumber,
-      }),
-      attachments: attachments.length > 0 ? attachments : undefined,
+      from: EMAIL_CONFIG.from,
+      to: emailOptions.to,
+      subject: emailOptions.subject,
+      ...(emailOptions.react ? { react: emailOptions.react } : { html: emailOptions.html }),
+      ...(emailOptions.attachments && { attachments: emailOptions.attachments }),
     });
 
     if (error) {
-      console.error('❌ Failed to send email:', error);
+      console.error(`❌ ${logPrefix} failed:`, error);
       return { success: false, error: error.message };
     }
 
-    console.log('✅ Order confirmation email sent successfully:', data?.id);
-    return { success: true };
+    console.log(`✅ ${logPrefix} successful:`, data?.id);
+    return { success: true, messageId: data?.id };
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    console.error('❌ Email service error:', errorMessage);
+    console.error(`❌ ${logPrefix} error:`, errorMessage);
     return { success: false, error: errorMessage };
   }
 }
 
+// ============================================
+// Public Functions
+// ============================================
+
 /**
- * Send shipping notification email
+ * Send order confirmation email with optional invoice attachment
+ */
+export async function sendOrderConfirmationEmail({
+  order,
+  invoicePdfUrl,
+}: SendOrderEmailParams): Promise<EmailResult> {
+  const orderNumber = getOrderNumber(order);
+  const customerName = order.shippingAddress.name;
+  const customerEmail = order.shippingAddress.email;
+
+  const attachments = invoicePdfUrl
+    ? [{ filename: `Faktura-${orderNumber}.pdf`, path: invoicePdfUrl }]
+    : undefined;
+
+  return sendEmail({
+    logPrefix: 'Sending order confirmation email to',
+    to: [customerEmail],
+    subject: `Potwierdzenie zamówienia #${orderNumber}`,
+    react: OrderConfirmationEmail({
+      orderNumber,
+      customerName,
+      items: order.items.map((item) => ({
+        productName: item.productName,
+        quantity: item.quantity,
+        pricePerItem: item.pricePerItem,
+      })),
+      total: order.total,
+      trackingNumber: order.trackingNumber,
+    }),
+    attachments,
+  });
+}
+
+/**
+ * Send shipping notification email with tracking link
  */
 export async function sendShippingNotificationEmail(
   order: IOrder,
   trackingNumber: string
-): Promise<{ success: boolean; error?: string }> {
-  try {
-    if (!process.env.RESEND_API_KEY) {
-      return { success: false, error: 'Email service not configured' };
-    }
+): Promise<EmailResult> {
+  const orderNumber = getOrderNumber(order);
 
-    const orderNumber = order._id.toString().slice(-8).toUpperCase();
-
-    const { data, error } = await resend.emails.send({
-      from: 'Instytut Saunowy <zamowienia@instytut-saunowy.pl>',
-      to: [order.shippingAddress.email],
-      subject: `Twoja przesyłka została wysłana! #${orderNumber}`,
-      html: `
-        <h2>Świetne wieści! 📦</h2>
-        <p>Twoje zamówienie <strong>#${orderNumber}</strong> zostało właśnie wysłane!</p>
+  return sendEmail({
+    logPrefix: 'Sending shipping notification to',
+    to: [order.shippingAddress.email],
+    subject: `Twoja przesyłka została wysłana! #${orderNumber}`,
+    html: `
+      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Twoja przesyłka jest w drodze!</h2>
+        <p>Twoje zamówienie <strong>#${orderNumber}</strong> zostało właśnie wysłane.</p>
         <p>Numer przesyłki: <strong>${trackingNumber}</strong></p>
         <p>
           <a href="https://inpost.pl/sledzenie-przesylek?number=${trackingNumber}"
@@ -103,22 +152,10 @@ export async function sendShippingNotificationEmail(
         </p>
         <p>Przesyłka powinna dotrzeć do Ciebie w ciągu 1-2 dni roboczych.</p>
         <p>Dziękujemy za zakupy!</p>
-        <p>Zespół Instytutu Saunowego 🧖‍♀️</p>
-      `,
-    });
-
-    if (error) {
-      console.error('❌ Failed to send shipping notification:', error);
-      return { success: false, error: error.message };
-    }
-
-    console.log('✅ Shipping notification sent:', data?.id);
-    return { success: true };
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    console.error('❌ Shipping notification error:', errorMessage);
-    return { success: false, error: errorMessage };
-  }
+        <p>Zespół ${EMAIL_CONFIG.companyName}</p>
+      </div>
+    `,
+  });
 }
 
 /**
@@ -127,37 +164,21 @@ export async function sendShippingNotificationEmail(
 export async function sendOrderCancellationEmail(
   order: IOrder,
   reason?: string
-): Promise<{ success: boolean; error?: string }> {
-  try {
-    if (!process.env.RESEND_API_KEY) {
-      return { success: false, error: 'Email service not configured' };
-    }
+): Promise<EmailResult> {
+  const orderNumber = getOrderNumber(order);
 
-    const orderNumber = order._id.toString().slice(-8).toUpperCase();
-
-    const { data, error } = await resend.emails.send({
-      from: 'Instytut Saunowy <zamowienia@instytut-saunowy.pl>',
-      to: [order.shippingAddress.email],
-      subject: `Anulowanie zamówienia #${orderNumber}`,
-      html: `
+  return sendEmail({
+    logPrefix: 'Sending cancellation email to',
+    to: [order.shippingAddress.email],
+    subject: `Anulowanie zamówienia #${orderNumber}`,
+    html: `
+      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
         <h2>Zamówienie anulowane</h2>
         <p>Twoje zamówienie <strong>#${orderNumber}</strong> zostało anulowane.</p>
         ${reason ? `<p>Powód: ${reason}</p>` : ''}
-        <p>Jeśli masz pytania, skontaktuj się z nami: kontakt@instytut-saunowy.pl</p>
-        <p>Zespół Instytutu Saunowego</p>
-      `,
-    });
-
-    if (error) {
-      console.error('❌ Failed to send cancellation email:', error);
-      return { success: false, error: error.message };
-    }
-
-    console.log('✅ Cancellation email sent:', data?.id);
-    return { success: true };
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    console.error('❌ Cancellation email error:', errorMessage);
-    return { success: false, error: errorMessage };
-  }
+        <p>Jeśli masz pytania, skontaktuj się z nami: <a href="mailto:${EMAIL_CONFIG.contactEmail}">${EMAIL_CONFIG.contactEmail}</a></p>
+        <p>Zespół ${EMAIL_CONFIG.companyName}</p>
+      </div>
+    `,
+  });
 }
