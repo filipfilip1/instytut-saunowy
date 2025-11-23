@@ -72,7 +72,7 @@ const VariantSelector = ({
                 >
                   <span className="block">
                     {option.value}
-                    {option.priceModifier && option.priceModifier > 0 && (
+                    {option.priceModifier > 0 && (
                       <span className="text-xs ml-1">
                         (+{formatPriceRounded(option.priceModifier)})
                       </span>
