@@ -65,7 +65,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
   return (
     <>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+        <div className="bg-cream-50 rounded-lg shadow-gold-lg overflow-hidden">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-8">
             {/* Photo Gallery */}
             <div>
@@ -86,7 +86,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                       onClick={() => setSelectedImage(index)}
                       className={`
                         relative aspect-w-1 aspect-h-1 rounded-lg overflow-hidden
-                        ${selectedImage === index ? 'ring-2 ring-blue-600' : ''}
+                        ${selectedImage === index ? 'ring-2 ring-gold-400' : ''}
                       `}
                     >
                       <img
@@ -162,7 +162,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
 
               {/* Total price */}
               {quantity > 1 && (
-                <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+                <div className="mb-6 p-4 bg-cream-100 rounded-lg">
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600">Cena całkowita:</span>
                     <span className="text-2xl font-bold text-gray-900">
@@ -180,7 +180,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                   w-full py-4 px-6 rounded-lg font-semibold text-lg transition-all
                   ${isAddToCartDisabled()
                     ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    : 'bg-blue-600 text-white hover:bg-blue-700'
+                    : 'bg-warmwood-500 text-white hover:bg-warmwood-600'
                   }
                 `}
               >
@@ -189,12 +189,12 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
 
               {/* Addition notification */}
               {showAddedMessage && (
-                <div className="mt-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg animate-fade-in">
+                <div className="mt-4 p-4 bg-gold-50 border border-gold-400 text-warmwood-800 rounded-lg animate-fade-in">
                   <div className="flex items-center justify-between">
                     <span>✓ Produkt został dodany do koszyka</span>
                     <Link
                       href="/koszyk"
-                      className="text-green-800 underline font-medium hover:text-green-900"
+                      className="text-warmwood-900 underline font-medium hover:text-graphite-950"
                     >
                       Zobacz koszyk
                     </Link>
@@ -209,7 +209,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                   <ul className="space-y-2">
                     {product.features.map((feature, index) => (
                       <li key={index} className="flex items-start">
-                        <svg className="w-5 h-5 text-green-500 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                        <svg className="w-5 h-5 text-forest-600 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                           <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                         </svg>
                         <span className="text-gray-600">{feature}</span>

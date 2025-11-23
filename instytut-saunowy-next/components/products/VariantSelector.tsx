@@ -61,19 +61,26 @@ const VariantSelector = ({
                   className={`
                     px-4 py-2 border-2 rounded-lg font-medium transition-all
                     ${selections[variant.id] === option.id
-                      ? 'border-blue-600 bg-blue-50 text-blue-600'
-                      : 'border-gray-300 hover:border-gray-400 text-gray-700'
+                      ? 'border-warmwood-500 bg-warmwood-50 text-warmwood-600'
+                      : 'border-gray-300 hover:border-warmwood-300 text-gray-700'
                     }
                     ${option.stock === 0
-                      ? 'opacity-50 cursor-not-allowed line-through'
+                      ? 'opacity-50 cursor-not-allowed'
                       : 'cursor-pointer'
                     }
                   `}
                 >
-                  {option.value}
-                  {option.priceModifier && option.priceModifier > 0 && (
-                    <span className="text-xs ml-1">
-                      (+{formatPriceRounded(option.priceModifier)})
+                  <span className="block">
+                    {option.value}
+                    {option.priceModifier && option.priceModifier > 0 && (
+                      <span className="text-xs ml-1">
+                        (+{formatPriceRounded(option.priceModifier)})
+                      </span>
+                    )}
+                  </span>
+                  {option.stock === 0 && (
+                    <span className="block text-xs text-red-600 mt-1">
+                      Niedostępny
                     </span>
                   )}
                 </button>
@@ -90,7 +97,7 @@ const VariantSelector = ({
                   className={`
                     relative p-2 border-2 rounded-lg transition-all
                     ${selections[variant.id] === option.id
-                      ? 'border-blue-600 shadow-lg'
+                      ? 'border-gold-400 shadow-lg'
                       : 'border-gray-200 hover:border-gray-300'
                     }
                     ${option.stock === 0 ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
@@ -117,7 +124,7 @@ const VariantSelector = ({
                     </span>
                   )}
                   {selections[variant.id] === option.id && (
-                    <div className="absolute top-1 right-1 bg-blue-600 text-white rounded-full p-1">
+                    <div className="absolute top-1 right-1 bg-warmwood-500 text-white rounded-full p-1">
                       <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                       </svg>
@@ -131,7 +138,7 @@ const VariantSelector = ({
       ))}
 
       {/* Price summary */}
-      <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+      <div className="mt-6 p-4 bg-cream-100 rounded-lg">
         <div className="flex justify-between items-center">
           <span className="text-lg font-medium text-gray-700">Cena:</span>
           <span className="text-2xl font-bold text-gray-900">
