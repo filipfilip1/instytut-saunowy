@@ -2,6 +2,7 @@
 
 import { useSession, signIn, signOut } from 'next-auth/react';
 import Link from 'next/link';
+import Avatar from '@/components/ui/Avatar';
 
 export default function LoginButton() {
   const { data: session, status } = useSession();
@@ -14,11 +15,7 @@ export default function LoginButton() {
     return (
       <div className="relative group">
         <button className="flex items-center space-x-2">
-          <img
-            src={session.user.image || '/default-avatar.png'}
-            alt={session.user.name || 'User'}
-            className="w-8 h-8 rounded-full"
-          />
+          <Avatar src={session.user.image} name={session.user.name} size="sm" />
           <span className="hidden md:block text-sm">{session.user.name}</span>
         </button>
 

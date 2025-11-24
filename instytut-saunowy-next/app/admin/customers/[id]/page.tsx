@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { IOrder } from '@/types';
 import OrderStatusBadge from '@/components/admin/OrderStatusBadge';
 import { getCustomerDetails } from '@/lib/services/customerService';
+import Avatar from '@/components/ui/Avatar';
 
 interface PageProps {
   params: Promise<{
@@ -44,17 +45,7 @@ export default async function CustomerDetailsPage({ params }: PageProps) {
         </Link>
 
         <div className="flex items-start gap-4 mt-4">
-          {user.image ? (
-            <img
-              src={user.image}
-              alt={user.name || user.email}
-              className="w-20 h-20 rounded-full"
-            />
-          ) : (
-            <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center">
-              <span className="text-3xl">👤</span>
-            </div>
-          )}
+          <Avatar src={user.image} name={user.name || user.email} size="xl" />
 
           <div className="flex-grow">
             <h1 className="text-3xl font-bold text-gray-800">

@@ -70,7 +70,8 @@ export async function createInvoice(order: IOrder): Promise<InvoiceResponse> {
         })),
 
         // Dodatkowe informacje
-        notes: `[TESTOWA] Zamówienie: #${order._id.toString().slice(-8).toUpperCase()}\n\nTo jest Faktura Pro Forma - dokument informacyjny dla testów.`,
+        oid: order._id.toString().slice(-8).toUpperCase(), // Numer zamówienia
+        description: 'Faktura Pro Forma - dokument informacyjny',
       },
     };
 

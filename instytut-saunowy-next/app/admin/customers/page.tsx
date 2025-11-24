@@ -1,6 +1,7 @@
 import { formatPriceExact } from "@/lib/utils/currency";
 import Link from 'next/link';
 import { getCustomersWithStats, CustomerWithStats } from '@/lib/services/customerService';
+import Avatar from '@/components/ui/Avatar';
 
 async function getCustomers() {
   const result = await getCustomersWithStats({
@@ -144,17 +145,7 @@ export default async function AdminCustomersPage() {
                   <tr key={customer._id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        {customer.image ? (
-                          <img
-                            src={customer.image}
-                            alt={customer.name || customer.email}
-                            className="w-10 h-10 rounded-full"
-                          />
-                        ) : (
-                          <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-                            <span className="text-lg">👤</span>
-                          </div>
-                        )}
+                        <Avatar src={customer.image} name={customer.name || customer.email} size="md" />
                         <div>
                           <p className="font-medium text-gray-900">
                             {customer.name || 'Bez nazwy'}
