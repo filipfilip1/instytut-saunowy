@@ -3,6 +3,17 @@ import Product from '@/lib/models/Product';
 import { IProduct, ProductCategory } from '@/types';
 
 /**
+ * Check if a product has any variant options in stock
+ * Mirrors the isAvailable virtual from Product model
+ */
+function isProductAvailable(product: IProduct): boolean {
+  if (!product.isActive) return false;
+  return product.variants.some(variant =>
+    variant.options.some(option => option.stock > 0)
+  );
+}
+
+/**
  * Shared helper for fetching products with common filters
  * Used by server components in shop pages
  */
@@ -30,7 +41,10 @@ export async function fetchProducts(options?: {
     .limit(limit)
     .lean();
 
-  return JSON.parse(JSON.stringify(products));
+  const parsedProducts: IProduct[] = JSON.parse(JSON.stringify(products));
+
+  // Filter out products with no stock available
+  return parsedProducts.filter(isProductAvailable);
 }
 
 /**

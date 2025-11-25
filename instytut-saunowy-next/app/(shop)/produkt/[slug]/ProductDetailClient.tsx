@@ -18,17 +18,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
   const { addToCart } = useCart();
 
   const [selectedImage, setSelectedImage] = useState(0);
-  const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>(() => {
-    // Set default variants (first available options)
-    const defaultVariants: Record<string, string> = {};
-    product.variants.forEach(variant => {
-      const firstAvailable = variant.options.find(opt => opt.stock > 0);
-      if (firstAvailable) {
-        defaultVariants[variant.id] = firstAvailable.id;
-      }
-    });
-    return defaultVariants;
-  });
+  const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({});
   const [quantity, setQuantity] = useState(1);
   const [showAddedMessage, setShowAddedMessage] = useState(false);
 
@@ -60,6 +50,17 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
     );
 
     return !allVariantsSelected || quantity < 1;
+  };
+
+  const getButtonText = () => {
+    const allVariantsSelected = product.variants.every(variant =>
+      selectedVariants[variant.id]
+    );
+
+    if (!allVariantsSelected) {
+      return 'Wybierz wszystkie opcje';
+    }
+    return 'Dodaj do koszyka';
   };
 
   return (
@@ -160,18 +161,6 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                 </div>
               </div>
 
-              {/* Total price */}
-              {quantity > 1 && (
-                <div className="mb-6 p-4 bg-cream-100 rounded-lg">
-                  <div className="flex justify-between items-center">
-                    <span className="text-gray-600">Cena całkowita:</span>
-                    <span className="text-2xl font-bold text-gray-900">
-                      {formatPriceRounded(calculatePrice())}
-                    </span>
-                  </div>
-                </div>
-              )}
-
               {/* Add to cart button */}
               <button
                 onClick={handleAddToCart}
@@ -184,7 +173,7 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
                   }
                 `}
               >
-                {isAddToCartDisabled() ? 'Wybierz warianty' : 'Dodaj do koszyka'}
+                {getButtonText()}
               </button>
 
               {/* Addition notification */}

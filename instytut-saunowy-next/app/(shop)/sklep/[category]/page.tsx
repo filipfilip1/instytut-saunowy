@@ -2,17 +2,18 @@ import React from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import ProductCard from '@/components/products/ProductCard';
-import { IProduct, ProductCategory } from '@/types';
+import { ProductCategory } from '@/types';
 import { fetchAllProductsGrouped } from '@/lib/utils/productQueries';
+import { ShoppingBag, Scroll, Shirt, Scissors, Sparkles, Package } from 'lucide-react';
 
-const categoryIcons: Record<ProductCategory | 'all', string> = {
-  'all': '🛍️',
-  'kilty': '🏴',
-  'poncha': '🧥',
-  'spodnie': '👖',
-  'bluzy': '👕',
-  'akcesoria': '🎁',
-  'zestawy': '📦'
+const categoryIcons: Record<ProductCategory | 'all', React.ComponentType<{ className?: string }>> = {
+  'all': ShoppingBag,
+  'kilty': Scroll,
+  'poncha': Shirt,
+  'spodnie': Scissors,
+  'bluzy': Shirt,
+  'akcesoria': Sparkles,
+  'zestawy': Package
 };
 
 const categoryDescriptions: Record<ProductCategory, string> = {
@@ -54,8 +55,9 @@ export default async function CategoryPage({ params }: PageProps) {
       <div className="bg-gradient-to-br from-forest-600 via-nordic-600 to-nordic-700 text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="inline-block mb-4 px-5 py-2 bg-gold-400/20 backdrop-blur-sm rounded-full border border-gold-400/40">
-            <span className="text-gold-200 font-medium">
-              {categoryIcons[selectedCategory]} {selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)}
+            <span className="text-gold-200 font-medium flex items-center gap-2">
+              {React.createElement(categoryIcons[selectedCategory], { className: 'w-4 h-4' })}
+              {selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)}
             </span>
           </div>
           <h1 className="text-5xl md:text-6xl font-serif font-bold mb-6">
@@ -75,7 +77,7 @@ export default async function CategoryPage({ params }: PageProps) {
               href="/sklep"
               className="px-5 py-2.5 rounded-2xl font-medium transition-all bg-cream-200 hover:bg-gold-100 text-graphite-700 hover:text-graphite-900 flex items-center gap-2 shadow-sm hover:shadow-md"
             >
-              {categoryIcons.all}
+              {React.createElement(categoryIcons.all, { className: 'w-4 h-4' })}
               <span>Wszystkie ({allProducts.length})</span>
             </Link>
 
@@ -91,14 +93,13 @@ export default async function CategoryPage({ params }: PageProps) {
                   }
                 `}
               >
-                <span>{categoryIcons[category as ProductCategory]}</span>
+                {React.createElement(categoryIcons[category as ProductCategory], { className: 'w-4 h-4' })}
                 <span className="capitalize">{category}</span>
                 {categoryCounts[category as ProductCategory] > 0 && (
-                  <span className={`text-sm px-2 py-0.5 rounded-full ${
-                    selectedCategory === category
-                      ? 'bg-gold-600 text-white'
-                      : 'bg-gold-200 text-gold-800'
-                  }`}>
+                  <span className={`text-sm px-2 py-0.5 rounded-full ${selectedCategory === category
+                    ? 'bg-gold-600 text-white'
+                    : 'bg-gold-200 text-gold-800'
+                    }`}>
                     {categoryCounts[category as ProductCategory] || 0}
                   </span>
                 )}
@@ -112,7 +113,9 @@ export default async function CategoryPage({ params }: PageProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {categoryProducts.length === 0 ? (
           <div className="text-center py-20">
-            <div className="text-6xl mb-4">{categoryIcons[selectedCategory]}</div>
+            <div className="flex justify-center mb-4">
+              {React.createElement(categoryIcons[selectedCategory], { className: 'w-16 h-16 text-graphite-400' })}
+            </div>
             <h3 className="text-2xl font-serif font-semibold text-graphite-900 mb-2">
               Brak produktów
             </h3>
