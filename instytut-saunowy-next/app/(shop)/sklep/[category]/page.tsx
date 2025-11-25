@@ -4,41 +4,29 @@ import { notFound } from 'next/navigation';
 import ProductCard from '@/components/products/ProductCard';
 import { ProductCategory } from '@/types';
 import { fetchAllProductsGrouped } from '@/lib/utils/productQueries';
-import { ShoppingBag, Scroll, Shirt, Scissors, Sparkles, Package } from 'lucide-react';
-
-const categoryIcons: Record<ProductCategory | 'all', React.ComponentType<{ className?: string }>> = {
-  'all': ShoppingBag,
-  'kilty': Scroll,
-  'poncha': Shirt,
-  'spodnie': Scissors,
-  'bluzy': Shirt,
-  'akcesoria': Sparkles,
-  'zestawy': Package
-};
-
-const categoryDescriptions: Record<ProductCategory, string> = {
-  'kilty': 'Tradycyjne kilty do sauny w różnych wzorach i kolorach',
-  'poncha': 'Wygodne poncha idealne po wyjściu z sauny',
-  'spodnie': 'Przewiewne spodnie do relaksu w saunie',
-  'bluzy': 'Komfortowe bluzy na chłodniejsze dni',
-  'akcesoria': 'Niezbędne dodatki do saunowania',
-  'zestawy': 'Kompletne zestawy dla prawdziwych miłośników sauny'
-};
+import {
+  CATEGORY_CONFIG,
+  ALL_CATEGORY_CONFIG,
+  PRODUCT_CATEGORIES,
+  isValidCategory,
+  getAllCategories
+} from '@/lib/constants/categories';
 
 interface PageProps {
-  params: {
+  params: Promise<{
     category: string;
-  };
+  }>;
 }
 
 export default async function CategoryPage({ params }: PageProps) {
-  const validCategories = ['kilty', 'poncha', 'spodnie', 'bluzy', 'akcesoria', 'zestawy'];
+  const { category } = await params;
 
-  if (!validCategories.includes(params.category)) {
+  if (!isValidCategory(category)) {
     notFound();
   }
 
-  const selectedCategory = params.category as ProductCategory;
+  const selectedCategory = category as ProductCategory;
+  const selectedConfig = CATEGORY_CONFIG[selectedCategory];
 
   // Optimized: single query instead of two separate queries
   const { all: allProducts, byCategory } = await fetchAllProductsGrouped();
@@ -56,15 +44,15 @@ export default async function CategoryPage({ params }: PageProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="inline-block mb-4 px-5 py-2 bg-gold-400/20 backdrop-blur-sm rounded-full border border-gold-400/40">
             <span className="text-gold-200 font-medium flex items-center gap-2">
-              {React.createElement(categoryIcons[selectedCategory], { className: 'w-4 h-4' })}
-              {selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1)}
+              <selectedConfig.icon className="w-4 h-4" />
+              {selectedConfig.label}
             </span>
           </div>
           <h1 className="text-5xl md:text-6xl font-serif font-bold mb-6">
             Odzież do Saunowania
           </h1>
           <p className="text-xl text-cream-200 max-w-2xl mx-auto leading-relaxed">
-            {categoryDescriptions[selectedCategory]}
+            {selectedConfig.description}
           </p>
         </div>
       </div>
@@ -77,34 +65,40 @@ export default async function CategoryPage({ params }: PageProps) {
               href="/sklep"
               className="px-5 py-2.5 rounded-2xl font-medium transition-all bg-cream-200 hover:bg-gold-100 text-graphite-700 hover:text-graphite-900 flex items-center gap-2 shadow-sm hover:shadow-md"
             >
-              {React.createElement(categoryIcons.all, { className: 'w-4 h-4' })}
+              <ALL_CATEGORY_CONFIG.icon className="w-4 h-4" />
               <span>Wszystkie ({allProducts.length})</span>
             </Link>
 
-            {validCategories.map(category => (
-              <Link
-                key={category}
-                href={`/sklep/${category}`}
-                className={`
-                  px-5 py-2.5 rounded-2xl font-medium transition-all flex items-center gap-2
-                  ${selectedCategory === category
-                    ? 'bg-gold-400 text-graphite-900 shadow-gold hover:shadow-gold-lg font-semibold'
-                    : 'bg-cream-200 hover:bg-gold-100 text-graphite-700 hover:text-graphite-900 shadow-sm hover:shadow-md'
-                  }
-                `}
-              >
-                {React.createElement(categoryIcons[category as ProductCategory], { className: 'w-4 h-4' })}
-                <span className="capitalize">{category}</span>
-                {categoryCounts[category as ProductCategory] > 0 && (
-                  <span className={`text-sm px-2 py-0.5 rounded-full ${selectedCategory === category
-                    ? 'bg-gold-600 text-white'
-                    : 'bg-gold-200 text-gold-800'
+            {getAllCategories().map(({ key, config }) => {
+              const Icon = config.icon;
+              const isSelected = selectedCategory === key;
+
+              return (
+                <Link
+                  key={key}
+                  href={`/sklep/${key}`}
+                  className={`
+                    px-5 py-2.5 rounded-2xl font-medium transition-all flex items-center gap-2
+                    ${isSelected
+                      ? 'bg-gold-400 text-graphite-900 shadow-gold hover:shadow-gold-lg font-semibold'
+                      : 'bg-cream-200 hover:bg-gold-100 text-graphite-700 hover:text-graphite-900 shadow-sm hover:shadow-md'
+                    }
+                  `}
+                >
+                  <Icon className="w-4 h-4" />
+                  <span className="capitalize">{key}</span>
+                  {categoryCounts[key] > 0 && (
+                    <span className={`text-sm px-2 py-0.5 rounded-full ${
+                      isSelected
+                        ? 'bg-gold-600 text-white'
+                        : 'bg-gold-200 text-gold-800'
                     }`}>
-                    {categoryCounts[category as ProductCategory] || 0}
-                  </span>
-                )}
-              </Link>
-            ))}
+                      {categoryCounts[key] || 0}
+                    </span>
+                  )}
+                </Link>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -114,7 +108,7 @@ export default async function CategoryPage({ params }: PageProps) {
         {categoryProducts.length === 0 ? (
           <div className="text-center py-20">
             <div className="flex justify-center mb-4">
-              {React.createElement(categoryIcons[selectedCategory], { className: 'w-16 h-16 text-graphite-400' })}
+              <selectedConfig.icon className="w-16 h-16 text-graphite-400" />
             </div>
             <h3 className="text-2xl font-serif font-semibold text-graphite-900 mb-2">
               Brak produktów
@@ -140,12 +134,5 @@ export default async function CategoryPage({ params }: PageProps) {
 
 
 export async function generateStaticParams() {
-  return [
-    { category: 'kilty' },
-    { category: 'poncha' },
-    { category: 'spodnie' },
-    { category: 'bluzy' },
-    { category: 'akcesoria' },
-    { category: 'zestawy' },
-  ];
+  return PRODUCT_CATEGORIES.map(category => ({ category }));
 }

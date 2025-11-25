@@ -8,9 +8,9 @@ import OrderStatusBadge from '@/components/admin/OrderStatusBadge';
 import OrderActionsClient from './OrderActionsClient';
 
 interface PageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 async function getOrder(id: string) {
@@ -28,7 +28,8 @@ async function getOrder(id: string) {
 }
 
 export default async function OrderDetailsPage({ params }: PageProps) {
-  const order: (IOrder & { userId?: any }) | null = await getOrder(params.id);
+  const { id } = await params;
+  const order: (IOrder & { userId?: any }) | null = await getOrder(id);
 
   if (!order) {
     notFound();

@@ -3,17 +3,11 @@ import Link from 'next/link';
 import ProductCard from '@/components/products/ProductCard';
 import { ProductCategory } from '@/types';
 import { fetchProducts } from '@/lib/utils/productQueries';
-import { ShoppingBag, Flag, Shirt, FootprintsIcon, Sparkles, Package, Store } from 'lucide-react';
-
-const categoryIcons: Record<ProductCategory | 'all', React.ComponentType<{ className?: string }>> = {
-  'all': ShoppingBag,
-  'kilty': Flag,
-  'poncha': Shirt,
-  'spodnie': FootprintsIcon,
-  'bluzy': Shirt,
-  'akcesoria': Sparkles,
-  'zestawy': Package
-};
+import {
+  ALL_CATEGORY_CONFIG,
+  EMPTY_STATE_ICON,
+  getAllCategories
+} from '@/lib/constants/categories';
 
 export default async function ProductListPage() {
   const products = await fetchProducts({ limit: 20 });
@@ -49,25 +43,28 @@ export default async function ProductListPage() {
               href="/sklep"
               className="px-5 py-2.5 rounded-2xl font-semibold transition-all bg-gold-400 text-graphite-900 shadow-gold hover:shadow-gold-lg flex items-center gap-2"
             >
-              {React.createElement(categoryIcons.all, { className: 'w-4 h-4' })}
+              <ALL_CATEGORY_CONFIG.icon className="w-4 h-4" />
               <span>Wszystkie ({products.length})</span>
             </Link>
 
-            {(Object.keys(categoryIcons).filter(cat => cat !== 'all') as ProductCategory[]).map(category => (
-              <Link
-                key={category}
-                href={`/sklep/${category}`}
-                className="px-5 py-2.5 rounded-2xl font-medium transition-all bg-cream-200 hover:bg-gold-100 text-graphite-700 hover:text-graphite-900 flex items-center gap-2 shadow-sm hover:shadow-md"
-              >
-                {React.createElement(categoryIcons[category], { className: 'w-4 h-4' })}
-                <span className="capitalize">{category}</span>
-                {productCountByCategory[category] > 0 && (
-                  <span className="text-sm bg-gold-200 text-gold-800 px-2 py-0.5 rounded-full">
-                    {productCountByCategory[category] || 0}
-                  </span>
-                )}
-              </Link>
-            ))}
+            {getAllCategories().map(({ key, config }) => {
+              const Icon = config.icon;
+              return (
+                <Link
+                  key={key}
+                  href={`/sklep/${key}`}
+                  className="px-5 py-2.5 rounded-2xl font-medium transition-all bg-cream-200 hover:bg-gold-100 text-graphite-700 hover:text-graphite-900 flex items-center gap-2 shadow-sm hover:shadow-md"
+                >
+                  <Icon className="w-4 h-4" />
+                  <span className="capitalize">{key}</span>
+                  {productCountByCategory[key] > 0 && (
+                    <span className="text-sm bg-gold-200 text-gold-800 px-2 py-0.5 rounded-full">
+                      {productCountByCategory[key] || 0}
+                    </span>
+                  )}
+                </Link>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -77,7 +74,7 @@ export default async function ProductListPage() {
         {products.length === 0 ? (
           <div className="text-center py-20">
             <div className="flex justify-center mb-4">
-              <Store className="w-16 h-16 text-graphite-400" />
+              <EMPTY_STATE_ICON className="w-16 h-16 text-graphite-400" />
             </div>
             <h3 className="text-2xl font-serif font-semibold text-graphite-900 mb-2">
               Brak produktów
