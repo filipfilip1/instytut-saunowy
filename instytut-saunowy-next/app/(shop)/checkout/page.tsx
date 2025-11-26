@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useCart } from '@/contexts/CartContext';
 import Link from 'next/link';
 import { checkoutShippingSchema, type CheckoutShippingData } from '@/lib/schemas/checkout';
+import ProductImageFallback from '@/components/ui/ProductImageFallback';
 import { formatPriceExact } from '@/lib/utils/currency';
 import { useToast } from '@/hooks/useToast';
 
@@ -23,9 +24,36 @@ export default function CheckoutPage() {
     country: 'Polska',
   });
 
+  // Auto-format postal code: XX-XXX
+  const formatZipCode = (value: string): string => {
+    const digits = value.replace(/\D/g, ''); // Remove non-digits
+    if (digits.length >= 2) {
+      return `${digits.slice(0, 2)}-${digits.slice(2, 5)}`;
+    }
+    return digits;
+  };
+
+  // Auto-format phone number: XXX XXX XXX
+  const formatPhoneNumber = (value: string): string => {
+    const digits = value.replace(/\D/g, ''); // Remove non-digits
+    if (digits.length >= 6) {
+      return `${digits.slice(0, 3)} ${digits.slice(3, 6)} ${digits.slice(6, 9)}`;
+    } else if (digits.length >= 3) {
+      return `${digits.slice(0, 3)} ${digits.slice(3, 6)}`;
+    }
+    return digits;
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
+
+    // Auto-format postal code and phone number as user types
+    const formattedValue =
+      name === 'zipCode' ? formatZipCode(value) :
+        name === 'phone' ? formatPhoneNumber(value) :
+          value;
+
+    setFormData(prev => ({ ...prev, [name]: formattedValue }));
 
     if (errors[name]) {
       setErrors(prev => {
@@ -153,7 +181,6 @@ export default function CheckoutPage() {
                       onChange={handleChange}
                       className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${errors.name ? 'border-red-500' : 'border-gray-300'
                         }`}
-                      placeholder="Jan Kowalski"
                     />
                     {errors.name && (
                       <p className="text-red-500 text-sm mt-1">{errors.name}</p>
@@ -171,7 +198,6 @@ export default function CheckoutPage() {
                       onChange={handleChange}
                       className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${errors.email ? 'border-red-500' : 'border-gray-300'
                         }`}
-                      placeholder="jan@example.com"
                     />
                     {errors.email && (
                       <p className="text-red-500 text-sm mt-1">{errors.email}</p>
@@ -182,15 +208,20 @@ export default function CheckoutPage() {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Telefon *
                     </label>
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleChange}
-                      className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${errors.phone ? 'border-red-500' : 'border-gray-300'
-                        }`}
-                      placeholder="+48 123 456 789"
-                    />
+                    <div className={`flex items-center border rounded-lg focus-within:ring-2 focus-within:ring-blue-500 ${errors.phone ? 'border-red-500' : 'border-gray-300'}`}>
+                      {/* Fixed prefix */}
+                      <span className="px-3 py-2 bg-gray-50 text-gray-600 border-r border-gray-300 font-medium">
+                        +48
+                      </span>
+                      {/* Phone input */}
+                      <input
+                        type="tel"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        className="flex-1 px-3 py-2 border-0 rounded-r-lg focus:outline-none focus:ring-0"
+                      />
+                    </div>
                     {errors.phone && (
                       <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
                     )}
@@ -207,7 +238,6 @@ export default function CheckoutPage() {
                       onChange={handleChange}
                       className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${errors.street ? 'border-red-500' : 'border-gray-300'
                         }`}
-                      placeholder="ul. Kwiatowa 15/2"
                     />
                     {errors.street && (
                       <p className="text-red-500 text-sm mt-1">{errors.street}</p>
@@ -225,7 +255,6 @@ export default function CheckoutPage() {
                       onChange={handleChange}
                       className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${errors.city ? 'border-red-500' : 'border-gray-300'
                         }`}
-                      placeholder="Warszawa"
                     />
                     {errors.city && (
                       <p className="text-red-500 text-sm mt-1">{errors.city}</p>
@@ -243,7 +272,6 @@ export default function CheckoutPage() {
                       onChange={handleChange}
                       className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${errors.zipCode ? 'border-red-500' : 'border-gray-300'
                         }`}
-                      placeholder="00-001"
                     />
                     {errors.zipCode && (
                       <p className="text-red-500 text-sm mt-1">{errors.zipCode}</p>
@@ -276,11 +304,19 @@ export default function CheckoutPage() {
                 <div className="space-y-3 mb-6 max-h-64 overflow-y-auto">
                   {items.map(item => (
                     <div key={item.id} className="flex gap-3">
-                      <img
-                        src={item.product.images[0]?.url || 'https://via.placeholder.com/60'}
-                        alt={item.product.name}
-                        className="w-16 h-16 object-cover rounded"
-                      />
+                      {item.product.images[0]?.url ? (
+                        <img
+                          src={item.product.images[0].url}
+                          alt={item.product.name}
+                          className="w-16 h-16 object-cover rounded"
+                        />
+                      ) : (
+                        <ProductImageFallback
+                          productName={item.product.name}
+                          className="w-16 h-16 rounded"
+                          iconSize={24}
+                        />
+                      )}
                       <div className="flex-grow">
                         <p className="font-medium text-sm text-gray-900">
                           {item.product.name}

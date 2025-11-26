@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/contexts/CartContext';
 import { IProduct, IProductVariant, IVariantOption } from '@/types';
+import ProductImageFallback from '@/components/ui/ProductImageFallback';
 import { formatPriceRounded } from '@/lib/utils/currency';
 
 export default function CartPage() {
@@ -76,11 +77,19 @@ export default function CartPage() {
                   <div className="flex gap-4">
                     {/* Product photo */}
                     <div className="flex-shrink-0">
-                      <img
-                        src={item.product.images[0]?.url || 'https://via.placeholder.com/100'}
-                        alt={item.product.name}
-                        className="w-24 h-24 object-cover rounded-lg"
-                      />
+                      {item.product.images[0]?.url ? (
+                        <img
+                          src={item.product.images[0].url}
+                          alt={item.product.name}
+                          className="w-24 h-24 object-cover rounded-lg"
+                        />
+                      ) : (
+                        <ProductImageFallback
+                          productName={item.product.name}
+                          className="w-24 h-24 rounded-lg"
+                          iconSize={32}
+                        />
+                      )}
                     </div>
 
                     {/* Product information */}

@@ -7,6 +7,7 @@ import { IProduct } from '@/types';
 import { useCart } from '@/contexts/CartContext';
 import VariantSelector from '@/components/products/VariantSelector';
 import Toast from '@/components/ui/Toast';
+import ProductImageFallback from '@/components/ui/ProductImageFallback';
 import { formatPriceRounded } from '@/lib/utils/currency';
 
 interface ProductDetailClientProps {
@@ -71,11 +72,19 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
             {/* Photo Gallery */}
             <div>
               <div className="aspect-w-1 aspect-h-1 mb-4">
-                <img
-                  src={product.images[selectedImage]?.url || 'https://via.placeholder.com/600'}
-                  alt={product.images[selectedImage]?.alt || product.name}
-                  className="w-full h-[500px] object-cover rounded-lg"
-                />
+                {product.images[selectedImage]?.url ? (
+                  <img
+                    src={product.images[selectedImage].url}
+                    alt={product.images[selectedImage].alt || product.name}
+                    className="w-full h-[500px] object-cover rounded-lg"
+                  />
+                ) : (
+                  <ProductImageFallback
+                    productName={product.name}
+                    className="w-full h-[500px] rounded-lg"
+                    iconSize={96}
+                  />
+                )}
               </div>
 
               {/* Thumbnails */}

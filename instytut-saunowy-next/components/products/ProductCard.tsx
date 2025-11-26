@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { IProduct } from '@/types';
 import { useCart } from '@/contexts/CartContext';
 import Toast from '@/components/ui/Toast';
+import ProductImageFallback from '@/components/ui/ProductImageFallback';
 import { formatPriceRounded } from '@/lib/utils/currency';
 
 interface ProductCardProps {
@@ -73,11 +74,19 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <Link href={`/produkt/${product.slug}`} className="block">
           {/* Image */}
           <div className="relative aspect-[4/5] overflow-hidden bg-cream-100">
-            <img
-              src={primaryImage?.url || `https://via.placeholder.com/400x500?text=${encodeURIComponent(product.name)}`}
-              alt={primaryImage?.alt || product.name}
-              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-            />
+            {primaryImage?.url ? (
+              <img
+                src={primaryImage.url}
+                alt={primaryImage.alt || product.name}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+            ) : (
+              <ProductImageFallback
+                productName={product.name}
+                className="w-full h-full"
+                iconSize={64}
+              />
+            )}
 
             {/* Number of variants */}
             {product.variants.length > 0 && (

@@ -18,8 +18,8 @@ export const checkoutShippingSchema = z.object({
   phone: z.string()
     .min(1, 'Telefon jest wymagany')
     .regex(
-      /^(\+48\s?)?(\d{3}\s?\d{3}\s?\d{3}|\d{9})$/,
-      'Nieprawidłowy format telefonu (np. +48 123 456 789 lub 123456789)'
+      /^(\d{3}\s?\d{3}\s?\d{3}|\d{9})$/,
+      'Nieprawidłowy format telefonu (np. 123 456 789)'
     ),
 
   street: z.string()
