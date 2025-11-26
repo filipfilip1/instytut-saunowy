@@ -79,19 +79,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             />
 
-            {/* Availability Badge */}
-            <div className="absolute top-4 right-4">
-              <span className={`
-                px-3 py-1.5 text-xs font-semibold rounded-full shadow-md
-                ${isInStock
-                  ? 'bg-forest-600 text-white'
-                  : 'bg-warmwood-500 text-white'
-                }
-              `}>
-                {isInStock ? 'Dostępny' : 'Niedostępny'}
-              </span>
-            </div>
-
             {/* Number of variants */}
             {product.variants.length > 0 && (
               <div className="absolute bottom-4 left-4 flex gap-2">

@@ -88,11 +88,10 @@ export default async function CategoryPage({ params }: PageProps) {
                   <Icon className="w-4 h-4" />
                   <span className="capitalize">{key}</span>
                   {categoryCounts[key] > 0 && (
-                    <span className={`text-sm px-2 py-0.5 rounded-full ${
-                      isSelected
+                    <span className={`text-sm px-2 py-0.5 rounded-full ${isSelected
                         ? 'bg-gold-600 text-white'
                         : 'bg-gold-200 text-gold-800'
-                    }`}>
+                      }`}>
                       {categoryCounts[key] || 0}
                     </span>
                   )}
