@@ -55,6 +55,7 @@ export async function POST(request: NextRequest) {
       // Calculate item price with variant modifiers
       let itemPrice = product.basePrice;
       let hasErrors = false;
+      const displayNames: string[] = [];
 
       // Validate variants and calculate price
       for (const [variantId, optionId] of Object.entries(item.variantSelections)) {
@@ -86,12 +87,18 @@ export async function POST(request: NextRequest) {
         if (option.priceModifier) {
           itemPrice += option.priceModifier;
         }
+
+        // Build human-readable variant display
+        displayNames.push(`${variant.name}: ${option.value}`);
       }
 
       // Skip creating line item if there were validation errors
       if (hasErrors) {
         continue;
       }
+
+      // Join display names into a single string
+      const variantDisplayNames = displayNames.length > 0 ? displayNames.join(', ') : '';
 
       // Prepare line item for Stripe
       lineItems.push({
@@ -102,6 +109,7 @@ export async function POST(request: NextRequest) {
             metadata: {
               productId: item.productId,
               variantSelections: JSON.stringify(item.variantSelections),
+              variantDisplayNames, // Human-readable variant info
             },
           },
           unit_amount: formatAmountForStripe(itemPrice),

@@ -2,9 +2,12 @@
 
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { ShoppingCart, Menu, X } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import LoginButton from '@/components/auth/LoginButton';
+import { BRAND } from '@/constants/brand';
 
 const Header = () => {
   const pathname = usePathname();
@@ -26,12 +29,16 @@ const Header = () => {
           <div className="flex items-center">
             <Link
               href="/"
-              className="flex items-center gap-2 group"
+              className="flex items-center gap-3 group"
             >
-              <div className="text-3xl">🏛️</div>
-              <span className="text-2xl md:text-3xl font-serif font-bold text-graphite-900 group-hover:text-gold-600 transition-colors">
-                Instytut Saunowy
-              </span>
+              <Image
+                src={BRAND.logo.url.header}
+                alt={BRAND.logo.alt}
+                width={BRAND.logo.dimensions.header.width}
+                height={BRAND.logo.dimensions.header.height}
+                priority
+                className="h-10 w-auto md:h-12"
+              />
             </Link>
           </div>
 
@@ -89,11 +96,7 @@ const Header = () => {
               href="/koszyk"
               className="relative p-2.5 text-graphite-700 hover:text-gold-600 hover:bg-gold-50 rounded-xl transition-all"
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-                />
-              </svg>
+              <ShoppingCart className="w-6 h-6" />
               {getItemCount() > 0 && (
                 <span className="absolute -top-1 -right-1 bg-forest-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-semibold">
                   {getItemCount()}
@@ -105,12 +108,9 @@ const Header = () => {
             <button
               className="md:hidden p-2 text-graphite-700 hover:text-gold-600 hover:bg-gold-50 rounded-xl transition-all"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              aria-label={mobileMenuOpen ? 'Zamknij menu' : 'Otwórz menu'}
             >
-              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                  d={mobileMenuOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
-                />
-              </svg>
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
         </div>

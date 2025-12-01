@@ -21,6 +21,7 @@ const orderSchema = new Schema<IOrder>(
         productId: { type: String, required: true },
         productName: { type: String, required: true },
         variantSelections: { type: Schema.Types.Mixed },
+        variantDisplayNames: { type: String, required: false }, // Human-readable variant info
         quantity: { type: Number, required: true, min: 1 },
         pricePerItem: { type: Number, required: true, min: 0 },
       },

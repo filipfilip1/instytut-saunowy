@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { IOrder } from '@/types';
+import { capitalizeWords } from '@/lib/utils/text';
 
 interface InvoiceResponse {
   success: boolean;
@@ -48,11 +49,11 @@ export async function createInvoice(order: IOrder): Promise<InvoiceResponse> {
           .toISOString()
           .split('T')[0], // Termin płatności +14 dni
 
-        // Dane nabywcy
-        buyer_name: order.shippingAddress.name,
-        buyer_email: order.shippingAddress.email,
-        buyer_street: order.shippingAddress.street,
-        buyer_city: order.shippingAddress.city,
+        // Dane nabywcy (z capitalize dla profesjonalnego wyglądu)
+        buyer_name: capitalizeWords(order.shippingAddress.name),
+        buyer_email: order.shippingAddress.email, // Email bez capitalize
+        buyer_street: capitalizeWords(order.shippingAddress.street),
+        buyer_city: capitalizeWords(order.shippingAddress.city),
         buyer_post_code: order.shippingAddress.zipCode,
         buyer_country: order.shippingAddress.country || 'PL',
 

@@ -2,10 +2,13 @@
 
 import { useEffect, useState, useRef } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { useSession, signIn } from 'next-auth/react';
 import { useCart } from '@/contexts/CartContext';
 import { useToast } from '@/hooks/useToast';
 import Link from 'next/link';
 import { formatPriceExact } from '@/lib/utils/currency';
+import { Check } from 'lucide-react';
+import { BRAND } from '@/constants/brand';
 
 interface OrderDetails {
   _id: string;
@@ -15,6 +18,7 @@ interface OrderDetails {
     quantity: number;
     pricePerItem: number;
     variantSelections: Record<string, string>;
+    variantDisplayNames?: string;
   }>;
   shippingAddress: {
     name: string;
@@ -39,6 +43,7 @@ const RETRY_DELAY = 2000; // 2 seconds
 const CART_CLEAR_WINDOW = 5 * 60 * 1000; // 5 minutes - only clear cart for fresh orders
 
 export default function CheckoutSuccessPage() {
+  const { data: session } = useSession();
   const searchParams = useSearchParams();
   const sessionId = searchParams.get('session_id');
   const { clearCart } = useCart();
@@ -215,7 +220,7 @@ export default function CheckoutSuccessPage() {
               Wróć do koszyka
             </Link>
             <a
-              href="mailto:kontakt@instytut-saunowy.pl"
+              href={`mailto:${BRAND.contact.email}`}
               className="text-gray-600 hover:text-gray-800 font-medium transition-colors"
             >
               Skontaktuj się z nami
@@ -237,135 +242,167 @@ export default function CheckoutSuccessPage() {
         {/* Success Header */}
         <div className="bg-white rounded-lg shadow-lg p-8 mb-6 text-center">
           <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg
-              className="w-12 h-12 text-green-500"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
+            <Check className="w-12 h-12 text-green-500" strokeWidth={2} />
           </div>
 
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Dziękujemy za zamówienie!
           </h1>
-          <p className="text-gray-600 mb-6">
+          <p className="text-gray-600 mb-4">
             Twoje zamówienie zostało pomyślnie złożone i opłacone.
           </p>
-
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 inline-block">
-            <p className="text-sm text-gray-600">Numer zamówienia</p>
-            <p className="text-2xl font-bold text-blue-600">#{order.orderNumber}</p>
-          </div>
+          <p className="text-lg text-gray-700">
+            Numer zamówienia: <span className="font-bold text-gray-900">#{order.orderNumber}</span>
+          </p>
         </div>
 
-        {/* Order Details */}
-        <div className="bg-white rounded-lg shadow-lg p-8 mb-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-6">
-            Szczegóły zamówienia
-          </h2>
+        {/* Order Details + Shipping Address - Two Column Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          {/* Order Details */}
+          <div className="bg-white rounded-lg shadow-lg p-8">
+            <h2 className="text-xl font-semibold text-gray-900 mb-6">
+              Szczegóły zamówienia
+            </h2>
 
-          {/* Items */}
-          <div className="space-y-4 mb-6">
-            {order.items.map((item, index) => (
-              <div
-                key={index}
-                className="flex justify-between items-start pb-4 border-b border-gray-200 last:border-0"
-              >
-                <div className="flex-grow">
-                  <p className="font-medium text-gray-900">{item.productName}</p>
-                  <p className="text-sm text-gray-600">
-                    Ilość: {item.quantity} × {formatPriceExact(item.pricePerItem)}
-                  </p>
-                  {Object.keys(item.variantSelections).length > 0 && (
-                    <p className="text-xs text-gray-500 mt-1">
-                      Warianty: {Object.values(item.variantSelections).join(', ')}
+            {/* Items */}
+            <div className="space-y-4 mb-6">
+              {order.items.map((item, index) => (
+                <div
+                  key={index}
+                  className="flex justify-between items-start pb-4 border-b border-gray-200 last:border-0"
+                >
+                  <div className="flex-grow">
+                    <p className="font-medium text-gray-900">{item.productName}</p>
+                    <p className="text-sm text-gray-600">
+                      Ilość: {item.quantity} × {formatPriceExact(item.pricePerItem)}
                     </p>
-                  )}
+                    {item.variantDisplayNames && (
+                      <p className="text-xs text-gray-500 mt-1">
+                        {item.variantDisplayNames}
+                      </p>
+                    )}
+                  </div>
+                  <p className="font-semibold text-gray-900 ml-4">
+                    {formatPriceExact(item.pricePerItem * item.quantity)}
+                  </p>
                 </div>
-                <p className="font-semibold text-gray-900 ml-4">
-                  {formatPriceExact(item.pricePerItem * item.quantity)}
-                </p>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
 
-          {/* Total */}
-          <div className="flex justify-between items-center pt-4 border-t-2 border-gray-300">
-            <span className="text-xl font-bold text-gray-900">Suma</span>
-            <span className="text-2xl font-bold text-gray-900">
-              {formatPriceExact(order.total)}
-            </span>
-          </div>
-        </div>
-
-        {/* Shipping Address */}
-        <div className="bg-white rounded-lg shadow-lg p-8 mb-6">
-          <h2 className="text-xl font-semibold text-gray-900 mb-4">
-            Adres dostawy
-          </h2>
-          <div className="text-gray-700">
-            <p className="font-medium">{order.shippingAddress.name}</p>
-            <p>{order.shippingAddress.street}</p>
-            <p>
-              {order.shippingAddress.zipCode} {order.shippingAddress.city}
-            </p>
-            <p>{order.shippingAddress.country}</p>
-            <p className="mt-2">
-              <span className="text-gray-600">Email:</span> {order.shippingAddress.email}
-            </p>
-            <p>
-              <span className="text-gray-600">Telefon:</span> {order.shippingAddress.phone}
-            </p>
-          </div>
-        </div>
-
-        {/* Info boxes */}
-        <div className="grid md:grid-cols-2 gap-4 mb-6">
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <div className="flex items-start gap-3">
-              <span className="text-2xl">📧</span>
-              <div>
-                <p className="font-medium text-gray-900 text-sm">Email potwierdzający</p>
-                <p className="text-sm text-gray-600 mt-1">
-                  Szczegóły zamówienia zostały wysłane na {order.shippingAddress.email}
-                </p>
-              </div>
+            {/* Total */}
+            <div className="flex justify-between items-center pt-4 border-t-2 border-gray-300">
+              <span className="text-xl font-bold text-gray-900">Suma</span>
+              <span className="text-3xl font-extrabold text-gray-900">
+                {formatPriceExact(order.total)}
+              </span>
             </div>
           </div>
 
-          <div className="bg-gray-50 border border-gray-200 rounded-lg p-4">
-            <div className="flex items-start gap-3">
-              <span className="text-2xl">📦</span>
-              <div>
-                <p className="font-medium text-gray-900 text-sm">Czas realizacji</p>
-                <p className="text-sm text-gray-600 mt-1">
-                  Zamówienie zostanie wysłane w ciągu 24-48 godzin
-                </p>
+          {/* Shipping Address */}
+          <div className="bg-white rounded-lg shadow-lg p-8">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+              Adres dostawy
+            </h2>
+            <div className="text-gray-700 capitalize">
+              <p className="font-medium">{order.shippingAddress.name}</p>
+              <p>{order.shippingAddress.street}</p>
+              <p>
+                {order.shippingAddress.zipCode} {order.shippingAddress.city}
+              </p>
+              <p>{order.shippingAddress.country}</p>
+              <div className="mt-3 pt-3 border-t border-gray-200 normal-case text-sm flex items-center gap-4 flex-wrap">
+                <span className="flex items-center gap-1.5">
+                  <span>📧</span>
+                  <span>{order.shippingAddress.email}</span>
+                </span>
+                <span className="text-gray-300">|</span>
+                <span className="flex items-center gap-1.5">
+                  <span>📱</span>
+                  <span>{order.shippingAddress.phone}</span>
+                </span>
               </div>
             </div>
           </div>
         </div>
+
+        {/* Info section */}
+        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-6 text-sm text-gray-700">
+            <div className="flex items-center gap-2">
+              <span className="text-xl">📧</span>
+              <p>
+                <span className="font-medium text-gray-900">Email potwierdzający</span> wysłany na {order.shippingAddress.email}
+              </p>
+            </div>
+            <span className="hidden sm:inline text-gray-300">|</span>
+            <div className="flex items-center gap-2">
+              <span className="text-xl">📦</span>
+              <p>
+                <span className="font-medium text-gray-900">Wysyłka:</span> 24-48 godzin
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Google OAuth CTA (for guests) / Order confirmation (for logged-in) */}
+        {!session ? (
+          <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-8 mb-6 text-center">
+            <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <span className="text-3xl">📦</span>
+            </div>
+
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              Zapisz to zamówienie na koncie
+            </h3>
+            <p className="text-sm text-gray-600 mb-6 max-w-md mx-auto">
+              Miej dostęp do historii zakupów i statusu paczki bez konieczności pamiętania kolejnego hasła.
+            </p>
+
+            {/* Google OAuth Button */}
+            <button
+              onClick={() => signIn('google', { callbackUrl: window.location.href })}
+              className="inline-flex items-center gap-3 bg-white border border-gray-300 px-6 py-3 rounded-lg font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-400 transition-colors shadow-sm"
+            >
+              {/* Google "G" Logo SVG */}
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+                <path
+                  d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"
+                  fill="#4285F4"
+                />
+                <path
+                  d="M9.003 18c2.43 0 4.467-.806 5.956-2.18L12.05 13.56c-.806.54-1.836.86-3.047.86-2.344 0-4.328-1.584-5.036-3.711H.96v2.332C2.44 15.983 5.485 18 9.003 18z"
+                  fill="#34A853"
+                />
+                <path
+                  d="M3.964 10.712c-.18-.54-.282-1.117-.282-1.71 0-.593.102-1.17.282-1.71V4.96H.957C.347 6.175 0 7.55 0 9.002c0 1.452.348 2.827.957 4.042l3.007-2.332z"
+                  fill="#FBBC05"
+                />
+                <path
+                  d="M9.003 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.464.891 11.428 0 9.002 0 5.485 0 2.44 2.017.96 4.958L3.967 7.29c.708-2.127 2.692-3.71 5.036-3.71z"
+                  fill="#EA4335"
+                />
+              </svg>
+              Kontynuuj za pomocą Google
+            </button>
+          </div>
+        ) : (
+          <div className="bg-white border border-gray-200 rounded-lg shadow-lg p-6 mb-6 text-center">
+            <p className="text-gray-600 mb-3">
+              To zamówienie zostało zapisane na Twoim koncie
+            </p>
+            <Link href="/panel" className="text-blue-600 hover:underline font-medium">
+              Zobacz wszystkie zamówienia →
+            </Link>
+          </div>
+        )}
 
         {/* Actions */}
-        <div className="flex flex-col sm:flex-row gap-3">
+        <div className="text-center">
           <Link
             href="/sklep"
-            className="flex-1 bg-blue-600 text-white px-6 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors text-center"
+            className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
           >
             Kontynuuj zakupy
-          </Link>
-          <Link
-            href="/"
-            className="flex-1 bg-gray-200 text-gray-700 px-6 py-3 rounded-lg font-medium hover:bg-gray-300 transition-colors text-center"
-          >
-            Wróć do strony głównej
           </Link>
         </div>
 
@@ -374,10 +411,10 @@ export default function CheckoutSuccessPage() {
           <p className="text-sm text-gray-600">
             Masz pytania? Skontaktuj się z nami:{' '}
             <a
-              href="mailto:kontakt@instytut-saunowy.pl"
+              href={`mailto:${BRAND.contact.email}`}
               className="text-blue-600 hover:text-blue-700 font-medium"
             >
-              kontakt@instytut-saunowy.pl
+              {BRAND.contact.email}
             </a>
           </p>
         </div>

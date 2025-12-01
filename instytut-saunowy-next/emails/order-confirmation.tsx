@@ -10,12 +10,17 @@ import {
   Section,
   Row,
   Column,
+  Img,
 } from '@react-email/components';
+import { BRAND } from '@/constants/brand';
+import { capitalizeWords } from '@/lib/utils/text';
 
 interface OrderItem {
   productName: string;
   quantity: number;
   pricePerItem: number;
+  variantDisplayNames?: string;
+  imageUrl?: string;
 }
 
 interface OrderConfirmationEmailProps {
@@ -24,134 +29,6 @@ interface OrderConfirmationEmailProps {
   items: OrderItem[];
   total: number;
   trackingNumber?: string;
-}
-
-export default function OrderConfirmationEmail({
-  orderNumber,
-  customerName,
-  items,
-  total,
-  trackingNumber,
-}: OrderConfirmationEmailProps) {
-  const previewText = `Potwierdzenie zamówienia #${orderNumber} - Instytut Saunowy`;
-
-  return (
-    <Html>
-      <Head />
-      <Preview>{previewText}</Preview>
-      <Body style={main}>
-        <Container style={container}>
-          {/* Logo - replaced with text heading */}
-          <Section style={logoSection}>
-            <Heading style={logoHeading}>
-              Instytut Saunowy 🧖‍♀️
-            </Heading>
-          </Section>
-
-          {/* Heading */}
-          <Heading style={h1}>Dziękujemy za zamówienie! 🎉</Heading>
-
-          <Text style={text}>Cześć {customerName}!</Text>
-
-          <Text style={text}>
-            Twoje zamówienie <strong>#{orderNumber}</strong> zostało przyjęte i opłacone.
-            Przygotowujemy je do wysyłki.
-          </Text>
-
-          {/* Order items */}
-          <Section style={orderSection}>
-            <Heading as="h2" style={h2}>
-              Zamówione produkty:
-            </Heading>
-
-            {items.map((item, index) => (
-              <Row key={index} style={itemRow}>
-                <Column style={itemColumn}>
-                  <Text style={itemText}>
-                    {item.quantity}x {item.productName}
-                  </Text>
-                </Column>
-                <Column align="right" style={priceColumn}>
-                  <Text style={itemText}>
-                    {(item.pricePerItem * item.quantity).toFixed(2)} zł
-                  </Text>
-                </Column>
-              </Row>
-            ))}
-
-            <Row style={totalRow}>
-              <Column>
-                <Text style={totalText}>Razem:</Text>
-              </Column>
-              <Column align="right">
-                <Text style={totalText}>{total.toFixed(2)} zł</Text>
-              </Column>
-            </Row>
-          </Section>
-
-          {/* Tracking */}
-          {trackingNumber && (
-            <Section style={buttonSection}>
-              <Link
-                href={`https://inpost.pl/sledzenie-przesylek?number=${trackingNumber}`}
-                style={button}
-              >
-                Śledź przesyłkę
-              </Link>
-            </Section>
-          )}
-
-          {/* Footer info */}
-          <Section style={infoSection}>
-            <Text style={infoText}>
-              ✅ Faktura VAT została dołączona do tej wiadomości
-            </Text>
-            <Text style={infoText}>
-              📦 Wysyłka nastąpi w ciągu 1-2 dni roboczych
-            </Text>
-            <Text style={infoText}>
-              💳 Płatność została potwierdzona
-            </Text>
-          </Section>
-
-          {/* Contact */}
-          <Text style={footer}>
-            Masz pytania? Skontaktuj się z nami:
-            <br />
-            📧{' '}
-            <Link href="mailto:kontakt@instytut-saunowy.pl" style={link}>
-              kontakt@instytut-saunowy.pl
-            </Link>
-            <br />
-            📱 +48 123 456 789
-          </Text>
-
-          <Text style={footer}>
-            Pozdrawiamy serdecznie,
-            <br />
-            <strong>Zespół Instytutu Saunowego</strong> 🧖‍♀️
-          </Text>
-
-          {/* Social */}
-          <Section style={socialSection}>
-            <Text style={socialText}>Śledź nas:</Text>
-            <Row>
-              <Column align="center">
-                <Link href="https://facebook.com/instytut.saunowy" style={socialLink}>
-                  Facebook
-                </Link>
-              </Column>
-              <Column align="center">
-                <Link href="https://instagram.com/instytut_saunowy" style={socialLink}>
-                  Instagram
-                </Link>
-              </Column>
-            </Row>
-          </Section>
-        </Container>
-      </Body>
-    </Html>
-  );
 }
 
 // Styles
@@ -174,12 +51,9 @@ const logoSection = {
   padding: '32px 0 16px',
 };
 
-const logoHeading = {
-  color: '#98391d',
-  fontSize: '28px',
-  fontWeight: 'bold',
-  margin: '0',
-  padding: '0',
+const logoImage = {
+  display: 'block',
+  margin: '0 auto',
 };
 
 const h1 = {
@@ -215,20 +89,50 @@ const orderSection = {
 
 const itemRow = {
   borderBottom: '1px solid #e5e7eb',
-  padding: '12px 0',
+  padding: '16px 0',
 };
 
-const itemColumn = {
-  paddingRight: '8px',
+const imageColumn = {
+  width: '80px',
+  paddingRight: '16px',
+  verticalAlign: 'top' as const,
+};
+
+const productImage = {
+  borderRadius: '8px',
+  objectFit: 'cover' as const,
+};
+
+const detailsColumn = {
+  paddingRight: '16px',
+  verticalAlign: 'top' as const,
+};
+
+const productName = {
+  color: '#333',
+  fontSize: '15px',
+  fontWeight: '600',
+  margin: '0 0 4px 0',
+  padding: '0',
+};
+
+const variantText = {
+  color: '#6b7280',
+  fontSize: '13px',
+  margin: '0',
+  padding: '0',
 };
 
 const priceColumn = {
   paddingLeft: '8px',
+  verticalAlign: 'top' as const,
+  width: '100px',
 };
 
 const itemText = {
   color: '#333',
-  fontSize: '14px',
+  fontSize: '15px',
+  fontWeight: '600',
   margin: '0',
   padding: '0',
 };
@@ -241,7 +145,7 @@ const totalRow = {
 
 const totalText = {
   color: '#333',
-  fontSize: '18px',
+  fontSize: '20px',
   fontWeight: 'bold',
   margin: '0',
   padding: '0',
@@ -266,18 +170,39 @@ const button = {
 };
 
 const infoSection = {
-  backgroundColor: '#f0f9ff',
-  padding: '20px 32px',
+  padding: '24px 32px',
   margin: '32px 16px',
-  borderRadius: '8px',
-  borderLeft: '4px solid #3b82f6',
+  borderTop: '1px solid #e5e7eb',
+  borderBottom: '1px solid #e5e7eb',
+};
+
+const infoTitle = {
+  color: '#333',
+  fontSize: '16px',
+  fontWeight: 'bold',
+  margin: '0 0 16px 0',
+  padding: '0',
+};
+
+const infoRow = {
+  marginBottom: '8px',
+};
+
+const infoBullet = {
+  color: '#98391d',
+  fontSize: '16px',
+  fontWeight: 'bold',
+  width: '24px',
+  paddingRight: '8px',
+  verticalAlign: 'top' as const,
 };
 
 const infoText = {
-  color: '#1e40af',
+  color: '#4b5563',
   fontSize: '14px',
-  margin: '8px 0',
+  margin: '0',
   padding: '0',
+  lineHeight: '20px',
 };
 
 const footer = {
@@ -304,12 +229,198 @@ const socialSection = {
 const socialText = {
   color: '#8898aa',
   fontSize: '14px',
-  margin: '0 0 12px',
+  margin: '0 0 16px',
 };
 
-const socialLink = {
-  color: '#98391d',
-  textDecoration: 'none',
-  fontSize: '14px',
-  fontWeight: 'bold',
+const socialRow = {
+  width: 'auto',
+  margin: '0 auto',
+  display: 'table',
 };
+
+const socialIconColumn = {
+  padding: '0 10px',
+  width: 'auto',
+  display: 'table-cell',
+};
+
+const socialIcon = {
+  borderRadius: '50%',
+  transition: 'opacity 0.3s',
+};
+
+export default function OrderConfirmationEmail({
+  orderNumber,
+  customerName,
+  items,
+  total,
+  trackingNumber,
+}: OrderConfirmationEmailProps) {
+  const previewText = `Potwierdzenie zamówienia #${orderNumber} 📦`;
+
+  return (
+    <Html>
+      <Head />
+      <Preview>{previewText}</Preview>
+      <Body style={main}>
+        <Container style={container}>
+          {/* Logo Section */}
+          <Section style={logoSection}>
+            <Img
+              src={BRAND.logo.url.email}
+              alt={BRAND.logo.alt}
+              width={BRAND.logo.dimensions.email.width}
+              height={BRAND.logo.dimensions.email.height}
+              style={logoImage}
+            />
+          </Section>
+
+          {/* Heading */}
+          <Heading style={h1}>Dziękujemy za zamówienie #{orderNumber}</Heading>
+
+          <Text style={text}>Cześć {capitalizeWords(customerName.split(' ')[0])}!</Text>
+
+          <Text style={text}>
+            Twoje zamówienie zostało przyjęte i opłacone. Przygotowujemy je do wysyłki.
+          </Text>
+
+          {/* Order items */}
+          <Section style={orderSection}>
+            <Heading as="h2" style={h2}>
+              Zamówione produkty:
+            </Heading>
+
+            {items.map((item, index) => (
+              <Row key={index} style={itemRow}>
+                {/* Product Image */}
+                <Column style={imageColumn}>
+                  {item.imageUrl && (
+                    <Img
+                      src={item.imageUrl}
+                      alt={item.productName}
+                      width="60"
+                      height="60"
+                      style={productImage}
+                    />
+                  )}
+                </Column>
+
+                {/* Product Details */}
+                <Column style={detailsColumn}>
+                  <Text style={productName}>
+                    {item.quantity}x {item.productName}
+                  </Text>
+                  {item.variantDisplayNames && (
+                    <Text style={variantText}>{item.variantDisplayNames}</Text>
+                  )}
+                </Column>
+
+                {/* Price */}
+                <Column align="right" style={priceColumn}>
+                  <Text style={itemText}>
+                    {(item.pricePerItem * item.quantity).toFixed(2)} zł
+                  </Text>
+                </Column>
+              </Row>
+            ))}
+
+            <Row style={totalRow}>
+              <Column>
+                <Text style={totalText}>Razem:</Text>
+              </Column>
+              <Column align="right">
+                <Text style={totalText}>{total.toFixed(2)} zł</Text>
+              </Column>
+            </Row>
+          </Section>
+
+          {/* Tracking */}
+          {trackingNumber && (
+            <Section style={buttonSection}>
+              <Link
+                href={`https://inpost.pl/sledzenie-przesylek?number=${trackingNumber}`}
+                style={button}
+              >
+                Śledź przesyłkę
+              </Link>
+            </Section>
+          )}
+
+          {/* Order Status Info */}
+          <Section style={infoSection}>
+            <Text style={infoTitle}>Co dalej?</Text>
+
+            <Row style={infoRow}>
+              <Column style={infoBullet}>•</Column>
+              <Column>
+                <Text style={infoText}>Faktura VAT w załączniku</Text>
+              </Column>
+            </Row>
+
+            <Row style={infoRow}>
+              <Column style={infoBullet}>•</Column>
+              <Column>
+                <Text style={infoText}>Wysyłka: 1-2 dni robocze</Text>
+              </Column>
+            </Row>
+
+            <Row style={infoRow}>
+              <Column style={infoBullet}>•</Column>
+              <Column>
+                <Text style={infoText}>Płatność potwierdzona</Text>
+              </Column>
+            </Row>
+          </Section>
+
+          {/* Contact */}
+          <Text style={footer}>
+            Masz pytania? Skontaktuj się z nami:
+            <br />
+            <Link href={`mailto:${BRAND.contact.email}`} style={link}>
+              {BRAND.contact.email}
+            </Link>
+            <br />
+            <Link href={`tel:${BRAND.contact.phone.replace(/\s/g, '')}`} style={link}>
+              {BRAND.contact.phone}
+            </Link>
+          </Text>
+
+          <Text style={footer}>
+            Pozdrawiamy serdecznie,
+            <br />
+            <strong>Zespół Instytutu Saunowego</strong>
+          </Text>
+
+          {/* Social Media */}
+          <Section style={socialSection}>
+            <Text style={socialText}>Dołącz do naszej społeczności</Text>
+            <Row style={socialRow}>
+              <Column align="center" style={socialIconColumn}>
+                <Link href={BRAND.social.facebook.url}>
+                  <Img
+                    src={BRAND.icons.facebook}
+                    alt="Facebook"
+                    width="32"
+                    height="32"
+                    style={socialIcon}
+                  />
+                </Link>
+              </Column>
+              <Column align="center" style={socialIconColumn}>
+                <Link href={BRAND.social.instagram.url}>
+                  <Img
+                    src={BRAND.icons.instagram}
+                    alt="Instagram"
+                    width="32"
+                    height="32"
+                    style={socialIcon}
+                  />
+                </Link>
+              </Column>
+            </Row>
+          </Section>
+        </Container>
+      </Body>
+    </Html>
+  );
+}

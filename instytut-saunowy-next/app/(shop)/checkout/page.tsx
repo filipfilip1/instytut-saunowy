@@ -1,14 +1,17 @@
 'use client';
 
 import { useState } from 'react';
+import { useSession } from 'next-auth/react';
 import { useCart } from '@/contexts/CartContext';
 import Link from 'next/link';
 import { checkoutShippingSchema, type CheckoutShippingData } from '@/lib/schemas/checkout';
 import ProductImageFallback from '@/components/ui/ProductImageFallback';
 import { formatPriceExact } from '@/lib/utils/currency';
 import { useToast } from '@/hooks/useToast';
+import { User, UserCheck, LogIn } from 'lucide-react';
 
 export default function CheckoutPage() {
+  const { data: session } = useSession();
   const { items, getTotal } = useCart();
   const toast = useToast();
   const [loading, setLoading] = useState(false);
@@ -165,6 +168,38 @@ export default function CheckoutPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2">
               <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
+                {/* Auth status badge */}
+                <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <div className="flex items-center gap-2">
+                    {session ? (
+                      <>
+                        <UserCheck className="w-5 h-5 text-green-600 flex-shrink-0" />
+                        <div className="flex-grow">
+                          <p className="text-sm font-medium text-gray-900">
+                            Zalogowany jako <span className="text-blue-600">{session.user?.email}</span>
+                          </p>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <User className="w-5 h-5 text-gray-500 flex-shrink-0" />
+                        <div className="flex-grow">
+                          <p className="text-sm text-gray-700">
+                            <span className="font-medium">Kupujesz jako gość</span> • Nie musisz tworzyć konta
+                          </p>
+                        </div>
+                        <Link
+                          href="/auth/signin?callbackUrl=/checkout"
+                          className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors whitespace-nowrap"
+                        >
+                          <LogIn className="w-4 h-4" />
+                          Zaloguj się
+                        </Link>
+                      </>
+                    )}
+                  </div>
+                </div>
+
                 <h2 className="text-xl font-semibold text-gray-900 mb-6">
                   Dane do dostawy
                 </h2>
@@ -332,7 +367,7 @@ export default function CheckoutPage() {
                   ))}
                 </div>
 
-                {/* Podsumowanie cen */}
+                {/* Price summary */}
                 <div className="border-t pt-4 space-y-2 mb-6">
                   <div className="flex justify-between text-gray-600">
                     <span>Produkty</span>
@@ -348,7 +383,6 @@ export default function CheckoutPage() {
                   </div>
                 </div>
 
-                {/* Przycisk */}
                 <button
                   type="submit"
                   disabled={loading}

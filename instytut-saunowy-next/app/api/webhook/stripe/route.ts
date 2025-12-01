@@ -90,6 +90,25 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
     return;
   }
 
+  // Fetch line items to get variantDisplayNames from metadata
+  const lineItems = await stripe.checkout.sessions.listLineItems(session.id, {
+    expand: ['data.price.product'],
+  });
+
+  // Enrich items with variantDisplayNames from line item metadata
+  const enrichedItems = items.map((item: any, index: number) => {
+    const lineItem = lineItems.data[index];
+    const productData = lineItem?.price?.product as Stripe.Product | undefined;
+    const variantDisplayNames = productData?.metadata?.variantDisplayNames || '';
+
+    return {
+      ...item,
+      variantDisplayNames,
+    };
+  });
+
+  console.log('📋 Enriched items with display names');
+
   // Idempotency check: prevent duplicate orders using session ID
   const existingOrder = await Order.findOne({
     stripeSessionId: session.id,
@@ -113,7 +132,7 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
     }
 
     // 1. Update stock levels for all products
-    for (const item of items) {
+    for (const item of enrichedItems) {
       const product = mongoSession
         ? await Product.findById(item.productId).session(mongoSession)
         : await Product.findById(item.productId);
@@ -157,7 +176,7 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
 
     // 2. Create order in database
     const orderData = {
-      items,
+      items: enrichedItems,
       shippingAddress,
       total: (session.amount_total || 0) / 100, // Convert from cents to PLN
       status: 'pending',

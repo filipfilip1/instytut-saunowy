@@ -76,6 +76,7 @@ export interface IOrderItem {
   productId: string;
   productName: string;
   variantSelections: Record<string, string>;
+  variantDisplayNames?: string; // Human-readable variant info (e.g. "Rozmiar: S, Kolor: Szary melanż")
   quantity: number;
   pricePerItem: number;
 }

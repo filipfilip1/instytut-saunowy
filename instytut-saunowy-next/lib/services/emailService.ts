@@ -2,15 +2,19 @@ import { Resend } from 'resend';
 import OrderConfirmationEmail from '@/emails/order-confirmation';
 import { IOrder } from '@/types';
 import React from 'react';
+import Product from '@/lib/models/Product';
+import dbConnect from '@/lib/mongodb';
+import { emailThumbnail } from '@/lib/utils/cloudinary';
+import { BRAND } from '@/constants/brand';
 
 // ============================================
 // Configuration
 // ============================================
 
 const EMAIL_CONFIG = {
-  from: `${process.env.EMAIL_FROM_NAME || 'Instytut Saunowy'} <${process.env.EMAIL_FROM_ADDRESS || 'onboarding@resend.dev'}>`,
-  contactEmail: process.env.EMAIL_CONTACT || 'kontakt@instytut-saunowy.pl',
-  companyName: process.env.EMAIL_FROM_NAME || 'Instytut Saunowy',
+  from: `${process.env.EMAIL_FROM_NAME || BRAND.name} <${process.env.EMAIL_FROM_ADDRESS || 'onboarding@resend.dev'}>`,
+  contactEmail: process.env.EMAIL_CONTACT || BRAND.contact.email,
+  companyName: process.env.EMAIL_FROM_NAME || BRAND.name,
 } as const;
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -103,6 +107,38 @@ export async function sendOrderConfirmationEmail({
   const customerName = order.shippingAddress.name;
   const customerEmail = order.shippingAddress.email;
 
+  // Fetch products to get images
+  await dbConnect();
+  const productIds = order.items.map((item) => item.productId);
+  const products = await Product.find({ _id: { $in: productIds } });
+  const productMap = new Map(products.map((p) => [String(p._id), p]));
+
+  // Enrich items with images and variant display names
+  const enrichedItems = order.items.map((item) => {
+    const product = productMap.get(item.productId);
+    const primaryImage = product?.images?.find((img) => img.isPrimary);
+    const rawUrl = primaryImage?.url || `${process.env.NEXT_PUBLIC_APP_URL}/placeholder-product.png`;
+
+    // Apply Cloudinary transformation for email thumbnail (60x60px, optimized quality)
+    const imageUrl = emailThumbnail(rawUrl);
+
+    console.log(`📸 Product: ${item.productName}, Optimized URL: ${imageUrl}`);
+
+    return {
+      productName: item.productName,
+      quantity: item.quantity,
+      pricePerItem: item.pricePerItem,
+      variantDisplayNames: item.variantDisplayNames,
+      imageUrl,
+    };
+  });
+
+  console.log('📧 Email data:', {
+    logo: BRAND.logo.url.email,
+    customerName,
+    itemCount: enrichedItems.length,
+  });
+
   const attachments = invoicePdfUrl
     ? [{ filename: `Faktura-${orderNumber}.pdf`, path: invoicePdfUrl }]
     : undefined;
@@ -114,11 +150,7 @@ export async function sendOrderConfirmationEmail({
     react: OrderConfirmationEmail({
       orderNumber,
       customerName,
-      items: order.items.map((item) => ({
-        productName: item.productName,
-        quantity: item.quantity,
-        pricePerItem: item.pricePerItem,
-      })),
+      items: enrichedItems,
       total: order.total,
       trackingNumber: order.trackingNumber,
     }),

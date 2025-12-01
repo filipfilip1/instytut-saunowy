@@ -2,14 +2,17 @@
 
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { useCart } from '@/contexts/CartContext';
 import { IProduct, IProductVariant, IVariantOption } from '@/types';
 import ProductImageFallback from '@/components/ui/ProductImageFallback';
 import { formatPriceRounded } from '@/lib/utils/currency';
+import { User, UserCheck, ShoppingCart, X, Check, ShieldCheck, RefreshCcw } from 'lucide-react';
 
 export default function CartPage() {
   const router = useRouter();
-  const { items, updateQuantity, removeFromCart, getTotal, clearCart } = useCart();
+  const { data: session } = useSession();
+  const { items, updateQuantity, removeFromCart, getTotal } = useCart();
 
   const getVariantDisplay = (product: IProduct, selectedVariants: Record<string, string>) => {
     const displays: string[] = [];
@@ -38,11 +41,7 @@ export default function CartPage() {
           <h1 className="text-3xl font-bold text-gray-900 mb-8">Koszyk</h1>
 
           <div className="bg-white rounded-lg shadow-sm p-8 text-center">
-            <svg className="w-24 h-24 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
-                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-              />
-            </svg>
+            <ShoppingCart className="w-24 h-24 text-gray-400 mx-auto mb-4" strokeWidth={1.5} />
 
             <h2 className="text-xl font-semibold text-gray-900 mb-2">
               Twój koszyk jest pusty
@@ -66,6 +65,21 @@ export default function CartPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Auth status indicator */}
+        <div className="mb-4 flex items-center gap-2 text-sm text-gray-600">
+          {session ? (
+            <>
+              <UserCheck className="w-4 h-4 text-green-600" />
+              <span>Zalogowany jako <span className="font-medium">{session.user?.email}</span></span>
+            </>
+          ) : (
+            <>
+              <User className="w-4 h-4 text-gray-500" />
+              <span>Kupujesz jako gość</span>
+            </>
+          )}
+        </div>
+
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Koszyk</h1>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -117,9 +131,7 @@ export default function CartPage() {
                         className="text-gray-400 hover:text-red-600 transition-colors"
                         aria-label="Usuń z koszyka"
                       >
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+                        <X className="w-5 h-5" />
                       </button>
 
                       <div className="flex items-center gap-2 mt-4">
@@ -156,20 +168,6 @@ export default function CartPage() {
                   </div>
                 </div>
               ))}
-
-              {/* Clear cart button */}
-              <div className="p-6 bg-gray-50">
-                <button
-                  onClick={() => {
-                    if (window.confirm('Czy na pewno chcesz wyczyścić koszyk?')) {
-                      clearCart();
-                    }
-                  }}
-                  className="text-red-600 hover:text-red-700 font-medium transition-colors"
-                >
-                  Wyczyść koszyk
-                </button>
-              </div>
             </div>
           </div>
 
@@ -204,6 +202,18 @@ export default function CartPage() {
                 Przejdź do płatności
               </button>
 
+              {!session && (
+                <p className="text-center text-sm text-gray-600 mt-3">
+                  Masz już konto?{' '}
+                  <Link
+                    href="/auth/signin?callbackUrl=/koszyk"
+                    className="text-blue-600 hover:text-blue-700 font-medium transition-colors"
+                  >
+                    Zaloguj się, aby kupić szybciej
+                  </Link>
+                </p>
+              )}
+
               <Link
                 href="/sklep"
                 className="block text-center text-blue-600 hover:text-blue-700 font-medium mt-4 transition-colors"
@@ -213,21 +223,15 @@ export default function CartPage() {
 
               <div className="mt-6 space-y-2 text-sm text-gray-600">
                 <div className="flex items-center gap-2">
-                  <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
+                  <Check className="w-5 h-5 text-green-500" />
                   <span>Darmowa dostawa od 200 zł</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                  </svg>
+                  <ShieldCheck className="w-5 h-5 text-green-500" />
                   <span>Bezpieczne płatności</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <svg className="w-5 h-5 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                  </svg>
+                  <RefreshCcw className="w-5 h-5 text-green-500" />
                   <span>30 dni na zwrot</span>
                 </div>
               </div>

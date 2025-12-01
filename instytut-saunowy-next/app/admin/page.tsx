@@ -5,6 +5,7 @@ import { IOrder } from '@/types';
 import Order from '@/lib/models/Order';
 import User from '@/lib/models/User';
 import Link from 'next/link';
+import { ArrowRight } from 'lucide-react';
 import SalesChart from '@/components/admin/SalesChart';
 
 async function getDashboardStats() {
@@ -146,9 +147,7 @@ export default async function AdminDashboard() {
           </div>
           <Link href="/admin/products" className="text-forest-600 text-sm font-semibold inline-flex items-center gap-1 hover:gap-2 transition-all">
             Zarządzaj
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
+            <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
 
@@ -162,9 +161,7 @@ export default async function AdminDashboard() {
           </div>
           <Link href="/admin/orders" className="text-nordic-600 text-sm font-semibold inline-flex items-center gap-1 hover:gap-2 transition-all">
             Zobacz wszystkie
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
+            <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
 
@@ -178,9 +175,7 @@ export default async function AdminDashboard() {
           </div>
           <Link href="/admin/customers" className="text-warmwood-600 text-sm font-semibold inline-flex items-center gap-1 hover:gap-2 transition-all">
             Przeglądaj
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
+            <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
 
