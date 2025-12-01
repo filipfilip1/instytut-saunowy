@@ -3,8 +3,10 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { Eye } from 'lucide-react';
 import { IProduct } from '@/types';
 import { useCart } from '@/contexts/CartContext';
+import { useQuickView } from '@/contexts/QuickViewContext';
 import Toast from '@/components/ui/Toast';
 import ProductImageFallback from '@/components/ui/ProductImageFallback';
 import AnimatedNumber from '@/components/animations/AnimatedNumber';
@@ -17,6 +19,7 @@ interface ProductCardProps {
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const router = useRouter();
   const { addToCart } = useCart();
+  const { openQuickView } = useQuickView();
   const [showToast, setShowToast] = useState(false);
 
 
@@ -88,6 +91,19 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 iconSize={64}
               />
             )}
+
+            {/* Quick View Button */}
+            <button
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                openQuickView(product);
+              }}
+              className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/95 backdrop-blur-sm shadow-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-gold-50 hover:scale-110 text-graphite-700 hover:text-gold-600"
+              aria-label="Szybki podgląd"
+            >
+              <Eye className="w-5 h-5" />
+            </button>
 
             {/* Number of variants */}
             {product.variants.length > 0 && (

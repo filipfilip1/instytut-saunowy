@@ -2,10 +2,12 @@ import type { Metadata } from 'next';
 import { Inter, Cormorant_Garamond } from 'next/font/google';
 import './globals.css';
 import { CartProvider } from '@/contexts/CartContext';
+import { QuickViewProvider } from '@/contexts/QuickViewContext';
 import AuthProvider from '@/components/providers/AuthProvider';
 import ToastProvider from '@/components/providers/ToastProvider';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
+import QuickViewModal from '@/components/products/QuickViewModal';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -33,15 +35,18 @@ export default function RootLayout({
       <body className={`${inter.variable} ${cormorant.variable} font-sans`}>
         <AuthProvider>
           <CartProvider>
-            <ToastProvider>
-              <div className="min-h-screen flex flex-col bg-cream-200">
-                <Header />
-                <main className="flex-grow">
-                  {children}
-                </main>
-                <Footer />
-              </div>
-            </ToastProvider>
+            <QuickViewProvider>
+              <ToastProvider>
+                <div className="min-h-screen flex flex-col bg-cream-200">
+                  <Header />
+                  <main className="flex-grow">
+                    {children}
+                  </main>
+                  <Footer />
+                </div>
+              </ToastProvider>
+              <QuickViewModal />
+            </QuickViewProvider>
           </CartProvider>
         </AuthProvider>
       </body>
