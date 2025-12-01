@@ -1,18 +1,38 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { ShoppingCart, Menu, X } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import LoginButton from '@/components/auth/LoginButton';
+import SmartSearch from '@/components/search/SmartSearch';
+import AnimatedNumber from '@/components/animations/AnimatedNumber';
 import { BRAND } from '@/constants/brand';
+import { IProduct } from '@/types';
 
 const Header = () => {
   const pathname = usePathname();
   const { getItemCount } = useCart();
-  const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [products, setProducts] = useState<IProduct[]>([]);
+
+  // Fetch products for search
+  useEffect(() => {
+    async function fetchProducts() {
+      try {
+        const response = await fetch('/api/products?limit=100');
+        const data = await response.json();
+        if (data.status === 'success') {
+          setProducts(data.data);
+        }
+      } catch (error) {
+        console.error('Error fetching products for search:', error);
+      }
+    }
+    fetchProducts();
+  }, []);
 
   const isActive = (path: string) => {
     if (path === '/') {
@@ -86,6 +106,11 @@ const Header = () => {
             </Link>
           </div>
 
+          {/* Search - Desktop */}
+          <div className="hidden md:block flex-1 max-w-md mx-4">
+            <SmartSearch products={products} placeholder="Szukaj produktów..." />
+          </div>
+
           {/* Cart, Login & Mobile Menu */}
           <div className="flex items-center space-x-4">
             {/* Login Button */}
@@ -98,8 +123,8 @@ const Header = () => {
             >
               <ShoppingCart className="w-6 h-6" />
               {getItemCount() > 0 && (
-                <span className="absolute -top-1 -right-1 bg-forest-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-semibold">
-                  {getItemCount()}
+                <span className="absolute -top-1 -right-1 bg-forest-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-semibold tabular-nums">
+                  <AnimatedNumber value={getItemCount()} />
                 </span>
               )}
             </Link>
@@ -118,6 +143,11 @@ const Header = () => {
         {/* Mobile Menu */}
         {mobileMenuOpen && (
           <div className="md:hidden border-t-2 border-cream-300 bg-cream-50">
+            {/* Mobile Search */}
+            <div className="px-4 py-3">
+              <SmartSearch products={products} placeholder="Szukaj produktów..." />
+            </div>
+
             <div className="px-2 pt-2 pb-3 space-y-1">
               <Link
                 href="/"

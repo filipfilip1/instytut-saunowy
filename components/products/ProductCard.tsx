@@ -7,6 +7,7 @@ import { IProduct } from '@/types';
 import { useCart } from '@/contexts/CartContext';
 import Toast from '@/components/ui/Toast';
 import ProductImageFallback from '@/components/ui/ProductImageFallback';
+import AnimatedNumber from '@/components/animations/AnimatedNumber';
 import { formatPriceExact } from '@/lib/utils/currency';
 
 interface ProductCardProps {
@@ -94,9 +95,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                 {product.variants.map(variant => (
                   <span
                     key={variant.id}
-                    className="bg-white/95 backdrop-blur-sm px-3 py-1.5 text-xs font-medium text-graphite-800 rounded-xl shadow-md"
+                    className="bg-white/95 backdrop-blur-sm px-3 py-1.5 text-xs font-medium text-graphite-800 rounded-xl shadow-md tabular-nums"
                   >
-                    {variant.options.length} {variant.name.toLowerCase()}
+                    <AnimatedNumber value={variant.options.length} /> {variant.name.toLowerCase()}
                   </span>
                 ))}
               </div>
@@ -132,8 +133,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                   </span>
                 ))}
                 {product.features.length > 2 && (
-                  <span className="text-xs text-graphite-500 px-2 py-1">
-                    +{product.features.length - 2} więcej
+                  <span className="text-xs text-graphite-500 px-2 py-1 tabular-nums">
+                    +<AnimatedNumber value={product.features.length - 2} /> więcej
                   </span>
                 )}
               </div>
@@ -144,7 +145,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         {/* Footer with price - outside Link for button interaction */}
         <div className="px-5 pb-5">
           <div className="flex items-center justify-between gap-3">
-            <span className="text-2xl font-serif font-bold text-graphite-900">
+            <span className="text-2xl font-sans font-bold text-graphite-900 tabular-nums">
               {getPriceRange()}
             </span>
             <button

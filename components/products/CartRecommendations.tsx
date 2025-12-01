@@ -105,7 +105,7 @@ export default function CartRecommendations({
                   {product.name}
                 </h3>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-lg font-bold text-graphite-900">
+                  <span className="text-lg font-bold text-graphite-900 tabular-nums">
                     {formatPriceRounded(product.basePrice)}
                   </span>
                 </div>

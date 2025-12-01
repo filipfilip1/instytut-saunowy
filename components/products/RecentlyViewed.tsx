@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { getRecentlyViewed, getRecentlyViewedExcluding, RecentlyViewedProduct } from '@/lib/client/recentlyViewed';
 import { formatPriceRounded } from '@/lib/utils/currency';
+import FadeIn from '@/components/animations/FadeIn';
+import HoverCard from '@/components/animations/HoverCard';
 
 interface RecentlyViewedProps {
   /**
@@ -72,12 +74,13 @@ export default function RecentlyViewed({
       {/* Horizontal scrollable grid */}
       <div className="relative">
         <div className="flex gap-4 overflow-x-auto pb-4 snap-x snap-mandatory scrollbar-hide">
-          {products.map((product) => (
-            <div key={product._id} className="flex-shrink-0 w-48 snap-start">
-              <Link
-                href={`/produkt/${product.slug}`}
-                className="block group"
-              >
+          {products.map((product, index) => (
+            <FadeIn key={product._id} delay={index * 0.1} className="flex-shrink-0 w-48 snap-start">
+              <HoverCard>
+                <Link
+                  href={`/produkt/${product.slug}`}
+                  className="block group"
+                >
                 <div className="bg-white rounded-lg border border-gray-200 overflow-hidden transition-all hover:shadow-lg hover:border-gray-300">
                   {/* Product Image */}
                   <div className="relative aspect-square bg-gray-100 overflow-hidden">
@@ -111,14 +114,15 @@ export default function RecentlyViewed({
                       {product.name}
                     </h3>
                     <div className="flex items-baseline gap-1">
-                      <span className="text-lg font-bold text-graphite-900">
+                      <span className="text-lg font-bold text-graphite-900 tabular-nums">
                         {formatPriceRounded(product.basePrice)}
                       </span>
                     </div>
                   </div>
                 </div>
               </Link>
-            </div>
+              </HoverCard>
+            </FadeIn>
           ))}
         </div>
 

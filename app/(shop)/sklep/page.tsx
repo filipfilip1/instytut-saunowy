@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import ProductCard from '@/components/products/ProductCard';
+import ProductGrid from '@/components/products/ProductGrid';
 import RecentlyViewed from '@/components/products/RecentlyViewed';
 import { ProductCategory } from '@/types';
 import { fetchProducts } from '@/lib/utils/productQueries';
@@ -85,11 +85,7 @@ export default async function ProductListPage() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {products.map((product) => (
-              <ProductCard key={product._id} product={product} />
-            ))}
-          </div>
+          <ProductGrid products={products} />
         )}
       </div>
 
