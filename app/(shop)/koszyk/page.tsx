@@ -8,6 +8,8 @@ import { IProduct, IProductVariant, IVariantOption } from '@/types';
 import ProductImageFallback from '@/components/ui/ProductImageFallback';
 import { formatPriceExact } from '@/lib/utils/currency';
 import { User, UserCheck, ShoppingCart, X, Check, ShieldCheck, RefreshCcw } from 'lucide-react';
+import CartRecommendationsWrapper from './CartRecommendationsWrapper';
+import RecentlyViewed from '@/components/products/RecentlyViewed';
 
 export default function CartPage() {
   const router = useRouter();
@@ -237,6 +239,16 @@ export default function CartPage() {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Cart Recommendations */}
+        <div className="mt-12">
+          <CartRecommendationsWrapper />
+        </div>
+
+        {/* Recently Viewed Products */}
+        <div className="mt-8">
+          <RecentlyViewed title="Ostatnio oglądane" maxItems={6} />
         </div>
       </div>
     </div>

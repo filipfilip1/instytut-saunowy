@@ -27,6 +27,16 @@ async function getProduct(slug: string): Promise<IProduct | null> {
   return JSON.parse(JSON.stringify(product));
 }
 
+async function getAllProducts(): Promise<IProduct[]> {
+  await dbConnect();
+
+  const products = await Product.find({ isActive: true })
+    .select('_id slug name basePrice images category isActive viewCount')
+    .lean();
+
+  return JSON.parse(JSON.stringify(products));
+}
+
 export default async function ProductDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const product = await getProduct(slug);
@@ -34,6 +44,9 @@ export default async function ProductDetailPage({ params }: PageProps) {
   if (!product) {
     notFound();
   }
+
+  // Fetch all products for recommendations
+  const allProducts = await getAllProducts();
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -67,7 +80,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
         </nav>
       </div>
 
-      <ProductDetailClient product={product} />
+      <ProductDetailClient product={product} allProducts={allProducts} />
     </div>
   );
 }

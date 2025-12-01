@@ -1,6 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import ProductCard from '@/components/products/ProductCard';
+import RecentlyViewed from '@/components/products/RecentlyViewed';
 import { ProductCategory } from '@/types';
 import { fetchProducts } from '@/lib/utils/productQueries';
 import {
@@ -90,6 +91,11 @@ export default async function ProductListPage() {
             ))}
           </div>
         )}
+      </div>
+
+      {/* Recently Viewed Products */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+        <RecentlyViewed maxItems={6} />
       </div>
     </div>
   );
