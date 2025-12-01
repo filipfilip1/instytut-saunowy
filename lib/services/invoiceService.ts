@@ -57,22 +57,16 @@ export async function createInvoice(order: IOrder): Promise<InvoiceResponse> {
         buyer_post_code: order.shippingAddress.zipCode,
         buyer_country: order.shippingAddress.country || 'PL',
 
-        // Status płatności
-        paid: order.paymentStatus === 'paid', // Czy zapłacone
-        payment_type: 'card', // Typ płatności
-
-        // Pozycje faktury
         positions: order.items.map((item) => ({
           name: item.productName,
-          tax: 23, // VAT 23%
-          total_price_gross: (item.pricePerItem * item.quantity).toFixed(2), // Cena brutto
+          tax: 23,
+          total_price_gross: Number((item.pricePerItem * item.quantity).toFixed(2)),
           quantity: item.quantity,
           quantity_unit: 'szt',
         })),
 
-        // Dodatkowe informacje
-        oid: order._id.toString().slice(-8).toUpperCase(), // Numer zamówienia
-        description: 'Faktura Pro Forma - dokument informacyjny',
+        oid: order._id.toString().slice(-8).toUpperCase(),
+        description: `Faktura Pro Forma - dokument informacyjny. Płatność: ${order.paymentStatus === 'paid' ? 'Opłacone kartą przez Stripe' : 'Oczekuje na płatność'}.`,
       },
     };
 

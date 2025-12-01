@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { IProductVariant } from '@/types';
-import { formatPriceRounded, formatPriceModifier } from '@/lib/utils/currency';
+import { formatPriceExact, formatPriceModifier } from '@/lib/utils/currency';
 
 interface VariantSelectorProps {
   variants: IProductVariant[];
@@ -74,7 +74,7 @@ const VariantSelector = ({
                     {option.value}
                     {(option.priceModifier ?? 0) > 0 && (
                       <span className="text-xs ml-1">
-                        (+{formatPriceRounded(option.priceModifier ?? 0)})
+                        (+{formatPriceExact(option.priceModifier ?? 0)})
                       </span>
                     )}
                   </span>
@@ -142,7 +142,7 @@ const VariantSelector = ({
         <div className="flex justify-between items-center">
           <span className="text-lg font-medium text-gray-700">Cena:</span>
           <span className="text-2xl font-bold text-gray-900">
-            {formatPriceRounded(calculatePrice())}
+            {formatPriceExact(calculatePrice())}
           </span>
         </div>
       </div>

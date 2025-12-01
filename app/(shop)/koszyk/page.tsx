@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react';
 import { useCart } from '@/contexts/CartContext';
 import { IProduct, IProductVariant, IVariantOption } from '@/types';
 import ProductImageFallback from '@/components/ui/ProductImageFallback';
-import { formatPriceRounded } from '@/lib/utils/currency';
+import { formatPriceExact } from '@/lib/utils/currency';
 import { User, UserCheck, ShoppingCart, X, Check, ShieldCheck, RefreshCcw } from 'lucide-react';
 
 export default function CartPage() {
@@ -120,7 +120,7 @@ export default function CartPage() {
                         {getVariantDisplay(item.product, item.selectedVariants)}
                       </p>
                       <p className="text-lg font-medium text-gray-900 mt-2">
-                        {formatPriceRounded(item.pricePerItem)}
+                        {formatPriceExact(item.pricePerItem)}
                       </p>
                     </div>
 
@@ -162,7 +162,7 @@ export default function CartPage() {
                       </div>
 
                       <p className="text-lg font-semibold text-gray-900 mt-2">
-                        {formatPriceRounded(item.pricePerItem * item.quantity)}
+                        {formatPriceExact(item.pricePerItem * item.quantity)}
                       </p>
                     </div>
                   </div>
@@ -181,7 +181,7 @@ export default function CartPage() {
               <div className="space-y-3 mb-6">
                 <div className="flex justify-between text-gray-600">
                   <span>Produkty ({items.reduce((sum, item) => sum + item.quantity, 0)})</span>
-                  <span>{formatPriceRounded(getTotal())}</span>
+                  <span>{formatPriceExact(getTotal())}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
                   <span>Dostawa</span>
@@ -190,7 +190,7 @@ export default function CartPage() {
                 <div className="border-t pt-3">
                   <div className="flex justify-between text-xl font-semibold text-gray-900">
                     <span>Suma</span>
-                    <span>{formatPriceRounded(getTotal())}</span>
+                    <span>{formatPriceExact(getTotal())}</span>
                   </div>
                 </div>
               </div>

@@ -20,7 +20,7 @@ export function formatPrice(price: number, fractionDigits: number = 2): string {
 
 /**
  * Format price with exact decimal places (always shows 2 decimal places)
- * Use for: checkouts, invoices, financial calculations
+ * Use for: ALL customer-facing prices (products, cart, checkout, invoices)
  * @param price - Price to format
  * @returns Formatted price string (e.g., "123,45 zł")
  */
@@ -30,7 +30,8 @@ export function formatPriceExact(price: number): string {
 
 /**
  * Format price as rounded integer (no decimal places)
- * Use for: product displays, charts, summaries
+ * Use for: admin panel charts, statistics, summaries ONLY
+ * DO NOT use for customer-facing prices - use formatPriceExact instead
  * @param price - Price to format
  * @returns Formatted price string (e.g., "123 zł")
  */

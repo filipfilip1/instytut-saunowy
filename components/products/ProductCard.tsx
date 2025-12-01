@@ -7,7 +7,7 @@ import { IProduct } from '@/types';
 import { useCart } from '@/contexts/CartContext';
 import Toast from '@/components/ui/Toast';
 import ProductImageFallback from '@/components/ui/ProductImageFallback';
-import { formatPriceRounded } from '@/lib/utils/currency';
+import { formatPriceExact } from '@/lib/utils/currency';
 
 interface ProductCardProps {
   product: IProduct;
@@ -44,10 +44,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     });
 
     if (minPrice === maxPrice) {
-      return formatPriceRounded(minPrice);
+      return formatPriceExact(minPrice);
     }
 
-    return `${formatPriceRounded(minPrice)} - ${formatPriceRounded(maxPrice)}`;
+    return `${formatPriceExact(minPrice)} - ${formatPriceExact(maxPrice)}`;
   };
 
   const isInStock = product.variants.some(variant =>

@@ -8,7 +8,7 @@ import { useCart } from '@/contexts/CartContext';
 import VariantSelector from '@/components/products/VariantSelector';
 import Toast from '@/components/ui/Toast';
 import ProductImageFallback from '@/components/ui/ProductImageFallback';
-import { formatPriceRounded } from '@/lib/utils/currency';
+import { formatPriceExact } from '@/lib/utils/currency';
 
 interface ProductDetailClientProps {
   product: IProduct;
@@ -118,11 +118,11 @@ export default function ProductDetailClient({ product }: ProductDetailClientProp
 
               <div className="flex items-center gap-4 mb-6">
                 <span className="text-3xl font-bold text-gray-900">
-                  {formatPriceRounded(calculatePrice() / quantity)}
+                  {formatPriceExact(calculatePrice() / quantity)}
                 </span>
                 {product.priceRange && product.priceRange.min !== product.priceRange.max && (
                   <span className="text-sm text-gray-500">
-                    (zakres: {formatPriceRounded(product.priceRange.min)} - {formatPriceRounded(product.priceRange.max)})
+                    (zakres: {formatPriceExact(product.priceRange.min)} - {formatPriceExact(product.priceRange.max)})
                   </span>
                 )}
               </div>
