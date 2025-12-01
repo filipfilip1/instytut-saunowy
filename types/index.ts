@@ -129,3 +129,107 @@ export interface ProductQuery {
   page?: number;
   search?: string;
 }
+
+// Blog/Akademia Types
+export interface IBlogPost {
+  _id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  author: {
+    name: string;
+    role: string;
+    avatar?: string;
+  };
+  featuredImage: {
+    url: string;
+    alt?: string;
+  };
+  category: 'poradniki' | 'trendy' | 'diy' | 'szkolenia' | 'zdrowie' | 'przepisy';
+  tags: string[];
+  readTime: number;
+  publishedAt: Date;
+  isPublished: boolean;
+  viewCount: number;
+  seo?: {
+    metaTitle?: string;
+    metaDescription?: string;
+    keywords?: string[];
+  };
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+// Training Types
+export interface ITraining {
+  _id: string;
+  name: string;
+  slug: string;
+  description: string;
+  shortDescription?: string;
+  date: Date;
+  duration: number;
+  location: {
+    venue: string;
+    address: string;
+    city: string;
+    mapUrl?: string;
+  };
+  price: number;
+  depositPercentage: number;
+  maxParticipants: number;
+  currentParticipants: number;
+  category: 'podstawowy' | 'zaawansowany' | 'master' | 'indywidualny';
+  level: 'beginner' | 'intermediate' | 'advanced';
+  requirements?: string[];
+  whatYouLearn: string[];
+  agenda?: Array<{
+    time: string;
+    title: string;
+    description: string;
+  }>;
+  instructor: {
+    name: string;
+    bio?: string;
+    avatar?: string;
+  };
+  images: Array<{
+    url: string;
+    alt?: string;
+  }>;
+  featuredImage?: {
+    url: string;
+    alt?: string;
+  };
+  status: 'draft' | 'published' | 'cancelled' | 'completed';
+  seo?: {
+    metaTitle?: string;
+    metaDescription?: string;
+    keywords?: string[];
+  };
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface ITrainingBooking {
+  _id: string;
+  trainingId: string;
+  userId?: string;
+  participantInfo: {
+    name: string;
+    email: string;
+    phone: string;
+    experience?: string;
+    specialRequirements?: string;
+  };
+  paymentAmount: number;
+  paymentType: 'full' | 'deposit';
+  remainingAmount: number;
+  paymentStatus: 'pending' | 'paid' | 'partially_paid' | 'refunded';
+  bookingStatus: 'confirmed' | 'cancelled' | 'completed';
+  stripeSessionId?: string;
+  stripePaymentIntentId?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}

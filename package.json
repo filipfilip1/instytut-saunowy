@@ -10,7 +10,9 @@
     "seed": "tsx scripts/seed.ts",
     "seed:users": "tsx scripts/seedUsers.ts",
     "seed:products": "tsx scripts/seedProducts.ts",
-    "seed:orders": "tsx scripts/seedOrders.ts"
+    "seed:orders": "tsx scripts/seedOrders.ts",
+    "seed:blog": "tsx scripts/seedBlogPosts.ts",
+    "seed:trainings": "tsx scripts/seedTrainings.ts"
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^3.10.0",
