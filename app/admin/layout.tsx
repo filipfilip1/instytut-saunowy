@@ -32,6 +32,8 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   const menuItems = [
     { href: '/admin', label: '📊 Dashboard', icon: '📊' },
     { href: '/admin/products', label: '📦 Produkty', icon: '📦' },
+    { href: '/admin/trainings', label: '🎓 Szkolenia', icon: '🎓' },
+    { href: '/admin/bookings', label: '📋 Rezerwacje', icon: '📋' },
     { href: '/admin/orders', label: '🛒 Zamówienia', icon: '🛒' },
     { href: '/admin/customers', label: '👥 Klienci', icon: '👥' },
     { href: '/admin/content', label: '📝 Treści', icon: '📝' },

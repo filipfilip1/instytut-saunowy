@@ -85,6 +85,16 @@ const Header = () => {
               Sklep
             </Link>
             <Link
+              href="/szkolenia"
+              className={`font-medium transition-colors text-base ${
+                isActive('/szkolenia')
+                  ? 'text-gold-600 font-semibold'
+                  : 'text-graphite-700 hover:text-gold-500'
+              }`}
+            >
+              Szkolenia
+            </Link>
+            <Link
               href="/o-nas"
               className={`font-medium transition-colors text-base ${
                 isActive('/o-nas')
@@ -162,6 +172,13 @@ const Header = () => {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Sklep
+              </Link>
+              <Link
+                href="/szkolenia"
+                className="block px-4 py-3 rounded-xl text-base font-medium text-graphite-700 hover:text-gold-600 hover:bg-gold-50 transition-all"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Szkolenia
               </Link>
               <Link
                 href="/o-nas"
