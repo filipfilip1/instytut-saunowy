@@ -3,6 +3,8 @@ import { stripe } from '@/lib/stripe';
 import dbConnect from '@/lib/mongodb';
 import Order from '@/lib/models/Order';
 import Product from '@/lib/models/Product';
+import Training from '@/lib/models/Training';
+import TrainingBooking from '@/lib/models/TrainingBooking';
 import Stripe from 'stripe';
 import { IProductVariant, IVariantOption } from '@/types';
 import { createInvoice } from '@/lib/services/invoiceService';
@@ -81,7 +83,13 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
 
   await dbConnect();
 
-  // Parse metadata from session
+  // Check if this is a training booking
+  if (session.metadata?.type === 'training_booking') {
+    await handleTrainingBookingCompleted(session);
+    return;
+  }
+
+  // Parse metadata from session (for product orders)
   const shippingAddress = JSON.parse(session.metadata?.shippingAddress || '{}');
   const items = JSON.parse(session.metadata?.items || '[]');
 
@@ -254,5 +262,105 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
     if (mongoSession) {
       mongoSession.endSession();
     }
+  }
+}
+
+async function handleTrainingBookingCompleted(session: Stripe.Checkout.Session) {
+  console.log('✅ Training booking session completed:', session.id);
+
+  try {
+    // Parse participant info from metadata
+    const participantInfo = JSON.parse(session.metadata?.participantInfo || '{}');
+    const trainingId = session.metadata?.trainingId;
+    const userId = session.metadata?.userId || undefined;
+    const guestEmail = session.metadata?.guestEmail || undefined;
+    const fullAmount = parseFloat(session.metadata?.fullAmount || '0');
+    const depositAmount = parseFloat(session.metadata?.depositAmount || '0');
+
+    if (!participantInfo || !trainingId) {
+      console.error('❌ Missing training booking metadata');
+      return;
+    }
+
+    // Idempotency check: prevent duplicate bookings
+    const existingBooking = await TrainingBooking.findOne({
+      stripeSessionId: session.id,
+    });
+
+    if (existingBooking) {
+      console.log('⚠️ Booking already exists for session:', session.id);
+      return;
+    }
+
+    // Check if transactions are enabled
+    const useTransactions = process.env.MONGODB_USE_TRANSACTIONS === 'true';
+    const mongoSession = useTransactions ? await TrainingBooking.startSession() : null;
+
+    try {
+      if (mongoSession) {
+        mongoSession.startTransaction();
+        console.log('🔄 Using MongoDB transactions');
+      }
+
+      // 1. Find training and increment participants
+      const training = mongoSession
+        ? await Training.findById(trainingId).session(mongoSession)
+        : await Training.findById(trainingId);
+
+      if (!training) {
+        throw new Error(`Training ${trainingId} not found`);
+      }
+
+      // Increment participants count
+      await (training as any).incrementParticipants(1);
+      console.log(`📚 Training participants updated: ${training.name} (${training.currentParticipants}/${training.maxParticipants})`);
+
+      // 2. Create booking record
+      const bookingData = {
+        trainingId,
+        userId,
+        guestEmail,
+        participantInfo,
+        stripeSessionId: session.id,
+        paymentAmount: depositAmount,
+        paymentType: depositAmount === fullAmount ? 'full' : 'deposit',
+        paymentStatus: 'paid',
+        bookingStatus: 'confirmed',
+      };
+
+      const booking = mongoSession
+        ? await TrainingBooking.create([bookingData], { session: mongoSession })
+        : await TrainingBooking.create([bookingData]);
+
+      console.log('✅ Training booking created:', booking[0]._id);
+
+      // 3. Commit transaction
+      if (mongoSession) {
+        await mongoSession.commitTransaction();
+        console.log('✅ Training booking transaction committed');
+      }
+
+      // TODO: Send training booking confirmation email
+      // if (process.env.RESEND_API_KEY) {
+      //   await sendTrainingBookingEmail({
+      //     booking: booking[0],
+      //     training,
+      //   });
+      // }
+    } catch (error) {
+      if (mongoSession) {
+        await mongoSession.abortTransaction();
+        console.log('🔄 Training booking transaction rolled back');
+      }
+      throw error;
+    } finally {
+      if (mongoSession) {
+        mongoSession.endSession();
+      }
+    }
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    console.error('❌ Training booking failed:', errorMessage);
+    throw error;
   }
 }

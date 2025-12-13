@@ -216,6 +216,7 @@ export interface ITrainingBooking {
   _id: string;
   trainingId: string;
   userId?: string;
+  guestEmail?: string;
   participantInfo: {
     name: string;
     email: string;
@@ -223,13 +224,14 @@ export interface ITrainingBooking {
     experience?: string;
     specialRequirements?: string;
   };
+  stripeSessionId: string;
   paymentAmount: number;
   paymentType: 'full' | 'deposit';
-  remainingAmount: number;
-  paymentStatus: 'pending' | 'paid' | 'partially_paid' | 'refunded';
-  bookingStatus: 'confirmed' | 'cancelled' | 'completed';
-  stripeSessionId?: string;
-  stripePaymentIntentId?: string;
+  paymentStatus: 'pending' | 'paid' | 'failed' | 'refunded';
+  bookingStatus: 'confirmed' | 'cancelled' | 'pending_approval';
+  cancelledAt?: Date;
+  cancellationReason?: string;
+  adminNotes?: string;
   createdAt: Date;
   updatedAt: Date;
 }
