@@ -355,29 +355,31 @@ const samplePosts = [
   },
 ];
 
-export async function seedBlogPosts() {
-  try {
-    await dbConnect();
+export async function seedBlogPosts(): Promise<void> {
+  await BlogPost.deleteMany({});
+  console.log('✅ Cleared existing blog posts');
 
-    // Clear existing posts
-    await BlogPost.deleteMany({});
-    console.log('✅ Cleared existing blog posts');
+  const result = await BlogPost.insertMany(samplePosts);
+  console.log(`✅ Successfully seeded ${result.length} blog posts`);
 
-    // Insert sample posts
-    const result = await BlogPost.insertMany(samplePosts);
-    console.log(`✅ Successfully seeded ${result.length} blog posts`);
-
-    console.log('\nCreated posts:');
-    result.forEach((post, index) => {
-      console.log(`${index + 1}. ${post.title} (/${post.slug})`);
-    });
-
-    process.exit(0);
-  } catch (error) {
-    console.error('❌ Error seeding blog posts:', error);
-    process.exit(1);
-  }
+  console.log('\nCreated posts:');
+  result.forEach((post, index) => {
+    console.log(`${index + 1}. ${post.title} (/${post.slug})`);
+  });
 }
 
-// Run the seed function
-seedBlogPosts();
+// Run directly if executed as a script
+if (require.main === module) {
+  (async () => {
+    try {
+      await dbConnect();
+      await seedBlogPosts();
+      await mongoose.connection.close();
+      process.exit(0);
+    } catch (error) {
+      console.error('❌ Error seeding blog posts:', error);
+      await mongoose.connection.close();
+      process.exit(1);
+    }
+  })();
+}

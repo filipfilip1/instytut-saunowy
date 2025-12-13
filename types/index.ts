@@ -210,6 +210,12 @@ export interface ITraining {
   };
   createdAt: Date;
   updatedAt: Date;
+  // Virtual properties
+  availableSpots?: number;
+  isFull?: boolean;
+  isAlmostFull?: boolean;
+  shouldShowAvailability?: boolean;
+  depositAmount?: number;
 }
 
 export interface ITrainingBooking {

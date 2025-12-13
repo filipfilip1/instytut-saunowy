@@ -1,8 +1,11 @@
-import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import Training from '../lib/models/Training';
+import { resolve } from 'path';
 
-dotenv.config({ path: '.env.local' });
+dotenv.config({ path: resolve(process.cwd(), '.env.local') });
+
+import mongoose from 'mongoose';
+import Training from '../lib/models/Training';
+import connectDB from '../lib/mongodb';
 
 const sampleTrainings = [
   {
@@ -10,7 +13,7 @@ const sampleTrainings = [
     slug: 'kurs-aufguss-podstawowy-listopad-2024',
     description: '<p>Dwudniowy kurs dla początkujących, który wprowadzi Cię w świat ceremonii saunowych Aufguss. Poznasz podstawy techniki machania ręcznikiem, doboru aromatów oraz budowania ceremonii.</p><p>Kurs prowadzi Mateusz, certyfikowany Master Aufguss z wieloletnim doświadczeniem na polskiej i międzynarodowej scenie saunowej.</p>',
     shortDescription: 'Dwudniowy kurs dla początkujących - poznaj podstawy ceremonii Aufguss i techniki machania ręcznikiem',
-    date: new Date('2024-12-15'),
+    date: new Date('2025-12-20'),
     duration: 16,
     location: {
       venue: 'Hotel Wellness & SPA',
@@ -57,7 +60,7 @@ const sampleTrainings = [
     slug: 'kurs-aufguss-zaawansowany-grudzien-2024',
     description: '<p>Trzydniowy kurs dla osób z doświadczeniem w Aufguss. Zaawansowane techniki, choreografia, muzyka i budowanie spektakularnych ceremonii.</p><p>Kurs obejmuje również przygotowanie do zawodów MoA i networking z najlepszymi mistrzami Aufguss w Polsce.</p>',
     shortDescription: 'Trzydniowy kurs zaawansowany - spektakularne ceremonie, choreografia i przygotowanie do zawodów',
-    date: new Date('2025-01-20'),
+    date: new Date('2026-01-25'),
     duration: 24,
     location: {
       venue: 'Sauna Natura',
@@ -99,7 +102,7 @@ const sampleTrainings = [
     slug: 'master-class-aufguss-luty-2025',
     description: '<p>Ekskluzywny pięciodniowy Master Class dla doświadczonych mistrzów Aufguss. Pogłębienie wiedzy, autorskie ceremonie, przygotowanie materiałów konkursowych.</p><p>Tylko 6 miejsc. Kurs kończy się certyfikatem Master Aufguss Specialist.</p>',
     shortDescription: 'Ekskluzywny 5-dniowy Master Class - autorskie ceremonie i certyfikat Master Aufguss Specialist',
-    date: new Date('2025-02-10'),
+    date: new Date('2026-02-15'),
     duration: 40,
     location: {
       venue: 'Hotel Urle',
@@ -142,7 +145,7 @@ const sampleTrainings = [
     slug: 'szkolenie-indywidualne-na-zamowienie',
     description: '<p>Szkolenie indywidualne dostosowane do Twoich potrzeb i poziomu zaawansowania. Elastyczne terminy, intensywna praca one-on-one z mistrzem.</p><p>Idealne dla osób, które chcą szybko rozwinąć konkretne umiejętności lub przygotować się do ważnego wydarzenia.</p>',
     shortDescription: 'Spersonalizowane szkolenie 1-on-1 z mistrzem - elastyczny program dostosowany do Twoich potrzeb',
-    date: new Date('2025-03-01'),
+    date: new Date('2026-03-10'),
     duration: 8,
     location: {
       venue: 'Do uzgodnienia',
@@ -203,29 +206,32 @@ const sampleTrainings = [
   },
 ];
 
-async function seedTrainings() {
-  try {
-    await mongoose.connect(process.env.MONGODB_URI!);
-    console.log('✅ MongoDB connected');
+export async function seedTrainings(): Promise<void> {
+  await Training.deleteMany({});
+  console.log('✅ Cleared existing trainings');
 
-    // Clear existing trainings (COMMENTED OUT for safety - uncomment if needed)
-    await Training.deleteMany({});
-    console.log('✅ Cleared existing trainings');
+  const result = await Training.insertMany(sampleTrainings);
+  console.log(`✅ Successfully seeded ${result.length} trainings`);
 
-    const result = await Training.insertMany(sampleTrainings);
-    console.log(`✅ Successfully seeded ${result.length} trainings`);
-
-    console.log('\nCreated trainings:');
-    result.forEach((training, index) => {
-      console.log(`${index + 1}. ${training.name} (/${training.slug})`);
-      console.log(`   Status: ${training.status}, Participants: ${training.currentParticipants}/${training.maxParticipants}`);
-    });
-
-    process.exit(0);
-  } catch (error) {
-    console.error('❌ Error seeding trainings:', error);
-    process.exit(1);
-  }
+  console.log('\nCreated trainings:');
+  result.forEach((training, index) => {
+    const status = training.status === 'published' ? '✅' : '📝';
+    console.log(`${status} ${index + 1}. ${training.name} (/${training.slug})`);
+  });
 }
 
-seedTrainings();
+// Run directly if executed as a script
+if (require.main === module) {
+  (async () => {
+    try {
+      await connectDB();
+      await seedTrainings();
+      await mongoose.connection.close();
+      process.exit(0);
+    } catch (error) {
+      console.error('❌ Seeding failed:', error);
+      await mongoose.connection.close();
+      process.exit(1);
+    }
+  })();
+}
