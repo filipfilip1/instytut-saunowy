@@ -8,6 +8,7 @@ import connectDB from '../lib/mongodb';
 import { seedUsers } from './seedUsers';
 import { seedProducts } from './seedProducts';
 import { seedOrders } from './seedOrders';
+import { seedBlogPosts } from './seedBlogPosts';
 
 async function runAllSeeders() {
   console.log('\n🌱 Database seeding started...\n');
@@ -19,6 +20,9 @@ async function runAllSeeders() {
     await seedUsers();    // First: create users (customers)
     await seedProducts(); // Second: create products
     await seedOrders();   // Third: create orders (needs users & products)
+
+    await seedBlogPosts(); // Fourth: create blog posts
+
 
     const duration = ((Date.now() - startTime) / 1000).toFixed(2);
     console.log(`\n✅ Seeding completed in ${duration}s\n`);

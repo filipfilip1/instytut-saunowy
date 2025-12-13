@@ -26,7 +26,7 @@ export default function Home() {
                 Przeglądaj Produkty
               </Link>
               <Link
-                href="/sklep/zestawy"
+                href="/akademia"
                 className="btn-outline-gold px-10 py-4 text-lg bg-white/10 backdrop-blur-sm hover:bg-gold-400"
               >
                 Czytaj Blog
