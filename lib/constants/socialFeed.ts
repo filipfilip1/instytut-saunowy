@@ -33,32 +33,22 @@ export interface InstagramPost {
  */
 export const INSTAGRAM_FEED: InstagramPost[] = [
   {
-    imageUrl: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=600&fit=crop',
+    imageUrl: 'https://res.cloudinary.com/dh87opqta/image/upload/v1765814749/568638417_1453700313423327_1196940154728412072_n_lnbsaa.jpg',
     postUrl: 'https://www.instagram.com/instytut_saunowy/',
     caption: 'Fińska sauna w pełnej krasie',
   },
   {
-    imageUrl: 'https://images.unsplash.com/photo-1545389336-cf090694435e?w=600&h=600&fit=crop',
-    postUrl: 'https://www.instagram.com/instytut_saunowy/',
-    caption: 'Ceremonia Aufguss z naszymi mistrzami',
-  },
-  {
-    imageUrl: 'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=600&h=600&fit=crop',
+    imageUrl: 'https://res.cloudinary.com/dh87opqta/image/upload/v1765814750/597859890_1500808078712550_7219933392194300319_n_rqplms.jpg',
     postUrl: 'https://www.instagram.com/instytut_saunowy/',
     caption: 'Mindful moment w saunie',
   },
   {
-    imageUrl: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=600&h=600&fit=crop',
-    postUrl: 'https://www.instagram.com/instytut_saunowy/',
-    caption: 'Tradycyjne akcesoria saunowe',
-  },
-  {
-    imageUrl: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=600&h=600&fit=crop',
+    imageUrl: 'https://res.cloudinary.com/dh87opqta/image/upload/v1765814698/560606082_1443792917747400_6533667736677390027_n_rztibj.jpg',
     postUrl: 'https://www.instagram.com/instytut_saunowy/',
     caption: 'Warsztaty dla przyszłych saunamistrzów',
   },
   {
-    imageUrl: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&h=600&fit=crop',
+    imageUrl: 'https://res.cloudinary.com/dh87opqta/image/upload/v1765814680/481992912_1244329197693774_3957024046536135450_n_sxeaqf.jpg',
     postUrl: 'https://www.instagram.com/instytut_saunowy/',
     caption: 'Połączenie sauny z naturą',
   },

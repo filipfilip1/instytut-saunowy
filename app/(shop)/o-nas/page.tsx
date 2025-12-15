@@ -8,6 +8,7 @@ import CommunityPhotoCard from '@/components/about/CommunityPhotoCard';
 import InstagramPhoto from '@/components/about/InstagramPhoto';
 import { COMMUNITY_PHOTOS } from '@/lib/constants/communityPhotos';
 import { INSTAGRAM_FEED } from '@/lib/constants/socialFeed';
+import { founderAvatar } from '@/lib/utils/cloudinary';
 import { ChevronDown, Award } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -25,7 +26,7 @@ const FOUNDERS = [
     role: 'Mentorka Saunowa',
     bio: 'Z pierwszej podróży do Finlandii przywiozłam nie tylko wspomnienia, ale misję - pokazać Polakom, że sauna to więcej niż gorące pomieszczenie. To rytuał, który łączy tradycję, mindfulness i wspólnotę.',
     philosophy: 'Sauna to nie miejsce - to stan umysłu',
-    imageUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=600&h=600&fit=crop',
+    imageUrl: founderAvatar('https://res.cloudinary.com/dh87opqta/image/upload/v1765819550/558943616_1434623841997641_5168742723712960409_n_k1jbya.jpg'),
     favoriteProducts: [
       { name: 'Tekstylia saunowe', url: '/sklep?category=tekstylia' },
       { name: 'Ceramika tradycyjna', url: '/sklep?category=ceramika' },
@@ -36,7 +37,7 @@ const FOUNDERS = [
     role: 'Saunamistrz',
     bio: 'Jako saunamistrz wiem, że prawdziwa ceremonia wymaga cierpliwości, wiedzy i szacunku dla tradycji. Przez 15 lat studiowałem fińskie techniki, by przekazywać je dalej w autentycznej formie.',
     philosophy: 'Prawdziwa sauna wymaga cierpliwości',
-    imageUrl: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=600&h=600&fit=crop',
+    imageUrl: founderAvatar('https://res.cloudinary.com/dh87opqta/image/upload/v1765819550/565783976_1451181063675252_3998556668514412011_n_kjtpjr.jpg'),
     favoriteProducts: [
       { name: 'Akcesoria drewniane', url: '/sklep?category=drewno' },
       { name: 'Zioła i aromaty', url: '/sklep?category=aromaty' },
@@ -48,8 +49,8 @@ const FOUNDERS = [
 const STATS = [
   { value: 150, suffix: '+', label: 'Przeszkolonych uczestników' },
   { value: 50, suffix: '+', label: 'Przeprowadzonych sesji' },
-  { value: 15, suffix: '+', label: 'Lat doświadczenia' },
-  { value: 98, suffix: '%', label: 'Zadowolonych klientów' },
+  { value: 10, suffix: '+', label: 'Lat doświadczenia' },
+
 ];
 
 // Certification placeholder data
@@ -63,26 +64,57 @@ export default function ONasPage() {
   return (
     <div className="min-h-screen">
       {/* Section 1: Hero - Atmosfera */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-forest-800 via-forest-600 to-nordic-700 animate-gradient-shift">
-        {/* SVG Pattern Overlay */}
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxwYXRoIGQ9Ik0zNiAxOGMzLjMxNCAwIDYgMi42ODYgNiA2cy0yLjY4NiA2LTYgNi02LTIuNjg2LTYtNiAyLjY4Ni02IDYtNnoiIHN0cm9rZT0iI0ZGRiIgc3Ryb2tlLXdpZHRoPSIyIi8+PC9nPjwvc3ZnPg==')] animate-pulse" />
-        </div>
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-forest-900">
 
-        {/* Content */}
+        {/* 1. BLURRED BACKGROUND VIDEO (fills entire screen) */}
+        <video
+          muted={true}
+          autoPlay={true}
+          loop={true}
+          playsInline={true}
+          className="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-60 z-0"
+          poster="https://res.cloudinary.com/dh87opqta/image/upload/v1765820951/8285942-uhd_2160_4096_25fps_g9boyk.jpg"
+        >
+          <source
+            src="https://res.cloudinary.com/dh87opqta/video/upload/v1765820951/8285942-uhd_2160_4096_25fps_g9boyk.mp4"
+            type="video/mp4"
+          />
+        </video>
+
+        {/* 2. SHARP CENTER VIDEO (portrait, shows full context) */}
+        <video
+          muted={true}
+          autoPlay={true}
+          loop={true}
+          playsInline={true}
+          className="absolute inset-0 w-full h-full object-contain z-[1] shadow-[0_0_80px_rgba(0,0,0,0.7)]"
+          poster="https://res.cloudinary.com/dh87opqta/image/upload/v1765820951/8285942-uhd_2160_4096_25fps_g9boyk.jpg"
+        >
+          <source
+            src="https://res.cloudinary.com/dh87opqta/video/upload/v1765820951/8285942-uhd_2160_4096_25fps_g9boyk.mp4"
+            type="video/mp4"
+          />
+        </video>
+
+        {/* 3. OVERLAY  */}
+        <div className="absolute inset-0 bg-forest-900/30 mix-blend-multiply z-[2]" />
+        <div className="absolute inset-0 bg-black/20 z-[2]" />
+
+
+        {/* 3. CONTENT  */}
         <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <FadeIn delay={0.3} direction="up" duration={0.8}>
-            <h1 className="text-5xl md:text-7xl font-serif font-bold text-white mb-6 leading-tight">
+            <h1 className="text-5xl md:text-7xl font-serif font-bold text-white mb-6 leading-tight drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)]">
               Gdzie rytuał staje się sztuką
             </h1>
-            <p className="text-xl md:text-2xl text-cream-100 max-w-3xl mx-auto leading-relaxed">
-              Autentyczna fińska kultura saunowa. Tradycja przekazywana z pasją.
+            <p className="text-xl md:text-2xl text-cream-100 max-w-3xl mx-auto leading-relaxed drop-shadow-[0_3px_6px_rgba(0,0,0,0.8)] mb-16 md:mb-24 lg:mb-32">
+              Autentyczna kultura saunowa. Tradycja przekazywana z pasją.
             </p>
           </FadeIn>
 
           {/* Scroll Indicator */}
-          <div className="absolute bottom-12 left-1/2 -translate-x-1/2 animate-bounce">
-            <ChevronDown className="w-8 h-8 text-cream-200" />
+          <div className="absolute bottom-8 md:bottom-12 lg:bottom-16 left-1/2 -translate-x-1/2 animate-bounce z-20">
+            <ChevronDown className="w-7 h-7 md:w-8 md:h-8 text-cream-200 drop-shadow-md" />
           </div>
         </div>
       </section>
@@ -132,6 +164,7 @@ export default function ONasPage() {
                       src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800&h=1000&fit=crop"
                       alt="Fińska sauna - atmosfera"
                       fill
+                      sizes="(max-width: 1024px) 100vw, 40vw"
                       className="object-cover"
                     />
                   </div>
@@ -151,7 +184,7 @@ export default function ONasPage() {
                 Poznaj Nas
               </h2>
               <p className="text-xl text-graphite-600">
-                Nie jesteśmy pracownikami korporacji. Jesteśmy mentorami i pasjonatami.
+                Jesteśmy mentorami i pasjonatami.
               </p>
             </div>
           </FadeIn>
@@ -185,8 +218,8 @@ export default function ONasPage() {
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-[250px] gap-4"
           >
             {COMMUNITY_PHOTOS.map((photo, index) => (
-              <StaggerItem key={index}>
-                <ScaleIn delay={index * 0.1}>
+              <StaggerItem key={index} className="h-full">
+                <ScaleIn delay={index * 0.1} className="h-full">
                   <CommunityPhotoCard {...photo} />
                 </ScaleIn>
               </StaggerItem>
@@ -200,7 +233,7 @@ export default function ONasPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-8 mb-12">
               {STATS.map((stat, index) => (
                 <div key={index} className="text-center">
                   <div className="text-4xl md:text-5xl font-serif font-bold text-gold-800 mb-2 tabular-nums">

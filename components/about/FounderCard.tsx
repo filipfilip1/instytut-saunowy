@@ -31,6 +31,7 @@ export default function FounderCard({
           src={imageUrl}
           alt={name}
           fill
+          sizes="256px"
           className="object-cover rounded-full drop-shadow-2xl"
         />
       </div>

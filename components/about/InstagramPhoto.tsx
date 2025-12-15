@@ -21,6 +21,7 @@ export default function InstagramPhoto({ imageUrl, postUrl, caption }: Instagram
           src={imageUrl}
           alt={caption || 'Instagram post'}
           fill
+          sizes="300px"
           className="object-cover"
         />
 

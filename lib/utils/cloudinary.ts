@@ -73,3 +73,19 @@ export function emailLogo(url: string, width: number, height: number): string {
     format: 'jpg',
   });
 }
+
+/**
+ * Optimize founder/team member avatar (1024x1024px, face-centered, high quality)
+ * Large enough for Next.js Image to scale down for responsive sizes
+ * Perfect for rounded profile images
+ */
+export function founderAvatar(url: string): string {
+  return transformCloudinaryUrl(url, {
+    width: 1024,
+    height: 1024,
+    crop: 'fill',
+    gravity: 'face',
+    quality: 90,
+    format: 'auto',
+  });
+}

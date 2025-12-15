@@ -15,7 +15,7 @@ export default function CommunityPhotoCard({
 }: CommunityPhotoCardProps) {
   return (
     <div
-      className={`relative overflow-hidden rounded-2xl group cursor-pointer ${
+      className={`relative overflow-hidden rounded-2xl group cursor-pointer h-full ${
         size === 'large' ? 'row-span-2' : 'row-span-1'
       }`}
     >
@@ -25,6 +25,7 @@ export default function CommunityPhotoCard({
           src={imageUrl}
           alt={eventName}
           fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
           className="object-cover transition-transform duration-500 group-hover:scale-110"
         />
       </div>

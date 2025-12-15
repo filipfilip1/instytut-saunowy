@@ -20,39 +20,39 @@ export interface CommunityPhoto {
  */
 export const COMMUNITY_PHOTOS: CommunityPhoto[] = [
   {
-    imageUrl: 'https://images.unsplash.com/photo-1545389336-cf090694435e?w=800&h=1000&fit=crop',
+    imageUrl: 'https://res.cloudinary.com/dh87opqta/image/upload/v1765819549/486124085_1258184952974865_252334988169383133_n_hfnmaq.jpg',
+    eventName: 'Sauna & Natura',
+    description: 'Outdoor event łączący saunę z przyrodą i nordic wellness',
+    size: 'small',
+  },
+  {
+    imageUrl: 'https://res.cloudinary.com/dh87opqta/image/upload/v1765819555/589074763_1488340806625944_4533421609909245087_n_b11xzc.jpg',
     eventName: 'Warsztaty Aufguss',
     description: 'Dwudniowe szkolenie zaawansowanych technik parowych w Zakopanem',
     size: 'large',
   },
   {
-    imageUrl: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?w=600&h=600&fit=crop',
+    imageUrl: 'https://res.cloudinary.com/dh87opqta/image/upload/v1765819553/577623514_1473475338112491_930237470988858477_n_llgatv.jpg',
     eventName: 'Zjazd Społeczności',
     description: 'Coroczne spotkanie miłośników fińskiej kultury saunowej',
     size: 'small',
   },
   {
-    imageUrl: 'https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=600&h=600&fit=crop',
+    imageUrl: 'https://res.cloudinary.com/dh87opqta/image/upload/v1765819553/563449687_1445459630914062_4252567337702658007_n_thlphf.jpg',
     eventName: 'Ceremonia Löyly',
     description: 'Praktyczne wprowadzenie do tradycyjnej fińskiej ceremonii',
     size: 'small',
   },
   {
-    imageUrl: 'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=600&h=600&fit=crop',
+    imageUrl: 'https://res.cloudinary.com/dh87opqta/image/upload/v1765819552/547387959_1418682093591816_3464506810639298770_n_rbfvnq.jpg',
     eventName: 'Mindful Sauna',
     description: 'Połączenie rytuału saunowego z praktykami mindfulness',
     size: 'small',
   },
   {
-    imageUrl: 'https://images.unsplash.com/photo-1600880292203-757bb62b4baf?w=800&h=1000&fit=crop',
+    imageUrl: 'https://res.cloudinary.com/dh87opqta/image/upload/v1765819549/558089322_1438819141578111_5356484247644721983_n_fwkqmt.jpg',
     eventName: 'Szkolenie Saunamistrzów',
     description: 'Intensywny program certyfikacyjny dla przyszłych instruktorów',
     size: 'large',
-  },
-  {
-    imageUrl: 'https://images.unsplash.com/photo-1559827260-dc66d52bef19?w=600&h=600&fit=crop',
-    eventName: 'Sauna & Natura',
-    description: 'Outdoor event łączący saunę z przyrodą i nordic wellness',
-    size: 'small',
   },
 ];
