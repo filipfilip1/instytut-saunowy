@@ -106,4 +106,29 @@
   .animate-slide-up {
     animation: slide-up 0.3s ease-out;
   }
+
+  /* Animated gradient for hero section */
+  @keyframes gradient-shift {
+    0%, 100% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+  }
+
+  .animate-gradient-shift {
+    background-size: 200% 200%;
+    animation: gradient-shift 15s ease-in-out infinite;
+  }
+
+  /* Hide scrollbar for Instagram feed */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }

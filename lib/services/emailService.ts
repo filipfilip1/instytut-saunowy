@@ -214,3 +214,90 @@ export async function sendOrderCancellationEmail(
     `,
   });
 }
+
+/**
+ * Send contact form submission to admin
+ */
+export async function sendContactFormEmailToAdmin(params: {
+  name: string;
+  email: string;
+  phone?: string;
+  subject: string;
+  message: string;
+}): Promise<EmailResult> {
+  const { name, email, phone, subject, message } = params;
+
+  return sendEmail({
+    logPrefix: 'Sending contact form to admin',
+    to: ['filip.fieduk@gmail.com'],
+    subject: `Formularz kontaktowy: ${subject}`,
+    html: `
+      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Nowa wiadomość z formularza kontaktowego</h2>
+        <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+          <tr style="border-bottom: 1px solid #eee;">
+            <td style="padding: 12px 0; font-weight: bold; width: 120px;">Od:</td>
+            <td style="padding: 12px 0;">${name}</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #eee;">
+            <td style="padding: 12px 0; font-weight: bold;">Email:</td>
+            <td style="padding: 12px 0;"><a href="mailto:${email}">${email}</a></td>
+          </tr>
+          <tr style="border-bottom: 1px solid #eee;">
+            <td style="padding: 12px 0; font-weight: bold;">Telefon:</td>
+            <td style="padding: 12px 0;">${phone || 'Nie podano'}</td>
+          </tr>
+          <tr style="border-bottom: 1px solid #eee;">
+            <td style="padding: 12px 0; font-weight: bold;">Temat:</td>
+            <td style="padding: 12px 0;">${subject}</td>
+          </tr>
+        </table>
+        <div style="margin: 20px 0;">
+          <strong>Wiadomość:</strong>
+          <div style="margin-top: 10px; padding: 16px; background-color: #f5f5f5; border-radius: 8px; white-space: pre-wrap;">${message}</div>
+        </div>
+        <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
+        <p style="color: #666; font-size: 14px;">
+          Ta wiadomość została wysłana przez formularz kontaktowy na stronie ${EMAIL_CONFIG.companyName}
+        </p>
+      </div>
+    `,
+  });
+}
+
+/**
+ * Send contact form confirmation to user
+ */
+export async function sendContactFormConfirmationToUser(params: {
+  email: string;
+  name: string;
+  message: string;
+}): Promise<EmailResult> {
+  const { email, name, message } = params;
+
+  return sendEmail({
+    logPrefix: 'Sending contact form confirmation to',
+    to: [email],
+    subject: 'Potwierdzenie otrzymania wiadomości - Instytut Saunowy',
+    html: `
+      <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Dziękujemy za kontakt!</h2>
+        <p>Cześć ${name},</p>
+        <p>Twoja wiadomość została dostarczona. Odpowiemy w ciągu 24-48 godzin roboczych.</p>
+        <div style="margin: 20px 0; padding: 20px; background-color: #f9f7f4; border-left: 4px solid #d4af7a; border-radius: 8px;">
+          <strong style="color: #3a3a3a;">Twoja wiadomość:</strong>
+          <div style="margin-top: 10px; color: #666; white-space: pre-wrap;">${message}</div>
+        </div>
+        <p>W razie pilnych pytań, możesz również skontaktować się z nami bezpośrednio:</p>
+        <p>
+          📧 Email: <a href="mailto:${EMAIL_CONFIG.contactEmail}" style="color: #4a7c9e; text-decoration: none;">${EMAIL_CONFIG.contactEmail}</a>
+        </p>
+        <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;">
+        <p style="color: #666; font-size: 14px;">
+          Pozdrawiamy,<br>
+          Zespół ${EMAIL_CONFIG.companyName}
+        </p>
+      </div>
+    `,
+  });
+}
