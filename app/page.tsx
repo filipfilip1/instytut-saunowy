@@ -5,36 +5,64 @@ export default function Home() {
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-forest-700 via-forest-600 to-nordic-600 text-white overflow-hidden">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PHBhdGggZD0iTTM2IDE0YzMuMzEgMCA2IDIuNjkgNiA2cy0yLjY5IDYtNiA2LTYtMi42OS02LTYgMi42OS02IDYtNiIvPjwvZz48L2c+PC9zdmc+')] opacity-30"></div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 md:py-40">
-          <div className="text-center">
-            <div className="inline-block mb-6 px-6 py-2 bg-gold-400/20 backdrop-blur-sm rounded-full border border-gold-400/40">
-              <span className="text-gold-200 font-medium tracking-wide">🏛️ Skandynawskie Ciepło</span>
-            </div>
-            <h1 className="text-5xl md:text-7xl font-serif font-bold mb-6 leading-tight">
-              Odkryj Moc<br/>Skandynawskiej Sauny
-            </h1>
-            <p className="text-xl md:text-2xl mb-10 text-cream-200 max-w-3xl mx-auto leading-relaxed">
-              Premium produkty i ekspertka wiedza dla miłośników autentycznego relaksu
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link
-                href="/sklep"
-                className="btn-gold px-10 py-4 text-lg shadow-gold-lg"
-              >
-                Przeglądaj Produkty
-              </Link>
-              <Link
-                href="/akademia"
-                className="btn-outline-gold px-10 py-4 text-lg bg-white/10 backdrop-blur-sm hover:bg-gold-400"
-              >
-                Czytaj Blog
-              </Link>
-            </div>
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-forest-900">
+        {/* 1. BLURRED BACKGROUND VIDEO (fills entire screen) */}
+        <video
+          muted={true}
+          autoPlay={true}
+          loop={true}
+          playsInline={true}
+          className="absolute inset-0 w-full h-full object-cover scale-110 blur-2xl opacity-60 z-0"
+          poster="https://res.cloudinary.com/dh87opqta/image/upload/v1765820951/8285942-uhd_2160_4096_25fps_g9boyk.jpg"
+        >
+          <source
+            src="https://res.cloudinary.com/dh87opqta/video/upload/v1765820951/8285942-uhd_2160_4096_25fps_g9boyk.mp4"
+            type="video/mp4"
+          />
+        </video>
+
+        {/* 2. SHARP CENTER VIDEO (portrait, shows full context) */}
+        <video
+          muted={true}
+          autoPlay={true}
+          loop={true}
+          playsInline={true}
+          className="absolute inset-0 w-full h-full object-contain z-[1] shadow-[0_0_80px_rgba(0,0,0,0.7)]"
+          poster="https://res.cloudinary.com/dh87opqta/image/upload/v1765820951/8285942-uhd_2160_4096_25fps_g9boyk.jpg"
+        >
+          <source
+            src="https://res.cloudinary.com/dh87opqta/video/upload/v1765820951/8285942-uhd_2160_4096_25fps_g9boyk.mp4"
+            type="video/mp4"
+          />
+        </video>
+
+        {/* 3. OVERLAY */}
+        <div className="absolute inset-0 bg-forest-900/30 mix-blend-multiply z-[2]" />
+        <div className="absolute inset-0 bg-black/20 z-[2]" />
+
+        {/* 4. CONTENT */}
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-5xl md:text-7xl font-serif font-bold text-white mb-6 leading-tight drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)]">
+            Odkryj Moc<br />Skandynawskiej Sauny
+          </h1>
+          <p className="text-xl md:text-2xl text-cream-100 max-w-3xl mx-auto leading-relaxed drop-shadow-[0_3px_6px_rgba(0,0,0,0.8)] mb-10">
+            Premium produkty i ekspercka wiedza dla miłośników autentycznego relaksu
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              href="/sklep"
+              className="btn-gold px-10 py-4 text-lg shadow-gold-lg"
+            >
+              Przeglądaj Produkty
+            </Link>
+            <Link
+              href="/akademia"
+              className="btn-outline-gold px-10 py-4 text-lg bg-white/10 backdrop-blur-sm hover:bg-gold-400"
+            >
+              Czytaj Blog
+            </Link>
           </div>
         </div>
-        <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-white to-transparent"></div>
       </section>
 
       {/* Categories */}
