@@ -95,6 +95,16 @@ const Header = () => {
               Szkolenia
             </Link>
             <Link
+              href="/zawody-moa"
+              className={`font-medium transition-colors text-base ${
+                isActive('/zawody-moa')
+                  ? 'text-gold-600 font-semibold'
+                  : 'text-graphite-700 hover:text-gold-500'
+              }`}
+            >
+              Zawody MoA
+            </Link>
+            <Link
               href="/o-nas"
               className={`font-medium transition-colors text-base ${
                 isActive('/o-nas')
@@ -179,6 +189,13 @@ const Header = () => {
                 onClick={() => setMobileMenuOpen(false)}
               >
                 Szkolenia
+              </Link>
+              <Link
+                href="/zawody-moa"
+                className="block px-4 py-3 rounded-xl text-base font-medium text-graphite-700 hover:text-gold-600 hover:bg-gold-50 transition-all"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Zawody MoA
               </Link>
               <Link
                 href="/o-nas"
