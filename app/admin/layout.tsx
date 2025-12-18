@@ -4,6 +4,7 @@ import { useRequireAuth } from '@/hooks/useRequireAuth';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ReactNode } from 'react';
+import { Home, LayoutDashboard, Package, GraduationCap, Calendar, ShoppingCart, Users, FileText, Settings } from 'lucide-react';
 
 
 interface AdminLayoutProps {
@@ -30,69 +31,71 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   }
 
   const menuItems = [
-    { href: '/admin', label: '📊 Dashboard', icon: '📊' },
-    { href: '/admin/products', label: '📦 Produkty', icon: '📦' },
-    { href: '/admin/trainings', label: '🎓 Szkolenia', icon: '🎓' },
-    { href: '/admin/bookings', label: '📋 Rezerwacje', icon: '📋' },
-    { href: '/admin/orders', label: '🛒 Zamówienia', icon: '🛒' },
-    { href: '/admin/customers', label: '👥 Klienci', icon: '👥' },
-    { href: '/admin/content', label: '📝 Treści', icon: '📝' },
-    { href: '/admin/settings', label: '⚙️ Ustawienia', icon: '⚙️' },
+    { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
+    { href: '/admin/products', label: 'Produkty', icon: Package },
+    { href: '/admin/trainings', label: 'Szkolenia', icon: GraduationCap },
+    { href: '/admin/bookings', label: 'Rezerwacje', icon: Calendar },
+    { href: '/admin/orders', label: 'Zamówienia', icon: ShoppingCart },
+    { href: '/admin/customers', label: 'Klienci', icon: Users },
+    { href: '/admin/content', label: 'Treści', icon: FileText },
+    { href: '/admin/settings', label: 'Ustawienia', icon: Settings },
   ];
 
   return (
-    <div className="min-h-screen bg-cream-200">
-      <div className="flex">
+    <div className="min-h-screen bg-cream-50 flex">
+      <div className="flex w-full">
         {/* Sidebar */}
-        <aside className="w-72 bg-gradient-to-b from-graphite-900 via-graphite-900 to-forest-900 shadow-2xl min-h-screen">
-          <div className="p-8 border-b border-cream-700/20">
-            <div className="flex items-center gap-3 mb-3">
-              <span className="text-3xl">🏛️</span>
-              <h2 className="text-2xl font-serif font-bold text-cream-100">Panel Admina</h2>
-            </div>
-            <p className="text-sm text-cream-300 pl-11">
+        <aside className="w-64 bg-graphite-900 flex flex-col border-r border-cream-200/10 min-h-screen">
+          <div className="p-6 border-b border-cream-200/10">
+            <h2 className="text-2xl font-serif font-bold text-gold-400 mb-1">
+              Panel Admina
+            </h2>
+            <p className="text-sm text-cream-300/70">
               Witaj, <span className="font-semibold text-gold-400">{session.user.name}</span>
             </p>
           </div>
 
-          <nav className="mt-8 px-4">
+          <nav className="flex-1 p-4 space-y-1">
             {menuItems.map((item) => {
               const isActive = pathname === item.href ||
                 (item.href !== '/admin' && pathname.startsWith(item.href));
+              const Icon = item.icon;
 
               return (
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`
-                    flex items-center px-5 py-3.5 mb-2 rounded-2xl text-cream-200 hover:bg-forest-700/50 transition-all font-medium
-                    ${isActive ? 'bg-forest-600 shadow-lg text-white border-l-4 border-gold-400' : ''}
-                  `}
+                  className={`flex items-center gap-3 px-4 py-3 transition-colors duration-200 group relative ${
+                    isActive ? 'text-gold-400' : 'text-cream-200 hover:text-gold-400'
+                  }`}
                 >
-                  <span className="mr-4 text-2xl">{item.icon}</span>
-                  <span>{item.label.split(' ')[1]}</span>
+                  {/* Active indicator - gold line on left */}
+                  <span className={`absolute left-0 top-0 bottom-0 w-0.5 bg-gold-400 transition-opacity ${
+                    isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                  }`}></span>
+                  <Icon className="w-5 h-5 flex-shrink-0" strokeWidth={1.5} />
+                  <span className="font-light tracking-wide">{item.label}</span>
                 </Link>
               );
             })}
           </nav>
 
-          <div className="absolute bottom-0 w-72 p-6 border-t border-cream-700/20">
+          <div className="p-4 border-t border-cream-200/10">
             <Link
               href="/"
-              className="flex items-center text-cream-300 hover:text-gold-400 transition-colors group"
+              className="flex items-center gap-3 px-4 py-3 text-cream-300/70 hover:text-gold-400 transition-colors duration-200"
             >
-              <svg className="w-5 h-5 mr-3 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                  d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-              </svg>
-              <span className="font-medium">Wróć do sklepu</span>
+              <Home className="w-5 h-5" strokeWidth={1.5} />
+              <span className="font-light">Wróć do sklepu</span>
             </Link>
           </div>
         </aside>
 
         {/* Main content */}
-        <main className="flex-1 p-10">
-          {children}
+        <main className="flex-1 overflow-y-auto bg-cream-50">
+          <div className="max-w-6xl mx-auto p-8">
+            {children}
+          </div>
         </main>
       </div>
     </div>

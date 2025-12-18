@@ -38,22 +38,63 @@ export default function SignInPage() {
             Kontynuuj z Google
           </button>
 
-          {/* Dev Test Login - tylko w development */}
+          {/* ⚠️ DEV ONLY: REMOVE BEFORE PRODUCTION ⚠️ */}
           {process.env.NODE_ENV === 'development' && (
-            <button
-              onClick={() => signIn('credentials', {
-                email: 'test@test.pl',
-                password: 'test123',
-                callbackUrl
-              })}
-              className="w-full flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors"
-            >
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
-              </svg>
-              Dev Test Login
-            </button>
+            <>
+              <button
+                onClick={() =>
+                  signIn('credentials', {
+                    email: 'test@test.pl',
+                    password: 'test123',
+                    callbackUrl,
+                  })
+                }
+                className="w-full flex items-center justify-center px-4 py-3 border-2 border-orange-500 rounded-lg shadow-sm text-sm font-medium text-orange-700 bg-orange-50 hover:bg-orange-100 transition-colors"
+              >
+                <svg
+                  className="w-5 h-5 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
+                  />
+                </svg>
+                Dev Test Login (Admin)
+              </button>
+
+              <button
+                onClick={() =>
+                  signIn('credentials', {
+                    email: 'user@test.pl',
+                    password: 'user123',
+                    callbackUrl,
+                  })
+                }
+                className="w-full flex items-center justify-center px-4 py-3 border-2 border-blue-500 rounded-lg shadow-sm text-sm font-medium text-blue-700 bg-blue-50 hover:bg-blue-100 transition-colors"
+              >
+                <svg
+                  className="w-5 h-5 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                  />
+                </svg>
+                Zaloguj jako użytkownik (User)
+              </button>
+            </>
           )}
+          {/* ⚠️ END DEV ONLY ⚠️ */}
         </div>
 
         <div className="mt-6">

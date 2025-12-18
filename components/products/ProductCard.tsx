@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { Eye } from 'lucide-react';
 import { IProduct } from '@/types';
 import { useCart } from '@/contexts/CartContext';
@@ -18,9 +19,12 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const router = useRouter();
+  const { data: session } = useSession();
   const { addToCart } = useCart();
   const { openQuickView } = useQuickView();
   const [showToast, setShowToast] = useState(false);
+
+  const isAdmin = session?.user?.role === 'admin';
 
 
   const getCategoryLabel = (category: string): string => {
@@ -164,22 +168,24 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             <span className="text-2xl font-sans font-bold text-graphite-900 tabular-nums">
               {getPriceRange()}
             </span>
-            <button
-              onClick={handleQuickAdd}
-              className={`
-                px-5 py-2.5 text-sm font-semibold rounded-2xl transition-all shadow-md
-                ${isInStock
-                  ? 'btn-gold'
-                  : 'bg-graphite-200 text-graphite-500 cursor-not-allowed shadow-none'
+            {!isAdmin && (
+              <button
+                onClick={handleQuickAdd}
+                className={`
+                  px-5 py-2.5 text-sm font-semibold rounded-2xl transition-all shadow-md
+                  ${isInStock
+                    ? 'btn-gold'
+                    : 'bg-graphite-200 text-graphite-500 cursor-not-allowed shadow-none'
+                  }
+                `}
+                disabled={!isInStock}
+              >
+                {isInStock
+                  ? (product.variants.length > 0 ? 'Wybierz' : 'Do koszyka')
+                  : 'Niedostępny'
                 }
-              `}
-              disabled={!isInStock}
-            >
-              {isInStock
-                ? (product.variants.length > 0 ? 'Wybierz' : 'Do koszyka')
-                : 'Niedostępny'
-              }
-            </button>
+              </button>
+            )}
           </div>
         </div>
       </div>

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 import { X } from 'lucide-react';
 import { IProduct } from '@/types';
 import { useCart } from '@/contexts/CartContext';
@@ -14,11 +15,14 @@ import { formatPriceRounded } from '@/lib/utils/currency';
 
 export default function QuickViewModal() {
   const { product, isOpen, closeQuickView } = useQuickView();
+  const { data: session } = useSession();
   const { addToCart } = useCart();
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({});
   const [quantity, setQuantity] = useState(1);
   const [showSuccess, setShowSuccess] = useState(false);
+
+  const isAdmin = session?.user?.role === 'admin';
 
   // Reset state when product changes
   useEffect(() => {
@@ -226,46 +230,50 @@ export default function QuickViewModal() {
                   )}
 
                   {/* Quantity */}
-                  <div className="mb-6">
-                    <label className="block text-sm font-semibold text-graphite-900 mb-2 uppercase tracking-wide">
-                      Ilość
-                    </label>
-                    <div className="flex items-center gap-4">
-                      <button
-                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                        className="w-12 h-12 rounded-xl border-2 border-cream-300 flex items-center justify-center hover:bg-gold-50 hover:border-gold-300 transition-all text-graphite-700 font-bold text-xl"
-                        aria-label="Zmniejsz ilość"
-                      >
-                        −
-                      </button>
-                      <div className="w-24 text-center border-2 border-cream-300 rounded-xl px-4 py-3 text-xl font-bold text-graphite-900 tabular-nums">
-                        <AnimatedNumber value={quantity} />
+                  {!isAdmin && (
+                    <div className="mb-6">
+                      <label className="block text-sm font-semibold text-graphite-900 mb-2 uppercase tracking-wide">
+                        Ilość
+                      </label>
+                      <div className="flex items-center gap-4">
+                        <button
+                          onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                          className="w-12 h-12 rounded-xl border-2 border-cream-300 flex items-center justify-center hover:bg-gold-50 hover:border-gold-300 transition-all text-graphite-700 font-bold text-xl"
+                          aria-label="Zmniejsz ilość"
+                        >
+                          −
+                        </button>
+                        <div className="w-24 text-center border-2 border-cream-300 rounded-xl px-4 py-3 text-xl font-bold text-graphite-900 tabular-nums">
+                          <AnimatedNumber value={quantity} />
+                        </div>
+                        <button
+                          onClick={() => setQuantity(quantity + 1)}
+                          className="w-12 h-12 rounded-xl border-2 border-cream-300 flex items-center justify-center hover:bg-gold-50 hover:border-gold-300 transition-all text-graphite-700 font-bold text-xl"
+                          aria-label="Zwiększ ilość"
+                        >
+                          +
+                        </button>
                       </div>
-                      <button
-                        onClick={() => setQuantity(quantity + 1)}
-                        className="w-12 h-12 rounded-xl border-2 border-cream-300 flex items-center justify-center hover:bg-gold-50 hover:border-gold-300 transition-all text-graphite-700 font-bold text-xl"
-                        aria-label="Zwiększ ilość"
-                      >
-                        +
-                      </button>
                     </div>
-                  </div>
+                  )}
 
                   {/* Actions */}
                   <div className="space-y-4 mt-auto pt-6">
-                    <button
-                      onClick={handleAddToCart}
-                      disabled={isAddToCartDisabled() || showSuccess}
-                      className={`
-                        w-full py-4 px-8 rounded-2xl font-bold transition-all shadow-md text-lg
-                        ${isAddToCartDisabled() || showSuccess
-                          ? 'bg-graphite-200 text-graphite-500 cursor-not-allowed shadow-none'
-                          : 'btn-gold'
-                        }
-                      `}
-                    >
-                      {showSuccess ? '✓ Dodano do koszyka' : 'Dodaj do koszyka'}
-                    </button>
+                    {!isAdmin && (
+                      <button
+                        onClick={handleAddToCart}
+                        disabled={isAddToCartDisabled() || showSuccess}
+                        className={`
+                          w-full py-4 px-8 rounded-2xl font-bold transition-all shadow-md text-lg
+                          ${isAddToCartDisabled() || showSuccess
+                            ? 'bg-graphite-200 text-graphite-500 cursor-not-allowed shadow-none'
+                            : 'btn-gold'
+                          }
+                        `}
+                      >
+                        {showSuccess ? '✓ Dodano do koszyka' : 'Dodaj do koszyka'}
+                      </button>
+                    )}
 
                     <Link
                       href={`/produkt/${product.slug}`}

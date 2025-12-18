@@ -5,7 +5,7 @@ import { IOrder } from '@/types';
 import Order from '@/lib/models/Order';
 import User from '@/lib/models/User';
 import Link from 'next/link';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Package, ShoppingCart, Users, TrendingUp } from 'lucide-react';
 import SalesChart from '@/components/admin/SalesChart';
 
 async function getDashboardStats() {
@@ -137,72 +137,64 @@ export default async function AdminDashboard() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
-        <div className="bg-white rounded-2xl shadow-lg p-6 border-2 border-cream-200 hover:border-forest-300 transition-all">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <p className="text-sm font-medium text-graphite-600 uppercase tracking-wide">Produkty</p>
-              <p className="text-3xl font-serif font-bold text-graphite-900 mt-1">{stats.productsCount}</p>
-            </div>
-            <div className="text-4xl bg-forest-100 p-3 rounded-2xl">📦</div>
+        <div className="bg-white border border-cream-300 p-6 relative">
+          <Package className="absolute right-6 top-6 w-16 h-16 text-forest-600 opacity-40" strokeWidth={1} />
+          <div className="relative">
+            <p className="text-xs font-light text-graphite-600 uppercase tracking-wider mb-2">Produkty</p>
+            <p className="text-4xl font-serif font-bold text-graphite-900 mb-4">{stats.productsCount}</p>
+            <Link href="/admin/products" className="text-forest-600 text-sm font-light inline-flex items-center gap-1 hover:gap-2 transition-all">
+              Zarządzaj
+              <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
-          <Link href="/admin/products" className="text-forest-600 text-sm font-semibold inline-flex items-center gap-1 hover:gap-2 transition-all">
-            Zarządzaj
-            <ArrowRight className="w-4 h-4" />
-          </Link>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-6 border-2 border-cream-200 hover:border-nordic-300 transition-all">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <p className="text-sm font-medium text-graphite-600 uppercase tracking-wide">Zamówienia</p>
-              <p className="text-3xl font-serif font-bold text-graphite-900 mt-1">{stats.ordersCount}</p>
-            </div>
-            <div className="text-4xl bg-nordic-100 p-3 rounded-2xl">🛒</div>
+        <div className="bg-white border border-cream-300 p-6 relative">
+          <ShoppingCart className="absolute right-6 top-6 w-16 h-16 text-gold-600 opacity-40" strokeWidth={1} />
+          <div className="relative">
+            <p className="text-xs font-light text-graphite-600 uppercase tracking-wider mb-2">Zamówienia</p>
+            <p className="text-4xl font-serif font-bold text-graphite-900 mb-4">{stats.ordersCount}</p>
+            <Link href="/admin/orders" className="text-gold-600 text-sm font-light inline-flex items-center gap-1 hover:gap-2 transition-all">
+              Zobacz wszystkie
+              <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
-          <Link href="/admin/orders" className="text-nordic-600 text-sm font-semibold inline-flex items-center gap-1 hover:gap-2 transition-all">
-            Zobacz wszystkie
-            <ArrowRight className="w-4 h-4" />
-          </Link>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-6 border-2 border-cream-200 hover:border-warmwood-300 transition-all">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <p className="text-sm font-medium text-graphite-600 uppercase tracking-wide">Klienci</p>
-              <p className="text-3xl font-serif font-bold text-graphite-900 mt-1">{stats.customersCount}</p>
-            </div>
-            <div className="text-4xl bg-warmwood-100 p-3 rounded-2xl">👥</div>
+        <div className="bg-white border border-cream-300 p-6 relative">
+          <Users className="absolute right-6 top-6 w-16 h-16 text-graphite-600 opacity-40" strokeWidth={1} />
+          <div className="relative">
+            <p className="text-xs font-light text-graphite-600 uppercase tracking-wider mb-2">Klienci</p>
+            <p className="text-4xl font-serif font-bold text-graphite-900 mb-4">{stats.customersCount}</p>
+            <Link href="/admin/customers" className="text-graphite-600 text-sm font-light inline-flex items-center gap-1 hover:gap-2 transition-all">
+              Przeglądaj
+              <ArrowRight className="w-4 h-4" />
+            </Link>
           </div>
-          <Link href="/admin/customers" className="text-warmwood-600 text-sm font-semibold inline-flex items-center gap-1 hover:gap-2 transition-all">
-            Przeglądaj
-            <ArrowRight className="w-4 h-4" />
-          </Link>
         </div>
 
-        <div className="bg-gradient-to-br from-forest-600 to-forest-700 rounded-2xl shadow-lg p-6 text-white">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <p className="text-sm font-medium text-cream-200 uppercase tracking-wide">Przychód</p>
-              <p className="text-3xl font-serif font-bold mt-1">{formatPriceRounded(stats.revenue)}</p>
-            </div>
-            <div className="text-4xl bg-white/20 p-3 rounded-2xl backdrop-blur-sm">💰</div>
+        <div className="bg-gradient-to-br from-forest-600 to-forest-700 border border-forest-500 p-6 text-white relative">
+          <TrendingUp className="absolute right-6 top-6 w-16 h-16 text-white opacity-20" strokeWidth={1} />
+          <div className="relative">
+            <p className="text-xs font-light text-cream-200 uppercase tracking-wider mb-2">Przychód</p>
+            <p className="text-4xl font-serif font-bold mb-4">{formatPriceRounded(stats.revenue)}</p>
+            <p className={`text-sm font-light inline-flex items-center gap-1 ${stats.revenueChange >= 0 ? 'text-gold-300' : 'text-warmwood-300'}`}>
+              <span className="text-lg">{stats.revenueChange >= 0 ? '↗' : '↘'}</span>
+              {Math.abs(stats.revenueChange)}% vs poprzednie 30 dni
+            </p>
           </div>
-          <p className={`text-sm font-semibold inline-flex items-center gap-1 ${stats.revenueChange >= 0 ? 'text-gold-300' : 'text-warmwood-300'}`}>
-            <span className="text-lg">{stats.revenueChange >= 0 ? '↗' : '↘'}</span>
-            {Math.abs(stats.revenueChange)}% vs poprzednie 30 dni
-          </p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-10">
-        <div className="lg:col-span-2 bg-white rounded-2xl shadow-lg p-8 border border-cream-300">
+        <div className="lg:col-span-2 bg-white border border-cream-300 p-8">
           <h2 className="text-2xl font-serif font-semibold text-graphite-900 mb-6">
             Sprzedaż (ostatnie 30 dni)
           </h2>
           <SalesChart data={stats.chartData} />
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-8 border border-cream-300">
+        <div className="bg-white border border-cream-300 p-8">
           <h2 className="text-2xl font-serif font-semibold text-graphite-900 mb-6">
             Top 5 Produktów
           </h2>
@@ -238,7 +230,7 @@ export default async function AdminDashboard() {
       </div>
 
       {/* Recent orders */}
-      <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-cream-300">
+      <div className="bg-white border border-cream-300 overflow-hidden">
         <div className="p-6 border-b-2 border-cream-300 bg-gradient-to-r from-cream-50 to-white">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-serif font-semibold text-graphite-900">Ostatnie zamówienia</h2>

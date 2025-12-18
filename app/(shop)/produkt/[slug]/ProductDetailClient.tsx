@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { IProduct } from '@/types';
 import { useCart } from '@/contexts/CartContext';
 import VariantSelector from '@/components/products/VariantSelector';
@@ -20,12 +21,15 @@ interface ProductDetailClientProps {
 
 export default function ProductDetailClient({ product, allProducts }: ProductDetailClientProps) {
   const router = useRouter();
+  const { data: session } = useSession();
   const { addToCart } = useCart();
 
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({});
   const [quantity, setQuantity] = useState(1);
   const [showAddedMessage, setShowAddedMessage] = useState(false);
+
+  const isAdmin = session?.user?.role === 'admin';
 
   // Track product view in recently viewed
   useEffect(() => {
@@ -152,47 +156,51 @@ export default function ProductDetailClient({ product, allProducts }: ProductDet
               )}
 
               {/* Quantity */}
-              <div className="mb-6">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Ilość
-                </label>
-                <div className="flex items-center gap-4">
-                  <button
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="w-10 h-10 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-50"
-                  >
-                    -
-                  </button>
-                  <input
-                    type="number"
-                    value={quantity}
-                    onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                    className="w-20 text-center border border-gray-300 rounded-lg px-3 py-2"
-                    min="1"
-                  />
-                  <button
-                    onClick={() => setQuantity(quantity + 1)}
-                    className="w-10 h-10 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-50"
-                  >
-                    +
-                  </button>
+              {!isAdmin && (
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Ilość
+                  </label>
+                  <div className="flex items-center gap-4">
+                    <button
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      className="w-10 h-10 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-50"
+                    >
+                      -
+                    </button>
+                    <input
+                      type="number"
+                      value={quantity}
+                      onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
+                      className="w-20 text-center border border-gray-300 rounded-lg px-3 py-2"
+                      min="1"
+                    />
+                    <button
+                      onClick={() => setQuantity(quantity + 1)}
+                      className="w-10 h-10 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-50"
+                    >
+                      +
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Add to cart button */}
-              <button
-                onClick={handleAddToCart}
-                disabled={isAddToCartDisabled()}
-                className={`
-                  w-full py-4 px-6 rounded-lg font-semibold text-lg transition-all
-                  ${isAddToCartDisabled()
-                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                    : 'bg-warmwood-500 text-white hover:bg-warmwood-600'
-                  }
-                `}
-              >
-                {getButtonText()}
-              </button>
+              {!isAdmin && (
+                <button
+                  onClick={handleAddToCart}
+                  disabled={isAddToCartDisabled()}
+                  className={`
+                    w-full py-4 px-6 rounded-lg font-semibold text-lg transition-all
+                    ${isAddToCartDisabled()
+                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                      : 'bg-warmwood-500 text-white hover:bg-warmwood-600'
+                    }
+                  `}
+                >
+                  {getButtonText()}
+                </button>
+              )}
 
               {/* Addition notification */}
               {showAddedMessage && (

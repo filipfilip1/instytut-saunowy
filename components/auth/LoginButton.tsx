@@ -2,6 +2,7 @@
 
 import { useSession, signIn, signOut } from 'next-auth/react';
 import Link from 'next/link';
+import { Settings, LayoutDashboard, Package, Calendar, LogOut } from 'lucide-react';
 import Avatar from '@/components/ui/Avatar';
 
 export default function LoginButton() {
@@ -16,38 +17,60 @@ export default function LoginButton() {
       <div className="relative group">
         <button className="flex items-center space-x-2">
           <Avatar src={session.user.image} name={session.user.name} size="sm" />
-          <span className="hidden md:block text-sm">{session.user.name}</span>
+          <span className="hidden md:block text-sm font-light">{session.user.name}</span>
         </button>
 
-        {/* Dropdown menu */}
-        <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
-          {session.user.role === 'admin' && (
-            <Link
-              href="/admin"
-              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-            >
-              🔧 Panel admina
-            </Link>
+        {/* Dropdown menu - Premium Style */}
+        <div className="absolute right-0 mt-2 w-56 bg-white border border-cream-300 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+          {session.user.role === 'admin' ? (
+            <>
+              <Link
+                href="/admin"
+                className="flex items-center gap-3 px-4 py-3 text-sm text-graphite-700 hover:bg-cream-50 transition-colors border-b border-cream-200"
+              >
+                <Settings className="w-4 h-4 text-gold-600" strokeWidth={1.5} />
+                <span className="font-light">Panel admina</span>
+              </Link>
+              <button
+                onClick={() => signOut()}
+                className="flex items-center gap-3 w-full text-left px-4 py-3 text-sm text-graphite-700 hover:bg-cream-50 transition-colors"
+              >
+                <LogOut className="w-4 h-4 text-graphite-500" strokeWidth={1.5} />
+                <span className="font-light">Wyloguj</span>
+              </button>
+            </>
+          ) : (
+            <>
+              <Link
+                href="/moje-konto"
+                className="flex items-center gap-3 px-4 py-3 text-sm text-graphite-700 hover:bg-cream-50 transition-colors"
+              >
+                <LayoutDashboard className="w-4 h-4 text-gold-600" strokeWidth={1.5} />
+                <span className="font-light">Moje konto</span>
+              </Link>
+              <Link
+                href="/moje-konto/zamowienia"
+                className="flex items-center gap-3 px-4 py-3 text-sm text-graphite-700 hover:bg-cream-50 transition-colors"
+              >
+                <Package className="w-4 h-4 text-gold-600" strokeWidth={1.5} />
+                <span className="font-light">Historia zakupów</span>
+              </Link>
+              <Link
+                href="/moje-konto/rezerwacje"
+                className="flex items-center gap-3 px-4 py-3 text-sm text-graphite-700 hover:bg-cream-50 transition-colors"
+              >
+                <Calendar className="w-4 h-4 text-gold-600" strokeWidth={1.5} />
+                <span className="font-light">Moje szkolenia</span>
+              </Link>
+              <button
+                onClick={() => signOut()}
+                className="flex items-center gap-3 w-full text-left px-4 py-3 text-sm text-graphite-700 hover:bg-cream-50 transition-colors border-t border-cream-200"
+              >
+                <LogOut className="w-4 h-4 text-graphite-500" strokeWidth={1.5} />
+                <span className="font-light">Wyloguj</span>
+              </button>
+            </>
           )}
-          <Link
-            href="/moje-konto"
-            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-          >
-            👤 Moje konto
-          </Link>
-          <Link
-            href="/zamowienia"
-            className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-          >
-            📦 Moje zamówienia
-          </Link>
-          <hr className="my-1" />
-          <button
-            onClick={() => signOut()}
-            className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-          >
-            🚪 Wyloguj
-          </button>
         </div>
       </div>
     );
@@ -55,7 +78,7 @@ export default function LoginButton() {
 
   return (
     <button
-      onClick={() => signIn('google')}
+      onClick={() => signIn()}
       className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
     >
       Zaloguj się

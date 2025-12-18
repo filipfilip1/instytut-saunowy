@@ -46,9 +46,9 @@ export default function SalesChart({ data }: SalesChartProps) {
           <Line
             type="monotone"
             dataKey="revenue"
-            stroke="#2563eb"
+            stroke="#d4af7a"
             strokeWidth={2}
-            dot={{ fill: '#2563eb', r: 4 }}
+            dot={{ fill: '#d4af7a', r: 4 }}
             activeDot={{ r: 6 }}
           />
         </LineChart>

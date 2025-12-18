@@ -3,9 +3,17 @@ import { NextResponse } from 'next/server';
 
 export default withAuth(
   function middleware(req) {
-    if (req.nextUrl.pathname.startsWith('/admin')) {
-      const token = req.nextauth.token;
+    const token = req.nextauth.token;
 
+    // Redirect admin trying to access user panel to admin panel
+    if (req.nextUrl.pathname.startsWith('/moje-konto')) {
+      if (token?.role === 'admin') {
+        return NextResponse.redirect(new URL('/admin', req.url));
+      }
+    }
+
+    // Protect admin routes
+    if (req.nextUrl.pathname.startsWith('/admin')) {
       if (token?.role !== 'admin') {
         return NextResponse.redirect(new URL('/unauthorized', req.url));
       }
@@ -25,6 +33,5 @@ export const config = {
   matcher: [
     '/admin/:path*',
     '/moje-konto/:path*',
-    '/zamowienia/:path*',
   ],
 };

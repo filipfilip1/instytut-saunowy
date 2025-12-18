@@ -20,32 +20,49 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
     }),
 
-    // DEV ONLY: Test provider 
+    // ⚠️ DEV ONLY: REMOVE BEFORE PRODUCTION ⚠️
+    // Test credentials provider for development
     ...(process.env.NODE_ENV === 'development'
       ? [
         CredentialsProvider({
           name: 'Dev Test Login',
           credentials: {
-            email: { label: 'Email', type: 'email', placeholder: 'test@test.pl' },
-            password: { label: 'Hasło', type: 'password', placeholder: 'test123' },
+            email: { label: 'Email', type: 'email' },
+            password: { label: 'Hasło', type: 'password' },
           },
           async authorize(credentials) {
-            // ONLY FOR TESTING - hardcoded credentials
+            // ONLY FOR TESTING - hardcoded test accounts
+
+            // Admin account
             if (
               credentials?.email === 'test@test.pl' &&
               credentials?.password === 'test123'
             ) {
               return {
-                id: 'dev-test-user',
+                id: 'dev-test-admin',
                 email: 'test@test.pl',
-                name: 'Dev Test User',
+                name: 'Test Admin',
               };
             }
+
+            // Regular user account
+            if (
+              credentials?.email === 'user@test.pl' &&
+              credentials?.password === 'user123'
+            ) {
+              return {
+                id: 'dev-test-user',
+                email: 'user@test.pl',
+                name: 'Test User',
+              };
+            }
+
             return null;
           },
         }),
       ]
       : []),
+    // ⚠️ END DEV ONLY ⚠️
   ],
   session: {
     strategy: 'jwt',
