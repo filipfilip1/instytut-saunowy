@@ -492,46 +492,6 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ========================================
-          SECTION 7: NEWSLETTER CTA (Enhanced)
-      ======================================== */}
-      <section className="py-20 bg-gradient-to-br from-forest-700 to-forest-900 text-white relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmYiIGZpbGwtb3BhY2l0eT0iMC4wMyI+PHBhdGggZD0iTTM2IDE0YzMuMzEgMCA2IDIuNjkgNiA2cy0yLjY5IDYtNiA2LTYtMi42OS02LTYgMi42OS02IDYtNiIvPjwvZz48L2c+PC9zdmc+')] opacity-50"></div>
-        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <ScaleIn>
-            <h2 className="text-4xl md:text-5xl font-serif font-bold mb-6">
-              Dołącz do świata saunowania
-            </h2>
-            <p className="text-xl text-cream-200 mb-4 leading-relaxed">
-              Zapisz się do newslettera i bądź na bieżąco z:
-            </p>
-            <ul className="text-lg text-cream-200 mb-10 max-w-xl mx-auto space-y-2">
-              <li>✓ Nowymi produktami i promocjami</li>
-              <li>✓ Nadchodzącymi szkoleniami</li>
-              <li>✓ Artykułami i poradnikami</li>
-              <li>✓ Zawodami Masters of Aufguss</li>
-            </ul>
-            <form className="max-w-md mx-auto">
-              <div className="flex flex-col sm:flex-row gap-3">
-                <input
-                  type="email"
-                  placeholder="Twój email"
-                  className="flex-1 px-5 py-4 rounded-2xl border-2 border-gold-400/30 bg-white/10 backdrop-blur-sm text-white placeholder:text-cream-300 focus:outline-none focus:ring-2 focus:ring-gold-400 focus:border-gold-400 transition-all"
-                />
-                <button
-                  type="submit"
-                  className="btn-gold px-8 py-4 whitespace-nowrap shadow-gold-lg"
-                >
-                  Zapisz się
-                </button>
-              </div>
-            </form>
-            <p className="mt-6 text-sm text-cream-300">
-              Twoje dane są bezpieczne. Możesz wypisać się w każdej chwili.
-            </p>
-          </ScaleIn>
-        </div>
-      </section>
     </div>
   );
 }
