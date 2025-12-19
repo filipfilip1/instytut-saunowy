@@ -57,12 +57,12 @@ export async function PATCH(
       data: booking,
       message: `Status płatności zmieniony na: ${paymentStatus}`,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error updating payment status:', error);
     return NextResponse.json(
       {
         status: 'error',
-        message: error.message || 'Błąd podczas aktualizacji statusu płatności',
+        message: error instanceof Error ? error.message : 'Błąd podczas aktualizacji statusu płatności',
       },
       { status: 500 }
     );

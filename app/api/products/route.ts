@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1');
     const search = searchParams.get('search');
 
-    const query: any = { isActive: true };
+    const query: Record<string, unknown> = { isActive: true };
 
     if (category) {
       query.category = category;

@@ -47,7 +47,7 @@ export async function GET(
       status: 'success',
       data: booking,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error fetching booking:', error);
     return NextResponse.json(
       {

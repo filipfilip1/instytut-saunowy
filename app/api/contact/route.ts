@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
       status: 'success',
       message: 'Wiadomość została wysłana',
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Contact form API error:', error);
     return NextResponse.json(
       { status: 'error', message: 'Wystąpił błąd serwera. Spróbuj ponownie później.' },

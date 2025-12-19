@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import dbConnect from '@/lib/mongodb';
 import Order from '@/lib/models/Order';
+import { IOrder } from '@/types';
 
 // GET /api/user/orders/[id] - Get single order details
 export async function GET(
@@ -22,7 +23,7 @@ export async function GET(
     await dbConnect();
 
     const { id } = await params;
-    const order = await Order.findById(id).lean();
+    const order = await Order.findById(id).lean() as IOrder | null;
 
     if (!order) {
       return NextResponse.json(

@@ -54,7 +54,7 @@ function calculateScore(
   score += priceScore;
 
   // 4. Popularity (view count)
-  const viewScore = Math.log10((candidate.viewCount || 0) + 1) * popularityWeight;
+  const viewScore = Math.log10((candidate.stats?.views || 0) + 1) * popularityWeight;
   score += viewScore;
 
   return score;
@@ -150,7 +150,7 @@ export function getPopularProducts(
 ): IProduct[] {
   return allProducts
     .filter((p) => p.isActive)
-    .sort((a, b) => (b.viewCount || 0) - (a.viewCount || 0))
+    .sort((a, b) => (b.stats?.views || 0) - (a.stats?.views || 0))
     .slice(0, limit);
 }
 
@@ -176,6 +176,6 @@ export function getCategoryRecommendations(
 
   // Sort by popularity
   return filtered
-    .sort((a, b) => (b.viewCount || 0) - (a.viewCount || 0))
+    .sort((a, b) => (b.stats?.views || 0) - (a.stats?.views || 0))
     .slice(0, limit);
 }

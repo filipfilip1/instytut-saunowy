@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { IBlogPost } from '@/types';
 import { CATEGORY_LABELS } from '@/lib/constants/blog';
 import HoverCard from '@/components/animations/HoverCard';
@@ -29,10 +30,11 @@ export default function BlogCard({ post }: BlogCardProps) {
           {/* Featured Image */}
           <div className="relative aspect-video bg-cream-100 overflow-hidden">
             {post.featuredImage?.url ? (
-              <img
+              <Image
                 src={post.featuredImage.url}
                 alt={post.featuredImage.alt || post.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-300"
                 loading="lazy"
               />
             ) : (

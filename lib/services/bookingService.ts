@@ -10,6 +10,13 @@ import {
 import { ITrainingBooking } from '@/types';
 // import Stripe from 'stripe'; // TODO: PRODUCTION - Uncomment for Stripe refunds
 
+// Type-safe mapper from Mongoose Document to ITrainingBooking
+function toTrainingBooking(doc: unknown): ITrainingBooking {
+  // Use JSON parse/stringify to safely convert Mongoose documents
+  // This handles ObjectId -> string conversion automatically
+  return JSON.parse(JSON.stringify(doc)) as ITrainingBooking;
+}
+
 // Types for service responses
 export interface BookingStats {
   statusCounts: Record<BookingStatus, number>;
@@ -19,7 +26,7 @@ export interface BookingStats {
 }
 
 export interface BookingsListResponse {
-  bookings: any[]; // Populated bookings with trainingId
+  bookings: ITrainingBooking[];
   pagination: {
     total: number;
     page: number;
@@ -131,7 +138,7 @@ export async function getBookingsWithStats(
     page = 1,
   } = options || {};
 
-  const query: any = {};
+  const query: Record<string, unknown> = {};
 
   if (trainingId) {
     query.trainingId = trainingId;
@@ -283,12 +290,13 @@ export async function cancelBookingWithRefund(
 
   // Decrement training participants count
   if (training.currentParticipants > 0) {
-    await (training as any).decrementParticipants();
+    training.currentParticipants = Math.max(0, training.currentParticipants - 1);
+    await training.save();
   }
 
   console.log(`✅ Booking ${bookingId} cancelled successfully`);
 
-  return booking.toObject() as ITrainingBooking;
+  return toTrainingBooking(booking.toObject());
 }
 
 /**
@@ -312,7 +320,7 @@ export async function updateBookingNotes(
     throw new Error('Booking not found');
   }
 
-  return booking as ITrainingBooking;
+  return toTrainingBooking(booking);
 }
 
 /**
@@ -348,7 +356,7 @@ export async function updateBookingPaymentStatus(
 
   console.log(`✅ Booking ${bookingId} payment status updated to ${paymentStatus}`);
 
-  return booking.toObject() as ITrainingBooking;
+  return toTrainingBooking(booking.toObject());
 }
 
 /**
@@ -364,5 +372,5 @@ export async function getBookingsForTraining(
     .sort({ createdAt: -1 })
     .lean();
 
-  return bookings as ITrainingBooking[];
+  return bookings.map(toTrainingBooking);
 }

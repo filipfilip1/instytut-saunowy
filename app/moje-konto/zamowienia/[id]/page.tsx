@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, use } from 'react';
+import React, { useCallback, useEffect, useState, use } from 'react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { IOrder } from '@/types';
@@ -10,18 +10,12 @@ import OrderStatusBadge from '@/components/admin/OrderStatusBadge';
 
 export default function OrderDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const [order, setOrder] = useState<IOrder | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    if (status === 'authenticated') {
-      fetchOrder();
-    }
-  }, [status, id]);
-
-  const fetchOrder = async () => {
+  const fetchOrder = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch(`/api/user/orders/${id}`);
@@ -38,7 +32,13 @@ export default function OrderDetailsPage({ params }: { params: Promise<{ id: str
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    if (status === 'authenticated') {
+      fetchOrder();
+    }
+  }, [status, fetchOrder]);
 
   if (status === 'loading' || loading) {
     return (

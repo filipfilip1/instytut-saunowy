@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { IProduct } from '@/types';
 import { getCartRecommendations } from '@/lib/client/recommendations';
 import { formatPriceRounded } from '@/lib/utils/currency';
@@ -73,10 +74,11 @@ export default function CartRecommendations({
               {/* Product Image */}
               <div className="relative aspect-square bg-gray-100 overflow-hidden">
                 {product.images[0]?.url ? (
-                  <img
+                  <Image
                     src={product.images[0].url}
                     alt={product.name}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                    fill
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
                     loading="lazy"
                   />
                 ) : (

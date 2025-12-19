@@ -1,6 +1,12 @@
 import dbConnect from '@/lib/mongodb';
 import Order from '@/lib/models/Order';
 import { ORDER_STATUSES, OrderStatus, PaymentStatus } from '@/lib/constants/orderStatuses';
+import { IOrder } from '@/types';
+
+// Type-safe mapper from Mongoose Document to IOrder
+function toOrder(doc: unknown): IOrder {
+  return JSON.parse(JSON.stringify(doc)) as IOrder;
+}
 
 // Types for service responses
 export interface OrderStats {
@@ -9,7 +15,7 @@ export interface OrderStats {
 }
 
 export interface OrdersListResponse {
-  orders: any[]; // Populated orders with userId
+  orders: IOrder[];
   pagination: {
     total: number;
     page: number;
@@ -85,7 +91,7 @@ export async function getOrdersWithStats(
     page = 1,
   } = options || {};
 
-  const query: any = {};
+  const query: Record<string, unknown> = {};
 
   if (status) {
     query.status = status;
@@ -117,7 +123,7 @@ export async function getOrdersWithStats(
   const stats = await getOrderStats();
 
   return {
-    orders,
+    orders: orders.map(toOrder),
     pagination: {
       total,
       page,

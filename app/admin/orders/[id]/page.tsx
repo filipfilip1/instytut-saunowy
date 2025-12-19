@@ -1,6 +1,7 @@
 import { formatPriceExact } from "@/lib/utils/currency";
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import dbConnect from '@/lib/mongodb';
 import Order from '@/lib/models/Order';
 import { IOrder } from '@/types';
@@ -29,7 +30,7 @@ async function getOrder(id: string) {
 
 export default async function OrderDetailsPage({ params }: PageProps) {
   const { id } = await params;
-  const order: (IOrder & { userId?: any }) | null = await getOrder(id);
+  const order: (IOrder & { userId?: { _id: string; name: string; email: string; image?: string } }) | null = await getOrder(id);
 
   if (!order) {
     notFound();
@@ -205,10 +206,12 @@ export default async function OrderDetailsPage({ params }: PageProps) {
             <div className="px-6 py-4">
               <div className="flex items-center gap-3 mb-4">
                 {customer.image ? (
-                  <img
+                  <Image
                     src={customer.image}
                     alt={customer.name}
-                    className="w-12 h-12 rounded-full"
+                    width={48}
+                    height={48}
+                    className="rounded-full"
                   />
                 ) : (
                   <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">

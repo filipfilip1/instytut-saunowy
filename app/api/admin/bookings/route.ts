@@ -49,7 +49,7 @@ export async function GET(request: NextRequest) {
       status: 'success',
       data: result,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error fetching bookings:', error);
     return NextResponse.json(
       {

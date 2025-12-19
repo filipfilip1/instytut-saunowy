@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     const page = parseInt(searchParams.get('page') || '1');
 
     // Build query
-    const query: any = { status: 'published' };
+    const query: Record<string, unknown> = { status: 'published' };
 
     // Filter by category
     if (category) {

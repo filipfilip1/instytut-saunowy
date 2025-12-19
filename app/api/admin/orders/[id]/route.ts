@@ -66,7 +66,7 @@ export async function PATCH(
     //   updated via webhooks only. Consider adding audit logging for manual changes.
     //   TODO: Implement AuditLog for paymentStatus changes or restrict to webhook-only
     const allowedFields = ['status', 'paymentStatus', 'trackingNumber'];
-    const updates: any = {};
+    const updates: Record<string, unknown> = {};
 
     allowedFields.forEach(field => {
       if (body[field] !== undefined) {
@@ -82,14 +82,14 @@ export async function PATCH(
     }
 
     // Status validation
-    if (updates.status && !isValidOrderStatus(updates.status)) {
+    if (updates.status && !isValidOrderStatus(updates.status as string)) {
       return NextResponse.json(
         { error: 'Invalid status value' },
         { status: 400 }
       );
     }
 
-    if (updates.paymentStatus && !isValidPaymentStatus(updates.paymentStatus)) {
+    if (updates.paymentStatus && !isValidPaymentStatus(updates.paymentStatus as string)) {
       return NextResponse.json(
         { error: 'Invalid payment status value' },
         { status: 400 }

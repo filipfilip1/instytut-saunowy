@@ -24,10 +24,10 @@ export async function POST(request: NextRequest) {
       status: 'success',
       data: product
     }, { status: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error creating product:', error);
 
-    if (error.code === 11000) {
+    if (error && typeof error === 'object' && 'code' in error && error.code === 11000) {
       return NextResponse.json({
         error: 'Produkt o tej nazwie już istnieje'
       }, { status: 400 });

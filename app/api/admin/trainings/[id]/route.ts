@@ -46,7 +46,7 @@ export async function GET(
       status: 'success',
       data: training,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error fetching training:', error);
     return NextResponse.json(
       {
@@ -173,10 +173,10 @@ export async function PUT(
       status: 'success',
       data: training,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error updating training:', error);
 
-    if (error.code === 11000) {
+    if (error && typeof error === 'object' && 'code' in error && error.code === 11000) {
       return NextResponse.json(
         {
           status: 'error',
@@ -186,8 +186,8 @@ export async function PUT(
       );
     }
 
-    if (error.name === 'ValidationError') {
-      const errors = Object.values(error.errors).map((e: any) => e.message);
+    if (error && typeof error === 'object' && 'name' in error && error.name === 'ValidationError' && 'errors' in error) {
+      const errors = Object.values(error.errors as Record<string, { message: string }>).map((e) => e.message);
       return NextResponse.json(
         {
           status: 'error',
@@ -260,7 +260,7 @@ export async function DELETE(
       message: 'Szkolenie zostało anulowane',
       data: training,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error deleting training:', error);
     return NextResponse.json(
       {

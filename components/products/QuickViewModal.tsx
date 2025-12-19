@@ -3,9 +3,9 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useSession } from 'next-auth/react';
 import { X } from 'lucide-react';
-import { IProduct } from '@/types';
 import { useCart } from '@/contexts/CartContext';
 import { useQuickView } from '@/contexts/QuickViewContext';
 import VariantSelector from '@/components/products/VariantSelector';
@@ -132,12 +132,13 @@ export default function QuickViewModal() {
                 {/* Left: Images */}
                 <div>
                   {/* Main Image */}
-                  <div className="mb-4 bg-cream-100 rounded-xl overflow-hidden">
+                  <div className="mb-4 bg-cream-100 rounded-xl overflow-hidden relative aspect-square">
                     {primaryImage?.url ? (
-                      <img
+                      <Image
                         src={product.images[selectedImage]?.url || primaryImage.url}
                         alt={product.name}
-                        className="w-full aspect-square object-cover"
+                        fill
+                        className="object-cover"
                       />
                     ) : (
                       <div className="w-full aspect-square flex items-center justify-center">
@@ -158,17 +159,18 @@ export default function QuickViewModal() {
                           key={image.id}
                           onClick={() => setSelectedImage(index)}
                           className={`
-                            rounded-lg overflow-hidden border-2 transition-all
+                            rounded-lg overflow-hidden border-2 transition-all relative h-20
                             ${selectedImage === index
                               ? 'border-gold-400 ring-2 ring-gold-200'
                               : 'border-cream-300 hover:border-gold-300'
                             }
                           `}
                         >
-                          <img
+                          <Image
                             src={image.url}
                             alt={image.alt || `${product.name} - ${index + 1}`}
-                            className="w-full h-20 object-cover hover:opacity-75 transition-opacity"
+                            fill
+                            className="object-cover hover:opacity-75 transition-opacity"
                           />
                         </button>
                       ))}

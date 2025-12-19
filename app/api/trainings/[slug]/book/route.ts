@@ -48,7 +48,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     const { slug } = await params;
 
     // Find training
-    const training = await (Training as any).findBySlug(slug);
+    const training = await Training.findBySlug(slug);
 
     if (!training) {
       return NextResponse.json(
@@ -95,7 +95,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
 
     // Calculate amounts
     const fullAmount = training.price;
-    const depositAmount = training.depositAmount; // Virtual property
+    const depositAmount = training.depositAmount ?? training.price; // Virtual property, fallback to full price
 
     // Create Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({

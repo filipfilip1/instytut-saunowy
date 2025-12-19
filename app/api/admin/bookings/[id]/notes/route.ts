@@ -48,12 +48,12 @@ export async function PATCH(
       data: booking,
       message: 'Notatki zostały zaktualizowane',
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error updating booking notes:', error);
     return NextResponse.json(
       {
         status: 'error',
-        message: error.message || 'Błąd podczas aktualizacji notatek',
+        message: error instanceof Error ? error.message : 'Błąd podczas aktualizacji notatek',
       },
       { status: 500 }
     );

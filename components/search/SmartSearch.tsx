@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import Fuse from 'fuse.js';
 import { IProduct } from '@/types';
 import { useDebounce } from '@/hooks/useDebounce';
@@ -30,8 +31,8 @@ export default function SmartSearch({
   const [focused, setFocused] = useState(false);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  // Configure Fuse.js for fuzzy search
-  const fuse = new Fuse(products, {
+  // Configure Fuse.js for fuzzy search - memoized to prevent recreation on every render
+  const fuse = useMemo(() => new Fuse(products, {
     keys: [
       { name: 'name', weight: 2 }, // Name is most important
       { name: 'description', weight: 1 },
@@ -42,7 +43,7 @@ export default function SmartSearch({
     includeScore: true,
     minMatchCharLength: MIN_SEARCH_LENGTH,
     ignoreLocation: true,
-  });
+  }), [products]);
 
   // Load recent searches from localStorage
   useEffect(() => {
@@ -80,7 +81,7 @@ export default function SmartSearch({
     const searchResults = fuse.search(debouncedQuery);
     const items = searchResults.map(result => result.item).slice(0, 5);
     setResults(items);
-  }, [debouncedQuery]);
+  }, [debouncedQuery, fuse]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -95,7 +96,7 @@ export default function SmartSearch({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const handleResultClick = (product: IProduct) => {
+  const handleResultClick = () => {
     saveRecentSearch(query);
     setShowResults(false);
     setQuery('');
@@ -178,15 +179,17 @@ export default function SmartSearch({
                 <Link
                   key={product._id}
                   href={`/produkt/${product.slug}`}
-                  onClick={() => handleResultClick(product)}
+                  onClick={handleResultClick}
                   className="flex items-center gap-3 p-3 hover:bg-gray-50 border-b last:border-b-0 transition-colors"
                 >
                   {/* Product Image */}
                   {product.images[0]?.url && (
-                    <img
+                    <Image
                       src={product.images[0].url}
                       alt={product.name}
-                      className="w-12 h-12 object-cover rounded"
+                      width={48}
+                      height={48}
+                      className="object-cover rounded"
                     />
                   )}
 

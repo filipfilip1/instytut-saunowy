@@ -1,8 +1,11 @@
 import { formatPriceExact } from '@/lib/utils/currency';
 import { getTrainingsWithStats } from '@/lib/services/trainingService';
 import Link from 'next/link';
+import Image from 'next/image';
 import TrainingStatusBadge from '@/components/admin/TrainingStatusBadge';
 import { TRAINING_CATEGORY_CONFIG } from '@/lib/constants/trainingStatuses';
+
+export const dynamic = 'force-dynamic';
 
 export default async function AdminTrainingsPage() {
   const { trainings, stats } = await getTrainingsWithStats({
@@ -124,10 +127,12 @@ export default async function AdminTrainingsPage() {
                     <td className="px-6 py-4">
                       <div className="flex items-center">
                         <div className="h-12 w-12 flex-shrink-0">
-                          <img
-                            className="h-12 w-12 rounded-xl object-cover border-2 border-cream-200"
+                          <Image
+                            className="rounded-xl object-cover border-2 border-cream-200"
                             src={training.featuredImage?.url || '/placeholder.png'}
                             alt={training.name}
+                            width={48}
+                            height={48}
                           />
                         </div>
                         <div className="ml-4">

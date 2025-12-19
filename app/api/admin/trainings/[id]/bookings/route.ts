@@ -34,7 +34,7 @@ export async function GET(
       data: bookings,
       count: bookings.length,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error fetching bookings:', error);
     return NextResponse.json(
       {

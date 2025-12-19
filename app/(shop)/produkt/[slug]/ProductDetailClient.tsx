@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { IProduct } from '@/types';
@@ -84,12 +85,13 @@ export default function ProductDetailClient({ product, allProducts }: ProductDet
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-8">
             {/* Photo Gallery */}
             <div>
-              <div className="aspect-w-1 aspect-h-1 mb-4">
+              <div className="aspect-w-1 aspect-h-1 mb-4 relative h-[500px]">
                 {product.images[selectedImage]?.url ? (
-                  <img
+                  <Image
                     src={product.images[selectedImage].url}
                     alt={product.images[selectedImage].alt || product.name}
-                    className="w-full h-[500px] object-cover rounded-lg"
+                    fill
+                    className="object-cover rounded-lg"
                   />
                 ) : (
                   <ProductImageFallback
@@ -108,14 +110,15 @@ export default function ProductDetailClient({ product, allProducts }: ProductDet
                       key={image.id}
                       onClick={() => setSelectedImage(index)}
                       className={`
-                        relative aspect-w-1 aspect-h-1 rounded-lg overflow-hidden
+                        relative aspect-w-1 aspect-h-1 rounded-lg overflow-hidden h-24
                         ${selectedImage === index ? 'ring-2 ring-gold-400' : ''}
                       `}
                     >
-                      <img
+                      <Image
                         src={image.url}
                         alt={image.alt}
-                        className="w-full h-24 object-cover hover:opacity-80 transition-opacity"
+                        fill
+                        className="object-cover hover:opacity-80 transition-opacity"
                       />
                     </button>
                   ))}

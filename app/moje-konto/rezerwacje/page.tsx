@@ -1,28 +1,30 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
-import { ITrainingBooking } from '@/types';
+import { ITrainingBooking, ITraining } from '@/types';
 import { formatPriceExact } from '@/lib/utils/currency';
 import { Calendar, Filter, MapPin, Clock } from 'lucide-react';
 import BookingStatusBadge from '@/components/admin/BookingStatusBadge';
 import { BOOKING_STATUSES } from '@/lib/constants/bookingStatuses';
 
+type PopulatedTrainingBooking = Omit<ITrainingBooking, 'trainingId'> & {
+  trainingId: ITraining | string;
+};
+
+interface BookingStats {
+  statusCounts?: Record<string, number>;
+}
+
 export default function UserBookingsPage() {
-  const { data: session, status } = useSession();
-  const [bookings, setBookings] = useState<(ITrainingBooking & { trainingId: any })[]>([]);
+  const { status } = useSession();
+  const [bookings, setBookings] = useState<PopulatedTrainingBooking[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedStatus, setSelectedStatus] = useState<string>('');
-  const [stats, setStats] = useState<any>({});
+  const [stats, setStats] = useState<BookingStats>({});
 
-  useEffect(() => {
-    if (status === 'authenticated') {
-      fetchBookings();
-    }
-  }, [status, selectedStatus]);
-
-  const fetchBookings = async () => {
+  const fetchBookings = useCallback(async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
@@ -40,7 +42,13 @@ export default function UserBookingsPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedStatus]);
+
+  useEffect(() => {
+    if (status === 'authenticated') {
+      fetchBookings();
+    }
+  }, [status, fetchBookings]);
 
   if (status === 'loading' || loading) {
     return (
@@ -53,14 +61,16 @@ export default function UserBookingsPage() {
   const upcomingBookings = bookings.filter(
     (b) =>
       b.bookingStatus === 'confirmed' &&
-      b.trainingId?.date &&
+      typeof b.trainingId === 'object' &&
+      b.trainingId.date &&
       new Date(b.trainingId.date) > new Date()
   );
 
   const pastBookings = bookings.filter(
     (b) =>
       b.bookingStatus === 'confirmed' &&
-      b.trainingId?.date &&
+      typeof b.trainingId === 'object' &&
+      b.trainingId.date &&
       new Date(b.trainingId.date) <= new Date()
   );
 
@@ -92,7 +102,7 @@ export default function UserBookingsPage() {
                   : 'bg-cream-100 text-graphite-600 hover:bg-cream-200'
               }`}
             >
-              Wszystkie {stats.statusCounts ? `(${Object.values(stats.statusCounts).reduce((a: any, b: any) => a + b, 0)})` : ''}
+              Wszystkie {stats.statusCounts ? `(${Object.values(stats.statusCounts).reduce((a: number, b: number) => a + b, 0)})` : ''}
             </button>
             {BOOKING_STATUSES.map((status) => (
               <button
@@ -151,13 +161,13 @@ export default function UserBookingsPage() {
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex-1">
                         <h3 className="text-xl font-serif font-bold text-graphite-900 mb-2">
-                          {booking.trainingId?.name || 'Szkolenie'}
+                          {typeof booking.trainingId === 'object' ? booking.trainingId.name : 'Szkolenie'}
                         </h3>
                         <div className="space-y-2 text-sm text-graphite-600">
                           <div className="flex items-center gap-2">
                             <Calendar className="w-4 h-4" />
                             <span>
-                              {booking.trainingId?.date
+                              {typeof booking.trainingId === 'object' && booking.trainingId.date
                                 ? new Date(booking.trainingId.date).toLocaleDateString('pl-PL', {
                                     year: 'numeric',
                                     month: 'long',
@@ -166,13 +176,13 @@ export default function UserBookingsPage() {
                                 : 'Data do ustalenia'}
                             </span>
                           </div>
-                          {booking.trainingId?.duration && (
+                          {typeof booking.trainingId === 'object' && booking.trainingId.duration && (
                             <div className="flex items-center gap-2">
                               <Clock className="w-4 h-4" />
                               <span>{booking.trainingId.duration}h</span>
                             </div>
                           )}
-                          {booking.trainingId?.location?.venue && (
+                          {typeof booking.trainingId === 'object' && booking.trainingId.location?.venue && (
                             <div className="flex items-center gap-2">
                               <MapPin className="w-4 h-4" />
                               <span>
@@ -226,13 +236,13 @@ export default function UserBookingsPage() {
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex-1">
                         <h3 className="text-lg font-semibold text-graphite-900 mb-2">
-                          {booking.trainingId?.name || 'Szkolenie'}
+                          {typeof booking.trainingId === 'object' ? booking.trainingId.name : 'Szkolenie'}
                         </h3>
                         <div className="space-y-1 text-sm text-graphite-600">
                           <div className="flex items-center gap-2">
                             <Calendar className="w-4 h-4" />
                             <span>
-                              {booking.trainingId?.date
+                              {typeof booking.trainingId === 'object' && booking.trainingId.date
                                 ? new Date(booking.trainingId.date).toLocaleDateString('pl-PL', {
                                     year: 'numeric',
                                     month: 'long',
@@ -276,7 +286,7 @@ export default function UserBookingsPage() {
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex-1">
                         <h3 className="text-lg font-semibold text-graphite-900 mb-2">
-                          {booking.trainingId?.name || 'Szkolenie'}
+                          {typeof booking.trainingId === 'object' ? booking.trainingId.name : 'Szkolenie'}
                         </h3>
                         <div className="text-sm text-graphite-600">
                           Anulowano{' '}
@@ -331,12 +341,12 @@ export default function UserBookingsPage() {
                       <tr key={booking._id.toString()} className="hover:bg-cream-50 transition-colors">
                         <td className="px-6 py-4">
                           <span className="font-semibold text-graphite-900">
-                            {booking.trainingId?.name || 'Szkolenie'}
+                            {typeof booking.trainingId === 'object' ? booking.trainingId.name : 'Szkolenie'}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className="text-sm text-graphite-600">
-                            {booking.trainingId?.date
+                            {typeof booking.trainingId === 'object' && booking.trainingId.date
                               ? new Date(booking.trainingId.date).toLocaleDateString('pl-PL')
                               : 'Data do ustalenia'}
                           </span>

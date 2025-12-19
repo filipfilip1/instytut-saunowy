@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useCart } from '@/contexts/CartContext';
@@ -94,10 +95,12 @@ export default function CartPage() {
                     {/* Product photo */}
                     <div className="flex-shrink-0">
                       {item.product.images[0]?.url ? (
-                        <img
+                        <Image
                           src={item.product.images[0].url}
                           alt={item.product.name}
-                          className="w-24 h-24 object-cover rounded-lg"
+                          width={96}
+                          height={96}
+                          className="object-cover rounded-lg"
                         />
                       ) : (
                         <ProductImageFallback

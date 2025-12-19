@@ -110,9 +110,10 @@ export default function ContactForm() {
         rodoConsent: false,
       });
       setErrors({});
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Contact form error:', error);
-      toast.error(error.message || 'Nie udało się wysłać wiadomości. Spróbuj ponownie.');
+      const message = error instanceof Error ? error.message : 'Nie udało się wysłać wiadomości. Spróbuj ponownie.';
+      toast.error(message);
     } finally {
       setLoading(false);
     }

@@ -46,7 +46,7 @@ export async function GET(request: NextRequest) {
       status: 'success',
       data: result,
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error fetching trainings:', error);
     return NextResponse.json(
       {
@@ -157,11 +157,11 @@ export async function POST(request: NextRequest) {
       },
       { status: 201 }
     );
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error creating training:', error);
 
     // Duplicate slug error
-    if (error.code === 11000) {
+    if (error && typeof error === 'object' && 'code' in error && error.code === 11000) {
       return NextResponse.json(
         {
           status: 'error',
@@ -172,8 +172,8 @@ export async function POST(request: NextRequest) {
     }
 
     // Validation error
-    if (error.name === 'ValidationError') {
-      const errors = Object.values(error.errors).map((e: any) => e.message);
+    if (error && typeof error === 'object' && 'name' in error && error.name === 'ValidationError' && 'errors' in error) {
+      const errors = Object.values(error.errors as Record<string, { message: string }>).map((e) => e.message);
       return NextResponse.json(
         {
           status: 'error',

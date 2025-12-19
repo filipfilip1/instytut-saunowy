@@ -7,6 +7,7 @@ import User from '@/lib/models/User';
 import Link from 'next/link';
 import { ArrowRight, Package, ShoppingCart, Users, TrendingUp } from 'lucide-react';
 import SalesChart from '@/components/admin/SalesChart';
+import type { TopProduct } from '@/lib/services/customerService';
 
 async function getDashboardStats() {
   await dbConnect();
@@ -202,7 +203,7 @@ export default async function AdminDashboard() {
             {stats.topProducts.length === 0 ? (
               <p className="text-graphite-500 text-center py-12">Brak danych</p>
             ) : (
-              stats.topProducts.map((product: any, index: number) => (
+              stats.topProducts.map((product: TopProduct, index: number) => (
                 <div key={product._id} className="flex items-start justify-between p-3 rounded-xl hover:bg-cream-50 transition-colors">
                   <div className="flex items-start gap-3">
                     <span className={`text-xl font-serif font-bold ${
@@ -212,15 +213,15 @@ export default async function AdminDashboard() {
                     </span>
                     <div>
                       <p className="font-semibold text-graphite-900 text-sm">
-                        {product.productName}
+                        {product.name}
                       </p>
                       <p className="text-xs text-graphite-500 mt-1">
-                        Sprzedano: {product.totalSold} szt.
+                        Sprzedano: {product.count} szt.
                       </p>
                     </div>
                   </div>
                   <span className="text-sm font-bold text-forest-700">
-                    {formatPriceRounded(product.revenue)}
+                    {formatPriceRounded(product.total)}
                   </span>
                 </div>
               ))

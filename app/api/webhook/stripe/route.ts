@@ -104,7 +104,7 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
   });
 
   // Enrich items with variantDisplayNames from line item metadata
-  const enrichedItems = items.map((item: any, index: number) => {
+  const enrichedItems = items.map((item: Record<string, unknown>, index: number) => {
     const lineItem = lineItems.data[index];
     const productData = lineItem?.price?.product as Stripe.Product | undefined;
     const variantDisplayNames = productData?.metadata?.variantDisplayNames || '';
@@ -312,7 +312,7 @@ async function handleTrainingBookingCompleted(session: Stripe.Checkout.Session) 
       }
 
       // Increment participants count
-      await (training as any).incrementParticipants(1);
+      await training.incrementParticipants(1);
       console.log(`📚 Training participants updated: ${training.name} (${training.currentParticipants}/${training.maxParticipants})`);
 
       // 2. Create booking record

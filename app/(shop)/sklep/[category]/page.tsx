@@ -7,10 +7,20 @@ import { fetchAllProductsGrouped } from '@/lib/utils/productQueries';
 import {
   CATEGORY_CONFIG,
   ALL_CATEGORY_CONFIG,
-  PRODUCT_CATEGORIES,
   isValidCategory,
   getAllCategories
 } from '@/lib/constants/categories';
+
+// Revalidate every 30 minutes
+export const revalidate = 1800;
+
+// Generate static params for all categories
+export async function generateStaticParams() {
+  // Pre-render all category pages during build
+  return getAllCategories().map(({ key }) => ({
+    category: key,
+  }));
+}
 
 interface PageProps {
   params: Promise<{
@@ -129,9 +139,4 @@ export default async function CategoryPage({ params }: PageProps) {
       </div>
     </div>
   );
-}
-
-
-export async function generateStaticParams() {
-  return PRODUCT_CATEGORIES.map(category => ({ category }));
 }

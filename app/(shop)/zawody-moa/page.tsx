@@ -8,7 +8,6 @@ import {
   MOA_CEREMONY_TYPES,
   MOA_FEATURES,
   MOA_PAST_EDITIONS,
-  MOA_TESTIMONIALS,
   MOA_NEWS,
 } from '@/lib/constants/moaCompetitions';
 import { Camera } from 'lucide-react';

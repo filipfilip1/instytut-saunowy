@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import dbConnect from '@/lib/mongodb';
 import BlogPost from '@/lib/models/BlogPost';
 import { IBlogPost } from '@/types';
@@ -6,6 +7,9 @@ import FadeIn from '@/components/animations/FadeIn';
 import StaggerContainer, { StaggerItem } from '@/components/animations/StaggerContainer';
 import BlogCard from '@/components/blog/BlogCard';
 import Link from 'next/link';
+
+// Revalidate every hour (ISR)
+export const revalidate = 3600;
 
 export const metadata = {
   title: 'Akademia & Blog - Instytut Saunowy',
@@ -102,10 +106,11 @@ export default async function AkademiaPage() {
                   {/* Image */}
                   <div className="relative h-64 lg:h-auto bg-graphite-900">
                     {featuredPost.featuredImage?.url ? (
-                      <img
+                      <Image
                         src={featuredPost.featuredImage.url}
                         alt={featuredPost.title}
-                        className="w-full h-full object-cover opacity-90"
+                        fill
+                        className="object-cover opacity-90"
                       />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center">

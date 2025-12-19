@@ -1,7 +1,18 @@
-import mongoose, { Schema, Model } from 'mongoose';
+import mongoose, { Schema, Model, Document } from 'mongoose';
 import { ITraining } from '@/types';
 
-const TrainingSchema = new Schema<ITraining>(
+export interface ITrainingDocument extends Document, Omit<ITraining, '_id'> {
+  incrementParticipants(count?: number): Promise<this>;
+  decrementParticipants(count?: number): Promise<this>;
+}
+
+export interface ITrainingModel extends Model<ITrainingDocument> {
+  findBySlug(slug: string): Promise<ITrainingDocument | null>;
+  findUpcoming(limit?: number): Promise<ITrainingDocument[]>;
+  findByCategory(category: string): Promise<ITrainingDocument[]>;
+}
+
+const TrainingSchema = new Schema(
   {
     name: {
       type: String,
@@ -242,7 +253,7 @@ TrainingSchema.pre('save', function(next) {
   }
 });
 
-const Training: Model<ITraining> =
-  mongoose.models.Training || mongoose.model<ITraining>('Training', TrainingSchema);
+const Training: ITrainingModel =
+  (mongoose.models.Training as ITrainingModel) || mongoose.model<ITrainingDocument, ITrainingModel>('Training', TrainingSchema);
 
 export default Training;

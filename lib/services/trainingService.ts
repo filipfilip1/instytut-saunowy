@@ -8,6 +8,11 @@ import {
 } from '@/lib/constants/trainingStatuses';
 import { ITraining } from '@/types';
 
+// Type-safe mapper from Mongoose Document to ITraining
+function toTraining(doc: unknown): ITraining {
+  return JSON.parse(JSON.stringify(doc)) as ITraining;
+}
+
 // Types for service responses
 export interface TrainingStats {
   statusCounts: Record<TrainingStatus, number>;
@@ -128,7 +133,7 @@ export async function getTrainingsWithStats(
     page = 1,
   } = options || {};
 
-  const query: any = {};
+  const query: Record<string, unknown> = {};
 
   if (status) {
     query.status = status;
@@ -160,7 +165,7 @@ export async function getTrainingsWithStats(
   const stats = await getTrainingStats();
 
   return {
-    trainings: trainings as ITraining[],
+    trainings: trainings.map(toTraining),
     pagination: {
       total,
       page,
@@ -186,7 +191,7 @@ export async function getUpcomingTrainings(limit = 5): Promise<ITraining[]> {
     .limit(limit)
     .lean();
 
-  return trainings as ITraining[];
+  return trainings.map(toTraining);
 }
 
 /**
@@ -211,7 +216,7 @@ export async function canDeleteTraining(trainingId: string): Promise<boolean> {
 export async function getTrainingRevenue(trainingId?: string): Promise<number> {
   await dbConnect();
 
-  const matchQuery: any = { paymentStatus: 'paid' };
+  const matchQuery: Record<string, unknown> = { paymentStatus: 'paid' };
 
   if (trainingId) {
     matchQuery.trainingId = trainingId;

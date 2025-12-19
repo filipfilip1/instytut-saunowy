@@ -3,6 +3,7 @@ import dbConnect from '@/lib/mongodb';
 import { IProduct } from '@/types';
 import Product from '@/lib/models/Product';
 import Link from 'next/link';
+import Image from 'next/image';
 import DeleteProductButton from './DeleteProductButton';
 
 async function getProducts() {
@@ -62,10 +63,12 @@ export default async function AdminProductsPage() {
                 <td className="px-6 py-4">
                   <div className="flex items-center">
                     <div className="h-12 w-12 flex-shrink-0">
-                      <img
-                        className="h-12 w-12 rounded-xl object-cover border-2 border-cream-200"
+                      <Image
+                        className="rounded-xl object-cover border-2 border-cream-200"
                         src={product.images[0]?.url || '/placeholder.png'}
                         alt={product.name}
+                        width={48}
+                        height={48}
                       />
                     </div>
                     <div className="ml-4">

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
 import imageCompression from 'browser-image-compression';
 import { useToast } from '@/hooks/useToast';
 
@@ -176,11 +177,12 @@ export default function ImageUpload({
           </p>
         </div>
       ) : (
-        <div className="relative rounded-lg overflow-hidden bg-gray-100">
-          <img
+        <div className="relative rounded-lg overflow-hidden bg-gray-100 h-48">
+          <Image
             src={preview}
             alt="Preview"
-            className="w-full h-48 object-cover"
+            fill
+            className="object-cover"
           />
 
           <div className="absolute top-2 right-2 flex gap-2">

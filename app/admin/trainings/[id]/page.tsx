@@ -4,6 +4,7 @@ import Training from '@/lib/models/Training';
 import { ITraining } from '@/types';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import TrainingStatusBadge from '@/components/admin/TrainingStatusBadge';
 import { getTrainingBookingsCount } from '@/lib/services/trainingService';
 import {
@@ -255,10 +256,12 @@ export default async function TrainingDetailPage({ params }: PageProps) {
         <h3 className="text-lg font-serif font-semibold text-graphite-900 mb-4">Instruktor</h3>
         <div className="flex items-start gap-4">
           {training.instructor.avatar && (
-            <img
+            <Image
               src={training.instructor.avatar}
               alt={training.instructor.name}
-              className="w-20 h-20 rounded-full object-cover border-2 border-gold-300"
+              width={80}
+              height={80}
+              className="rounded-full object-cover border-2 border-gold-300"
             />
           )}
           <div>
@@ -276,20 +279,26 @@ export default async function TrainingDetailPage({ params }: PageProps) {
       <div className="bg-white rounded-2xl shadow-lg p-6 border-2 border-cream-200">
         <h3 className="text-lg font-serif font-semibold text-graphite-900 mb-4">Zdjęcia</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="col-span-2">
-            <img
-              src={training.featuredImage.url}
-              alt={training.featuredImage.alt}
-              className="w-full h-64 object-cover rounded-xl border-2 border-gold-300"
-            />
-            <p className="text-xs text-center text-graphite-500 mt-1">Zdjęcie główne</p>
-          </div>
+          {training.featuredImage && (
+            <div className="col-span-2">
+              <div className="relative w-full h-64">
+                <Image
+                  src={training.featuredImage.url}
+                  alt={training.featuredImage.alt || training.name}
+                  fill
+                  className="object-cover rounded-xl border-2 border-gold-300"
+                />
+              </div>
+              <p className="text-xs text-center text-graphite-500 mt-1">Zdjęcie główne</p>
+            </div>
+          )}
           {training.images?.map((img, index) => (
-            <div key={index}>
-              <img
+            <div key={index} className="relative h-32">
+              <Image
                 src={img.url}
-                alt={img.alt}
-                className="w-full h-32 object-cover rounded-xl border-2 border-cream-300"
+                alt={img.alt || `${training.name} - zdjęcie ${index + 1}`}
+                fill
+                className="object-cover rounded-xl border-2 border-cream-300"
               />
             </div>
           ))}

@@ -257,8 +257,8 @@ export default function RegulaminMoAPage() {
                 </h2>
                 <ol className="space-y-3 text-graphite-700 leading-relaxed">
                   <li>
-                    Zwycięzca zawodów otrzymuje tytuł „Najlepszego Saunamistrza MoA - Masters of
-                    Aufguss" oraz nagrodę główną.
+                    Zwycięzca zawodów otrzymuje tytuł &ldquo;Najlepszego Saunamistrza MoA - Masters of
+                    Aufguss&rdquo; oraz nagrodę główną.
                   </li>
                   <li>
                     Dla zdobywców drugiego i trzeciego miejsca przewidziane są nagrody rzeczowe.

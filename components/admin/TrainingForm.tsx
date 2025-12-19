@@ -69,7 +69,7 @@ export default function TrainingForm({ training, isEdit = false }: TrainingFormP
   });
 
   const [images, setImages] = useState<Array<{ url: string; alt: string }>>(
-    training?.images || []
+    training?.images?.map(img => ({ url: img.url, alt: img.alt || '' })) || []
   );
 
   // Dynamic arrays state
@@ -294,7 +294,7 @@ export default function TrainingForm({ training, isEdit = false }: TrainingFormP
     setLoading(true);
 
     try {
-      const payload: any = {
+      const payload = {
         ...formData,
         status: statusToSubmit,
         ...scheduleData,
@@ -314,7 +314,7 @@ export default function TrainingForm({ training, isEdit = false }: TrainingFormP
             .map((k) => k.trim())
             .filter(Boolean),
         },
-      };
+      } as const;
 
       const url = isEdit ? `/api/admin/trainings/${training?._id}` : '/api/admin/trainings';
       const method = isEdit ? 'PUT' : 'POST';
@@ -341,9 +341,10 @@ export default function TrainingForm({ training, isEdit = false }: TrainingFormP
         router.push('/admin/trainings');
         router.refresh();
       }, 1500);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error saving training:', error);
-      toast.error(error.message || 'Wystąpił błąd podczas zapisywania szkolenia');
+      const message = error instanceof Error ? error.message : 'Wystąpił błąd podczas zapisywania szkolenia';
+      toast.error(message);
     } finally {
       setLoading(false);
     }

@@ -23,7 +23,7 @@ interface UserProfile {
 }
 
 export default function UserProfilePage() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -114,8 +114,10 @@ export default function UserProfilePage() {
       newAddresses.forEach((addr, i) => {
         addr.isDefault = i === index;
       });
+    } else if (field === 'isDefault') {
+      newAddresses[index][field] = value as boolean;
     } else {
-      (newAddresses[index] as any)[field] = value;
+      newAddresses[index][field as 'street' | 'city' | 'zipCode' | 'country'] = value as string;
     }
     setAddresses(newAddresses);
   };

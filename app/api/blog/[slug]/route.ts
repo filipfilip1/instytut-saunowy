@@ -13,7 +13,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     await dbConnect();
 
     const { slug } = await params;
-    const post = await (BlogPost as any).findBySlug(slug);
+    const post = await BlogPost.findBySlug(slug);
 
     if (!post) {
       return NextResponse.json(

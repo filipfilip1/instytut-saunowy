@@ -6,6 +6,18 @@ import Product from '@/lib/models/Product';
 import ProductDetailClient from './ProductDetailClient';
 import { IProduct } from '@/types';
 
+// Dynamic params - render on-demand
+export const dynamicParams = true;
+// Revalidate every 30 minutes
+export const revalidate = 1800;
+
+// Generate static params for most popular products (optional - can return empty array)
+export async function generateStaticParams() {
+  // Return empty array to render all pages on-demand
+  // In production, you could pre-render top products
+  return [];
+}
+
 interface PageProps {
   params: {
     slug: string;

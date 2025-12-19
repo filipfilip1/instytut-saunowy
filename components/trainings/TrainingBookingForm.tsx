@@ -48,7 +48,7 @@ export default function TrainingBookingForm({ training }: TrainingBookingFormPro
         setError(data.message || 'Wystąpił błąd podczas rezerwacji');
         setIsSubmitting(false);
       }
-    } catch (err) {
+    } catch {
       setError('Wystąpił błąd podczas przetwarzania. Spróbuj ponownie.');
       setIsSubmitting(false);
     }

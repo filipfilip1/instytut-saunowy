@@ -10,6 +10,9 @@ import {
   getAllCategories
 } from '@/lib/constants/categories';
 
+// Revalidate every hour (ISR)
+export const revalidate = 3600;
+
 export default async function ProductListPage() {
   const products = await fetchProducts({ limit: 20 });
 

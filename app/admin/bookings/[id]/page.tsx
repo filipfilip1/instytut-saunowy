@@ -11,7 +11,20 @@ interface PageProps {
   params: Promise<{ id: string }>;
 }
 
-async function getBooking(id: string): Promise<ITrainingBooking | null> {
+type PopulatedTraining = {
+  _id: string;
+  name: string;
+  date: Date;
+  location: { venue: string; city: string };
+  slug: string;
+  price: number;
+};
+
+type PopulatedBooking = Omit<ITrainingBooking, 'trainingId'> & {
+  trainingId: PopulatedTraining;
+};
+
+async function getBooking(id: string): Promise<PopulatedBooking | null> {
   await dbConnect();
   const booking = await TrainingBooking.findById(id)
     .populate('trainingId', 'name date location slug price duration')
@@ -27,7 +40,7 @@ export default async function BookingDetailPage({ params }: PageProps) {
     notFound();
   }
 
-  const training = booking.trainingId as any;
+  const training = booking.trainingId;
   const trainingDate = training?.date ? new Date(training.date) : null;
   const bookingDate = new Date(booking.createdAt);
 
@@ -235,7 +248,7 @@ export default async function BookingDetailPage({ params }: PageProps) {
       {/* Actions */}
       <div className="bg-white rounded-2xl shadow-lg p-6 border-2 border-cream-200">
         <h3 className="text-lg font-serif font-semibold text-graphite-900 mb-4">Akcje</h3>
-        <BookingActionsClient booking={booking} />
+        <BookingActionsClient booking={{ ...booking, trainingId: training._id }} />
       </div>
     </div>
   );

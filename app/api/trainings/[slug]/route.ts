@@ -14,7 +14,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     await dbConnect();
 
     const { slug } = await params;
-    const training = await (Training as any).findBySlug(slug);
+    const training = await (Training as { findBySlug: (slug: string) => Promise<unknown> }).findBySlug(slug);
 
     if (!training) {
       return NextResponse.json(

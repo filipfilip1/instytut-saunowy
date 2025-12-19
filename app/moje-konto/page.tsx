@@ -5,14 +5,16 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import dbConnect from '@/lib/mongodb';
 import Order from '@/lib/models/Order';
 import TrainingBooking from '@/lib/models/TrainingBooking';
-import { IOrder, ITrainingBooking } from '@/types';
+import { IOrder, ITrainingBooking, ITraining } from '@/types';
 import { formatPriceExact } from '@/lib/utils/currency';
-import { ArrowRight, Package, Calendar, User, TrendingUp } from 'lucide-react';
+import { ArrowRight, Package, Calendar } from 'lucide-react';
 import FadeIn from '@/components/animations/FadeIn';
-import ScaleIn from '@/components/animations/ScaleIn';
-import StaggerContainer, { StaggerItem } from '@/components/animations/StaggerContainer';
 import OrderStatusBadge from '@/components/admin/OrderStatusBadge';
 import BookingStatusBadge from '@/components/admin/BookingStatusBadge';
+
+type PopulatedTrainingBooking = Omit<ITrainingBooking, 'trainingId'> & {
+  trainingId: ITraining | string;
+};
 
 async function getUserStats(userEmail: string, userId?: string) {
   await dbConnect();
@@ -58,8 +60,8 @@ async function getUserStats(userEmail: string, userId?: string) {
     totalOrders,
     totalBookings,
     totalSpent,
-    recentOrders: JSON.parse(JSON.stringify(recentOrders)),
-    upcomingBookings: JSON.parse(JSON.stringify(upcomingBookings)),
+    recentOrders: JSON.parse(JSON.stringify(recentOrders)) as IOrder[],
+    upcomingBookings: JSON.parse(JSON.stringify(upcomingBookings)) as PopulatedTrainingBooking[],
   };
 }
 
@@ -242,7 +244,7 @@ export default async function UserDashboard() {
             </div>
 
             <div className="p-6 space-y-4">
-              {stats.upcomingBookings.map((booking: ITrainingBooking & { trainingId: any }) => (
+              {stats.upcomingBookings.map((booking) => (
                 <div
                   key={booking._id.toString()}
                   className="flex items-center justify-between p-4 bg-cream-50 rounded-xl border border-cream-200"
@@ -253,10 +255,10 @@ export default async function UserDashboard() {
                     </div>
                     <div>
                       <h3 className="font-semibold text-graphite-900">
-                        {booking.trainingId?.name || 'Szkolenie'}
+                        {typeof booking.trainingId === 'object' ? booking.trainingId.name : 'Szkolenie'}
                       </h3>
                       <p className="text-sm text-graphite-600">
-                        {booking.trainingId?.date
+                        {typeof booking.trainingId === 'object' && booking.trainingId.date
                           ? new Date(booking.trainingId.date).toLocaleDateString('pl-PL', {
                               year: 'numeric',
                               month: 'long',

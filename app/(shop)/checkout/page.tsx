@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useSession } from 'next-auth/react';
 import { useCart } from '@/contexts/CartContext';
 import Link from 'next/link';
+import Image from 'next/image';
 import { checkoutShippingSchema, type CheckoutShippingData } from '@/lib/schemas/checkout';
 import ProductImageFallback from '@/components/ui/ProductImageFallback';
 import { formatPriceExact } from '@/lib/utils/currency';
@@ -340,10 +341,12 @@ export default function CheckoutPage() {
                   {items.map(item => (
                     <div key={item.id} className="flex gap-3">
                       {item.product.images[0]?.url ? (
-                        <img
+                        <Image
                           src={item.product.images[0].url}
                           alt={item.product.name}
-                          className="w-16 h-16 object-cover rounded"
+                          width={64}
+                          height={64}
+                          className="object-cover rounded"
                         />
                       ) : (
                         <ProductImageFallback

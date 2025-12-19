@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { IOrder } from '@/types';
 import { useToast } from '@/hooks/useToast';
+import { OrderStatus, PaymentStatus } from '@/lib/constants/orderStatuses';
 
 interface OrderActionsClientProps {
   order: IOrder;
@@ -127,7 +128,7 @@ export default function OrderActionsClient({ order }: OrderActionsClientProps) {
                 </label>
                 <select
                   value={selectedStatus}
-                  onChange={(e) => setSelectedStatus(e.target.value as any)}
+                  onChange={(e) => setSelectedStatus(e.target.value as OrderStatus)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   {statusOptions.map(option => (
@@ -144,7 +145,7 @@ export default function OrderActionsClient({ order }: OrderActionsClientProps) {
                 </label>
                 <select
                   value={selectedPaymentStatus}
-                  onChange={(e) => setSelectedPaymentStatus(e.target.value as any)}
+                  onChange={(e) => setSelectedPaymentStatus(e.target.value as PaymentStatus)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   {paymentStatusOptions.map(option => (
@@ -197,7 +198,7 @@ export default function OrderActionsClient({ order }: OrderActionsClientProps) {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                 />
                 <p className="text-xs text-gray-500 mt-1">
-                  Status zostanie automatycznie zmieniony na "Wysłane"
+                  Status zostanie automatycznie zmieniony na &quot;Wysłane&quot;
                 </p>
               </div>
             </div>

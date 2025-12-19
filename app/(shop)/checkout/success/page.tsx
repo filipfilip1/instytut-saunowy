@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useSession, signIn } from 'next-auth/react';
 import { useCart } from '@/contexts/CartContext';
@@ -42,7 +42,7 @@ const MAX_RETRIES = 3;
 const RETRY_DELAY = 2000; // 2 seconds
 const CART_CLEAR_WINDOW = 5 * 60 * 1000; // 5 minutes - only clear cart for fresh orders
 
-export default function CheckoutSuccessPage() {
+function SuccessContent() {
   const { data: session } = useSession();
   const searchParams = useSearchParams();
   const sessionId = searchParams.get('session_id');
@@ -155,7 +155,7 @@ export default function CheckoutSuccessPage() {
     };
 
     verifyPayment();
-  }, [sessionId]);
+  }, [sessionId, clearCart, toast]);
 
   // No session_id in URL
   if (!sessionId) {
@@ -420,5 +420,20 @@ export default function CheckoutSuccessPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function CheckoutSuccessPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-lg shadow-lg p-8 max-w-md text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-forest-600 mx-auto"></div>
+          <p className="mt-4 text-graphite-600">Ładowanie...</p>
+        </div>
+      </div>
+    }>
+      <SuccessContent />
+    </Suspense>
   );
 }

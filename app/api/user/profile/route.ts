@@ -58,7 +58,7 @@ export async function PATCH(req: NextRequest) {
     const { name, addresses } = body;
 
     // Build update object
-    const updateData: any = {};
+    const updateData: Record<string, unknown> = {};
     if (name !== undefined) updateData.name = name;
     if (addresses !== undefined) updateData.addresses = addresses;
 

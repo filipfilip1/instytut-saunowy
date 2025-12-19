@@ -26,7 +26,7 @@ export async function fetchProducts(options?: {
 
   const { category, limit = 20, isActive = true } = options || {};
 
-  const query: any = {};
+  const query: Record<string, unknown> = {};
 
   if (isActive !== undefined) {
     query.isActive = isActive;

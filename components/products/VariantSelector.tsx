@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import { IProductVariant } from '@/types';
-import { formatPriceExact, formatPriceModifier } from '@/lib/utils/currency';
+import { formatPriceExact } from '@/lib/utils/currency';
 
 interface VariantSelectorProps {
   variants: IProductVariant[];
@@ -104,11 +105,14 @@ const VariantSelector = ({
                   `}
                 >
                   {option.image && (
-                    <img
-                      src={option.image}
-                      alt={option.value}
-                      className="w-full h-24 object-cover rounded mb-2"
-                    />
+                    <div className="relative w-full h-24 mb-2">
+                      <Image
+                        src={option.image}
+                        alt={option.value}
+                        fill
+                        className="object-cover rounded"
+                      />
+                    </div>
                   )}
                   <span className="block text-sm font-medium">
                     {option.value}

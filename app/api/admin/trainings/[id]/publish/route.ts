@@ -98,7 +98,7 @@ export async function POST(
           ? 'Szkolenie zostało opublikowane'
           : 'Szkolenie zostało zapisane jako szkic',
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error updating training status:', error);
     return NextResponse.json(
       {

@@ -32,7 +32,7 @@ export default async function AdminOrdersPage() {
     });
   };
 
-  const getCustomerInfo = (order: IOrder & { userId?: any }) => {
+  const getCustomerInfo = (order: IOrder & { userId?: { _id: string; name: string; email: string; image?: string } }) => {
     if (order.userId) {
       return {
         name: order.userId.name || order.shippingAddress.name,
@@ -151,7 +151,7 @@ export default async function AdminOrdersPage() {
                   </td>
                 </tr>
               ) : (
-                orders.map((order: IOrder & { userId?: any }) => {
+                orders.map((order: IOrder & { userId?: { _id: string; name: string; email: string; image?: string } }) => {
                   const customer = getCustomerInfo(order);
 
                   return (

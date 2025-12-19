@@ -14,6 +14,15 @@ type LeanUser = {
   updatedAt: Date;
 };
 
+// Type-safe mappers from Mongoose Documents
+function toLeanUser(doc: unknown): LeanUser {
+  return JSON.parse(JSON.stringify(doc)) as LeanUser;
+}
+
+function toOrder(doc: unknown): IOrder {
+  return JSON.parse(JSON.stringify(doc)) as IOrder;
+}
+
 // Types for service responses
 export interface CustomerStats {
   orderCount: number;
@@ -71,7 +80,7 @@ export interface MonthlyActivity {
 }
 
 export interface CustomerDetailsResponse {
-  user: any;
+  user: LeanUser;
   orders: IOrder[];
   stats: {
     totalOrders: number;
@@ -109,7 +118,7 @@ export async function getCustomersWithStats(options?: {
   } = options || {};
 
   // Build query
-  const query: any = {};
+  const query: Record<string, unknown> = {};
 
   if (search) {
     query.$or = [
@@ -125,12 +134,13 @@ export async function getCustomersWithStats(options?: {
   const skip = (page - 1) * limit;
 
   // Fetch users
-  const users = (await User.find(query)
+  const usersRaw = await User.find(query)
     .sort(sortBy)
     .limit(limit)
     .skip(skip)
-    .lean()) as unknown as LeanUser[];
+    .lean();
 
+  const users = usersRaw.map(toLeanUser);
   const total = await User.countDocuments(query);
 
   // Calculate stats for each user
@@ -214,23 +224,21 @@ export async function getCustomerDetails(
   await dbConnect();
 
   // Fetch user
-  const user = (await User.findById(id).lean()) as unknown as LeanUser | null;
+  const userRaw = await User.findById(id).lean();
 
-  if (!user) {
+  if (!userRaw) {
     return null;
   }
+
+  const user = toLeanUser(userRaw);
 
   // Fetch all orders
   const ordersRaw = await Order.find({ userId: id })
     .sort('-createdAt')
     .lean();
 
-  // Convert ObjectIds to strings for proper serialization
-  const orders: IOrder[] = ordersRaw.map((order: any) => ({
-    ...order,
-    _id: order._id.toString(),
-    userId: order.userId?.toString(),
-  }));
+  // Use type-safe mapper to convert Mongoose documents
+  const orders: IOrder[] = ordersRaw.map(toOrder);
 
   // Basic stats
   const totalOrders = orders.length;

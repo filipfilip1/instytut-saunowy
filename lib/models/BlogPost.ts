@@ -27,6 +27,11 @@ export interface IBlogPost extends mongoose.Document {
   };
   createdAt: Date;
   updatedAt: Date;
+  incrementViews(): Promise<this>;
+}
+
+export interface IBlogPostModel extends Model<IBlogPost> {
+  findBySlug(slug: string): Promise<IBlogPost | null>;
 }
 
 const BlogPostSchema = new Schema<IBlogPost>(
@@ -153,7 +158,7 @@ BlogPostSchema.virtual('formattedDate').get(function () {
 // Re-export category labels from constants for backward compatibility
 export { CATEGORY_LABELS } from '@/lib/constants/blog';
 
-const BlogPost: Model<IBlogPost> =
-  mongoose.models.BlogPost || mongoose.model<IBlogPost>('BlogPost', BlogPostSchema);
+const BlogPost: IBlogPostModel =
+  (mongoose.models.BlogPost as IBlogPostModel) || mongoose.model<IBlogPost, IBlogPostModel>('BlogPost', BlogPostSchema);
 
 export default BlogPost;

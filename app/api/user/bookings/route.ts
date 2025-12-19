@@ -26,7 +26,7 @@ export async function GET(req: NextRequest) {
     const skip = (page - 1) * limit;
 
     // Build query - find by userId or guestEmail
-    const query: any = {
+    const query: Record<string, unknown> = {
       $or: [
         { userId: session.user.id },
         { guestEmail: session.user.email },
@@ -59,7 +59,7 @@ export async function GET(req: NextRequest) {
       },
     ]);
 
-    const statusCounts = stats.reduce((acc: any, item: any) => {
+    const statusCounts = stats.reduce((acc: Record<string, number>, item: { _id: string; count: number }) => {
       acc[item._id] = item.count;
       return acc;
     }, {});

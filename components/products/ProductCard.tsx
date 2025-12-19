@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { Eye } from 'lucide-react';
@@ -83,10 +84,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           {/* Image */}
           <div className="relative aspect-[4/5] overflow-hidden bg-cream-100">
             {primaryImage?.url ? (
-              <img
+              <Image
                 src={primaryImage.url}
                 alt={primaryImage.alt || product.name}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-500"
               />
             ) : (
               <ProductImageFallback

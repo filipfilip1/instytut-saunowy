@@ -96,9 +96,12 @@ export default async function AdminBookingsPage() {
                 </td>
               </tr>
             ) : (
-              bookings.map((booking: any) => {
-                const trainingDate = booking.trainingId?.date
-                  ? new Date(booking.trainingId.date)
+              bookings.map((booking) => {
+                const training = typeof booking.trainingId === 'object'
+                  ? (booking.trainingId as unknown as { name: string; location: { city: string }; date: Date })
+                  : null;
+                const trainingDate = training?.date
+                  ? new Date(training.date)
                   : null;
 
                 return (
@@ -120,10 +123,10 @@ export default async function AdminBookingsPage() {
                     <td className="px-6 py-4">
                       <div>
                         <div className="text-sm font-medium text-graphite-900">
-                          {booking.trainingId?.name || 'Nieznane szkolenie'}
+                          {training?.name || 'Nieznane szkolenie'}
                         </div>
                         <div className="text-xs text-graphite-500">
-                          {booking.trainingId?.location?.city || '—'}
+                          {training?.location?.city || '—'}
                         </div>
                       </div>
                     </td>

@@ -8,13 +8,14 @@ import { ITraining, IBlogPost } from '@/types';
 import FadeIn from '@/components/animations/FadeIn';
 import ScaleIn from '@/components/animations/ScaleIn';
 import StaggerContainer, { StaggerItem } from '@/components/animations/StaggerContainer';
-import AnimatedNumber from '@/components/animations/AnimatedNumber';
 import HoverCard from '@/components/animations/HoverCard';
 import ExperienceBlock from '@/components/home/StatsBar';
-import PillarCard from '@/components/home/PillarCard';
 import FeaturedTrainingCard from '@/components/home/FeaturedTrainingCard';
 import BlogCard from '@/components/blog/BlogCard';
 import { ArrowRight, Camera } from 'lucide-react';
+
+// Revalidate every hour (ISR - Incremental Static Regeneration)
+export const revalidate = 3600;
 
 // Fetch upcoming featured training
 async function getFeaturedTraining(): Promise<ITraining | null> {

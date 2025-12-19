@@ -28,7 +28,7 @@ export async function GET(
     }
 
     return NextResponse.json({ data: product });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
@@ -57,7 +57,7 @@ export async function PUT(
     }
 
     return NextResponse.json({ data: product });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Server error' }, { status: 500 });
   }
 }
@@ -84,8 +84,8 @@ export async function DELETE(
     // Delete all photos from Cloudinary
     if (product.images && product.images.length > 0) {
       const deletePromises = product.images
-        .filter((img: any) => img.cloudinaryPublicId)
-        .map((img: any) => {
+        .filter((img): img is typeof img & { cloudinaryPublicId: string } => !!img.cloudinaryPublicId)
+        .map((img) => {
           return cloudinary.uploader.destroy(img.cloudinaryPublicId).catch((err) => {
             console.error(`Failed to delete image ${img.cloudinaryPublicId}:`, err);
           });

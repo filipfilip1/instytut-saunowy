@@ -1,11 +1,22 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import dbConnect from '@/lib/mongodb';
 import BlogPost from '@/lib/models/BlogPost';
 import { CATEGORY_LABELS } from '@/lib/constants/blog';
 import { IBlogPost } from '@/types';
 import FadeIn from '@/components/animations/FadeIn';
+
+// Dynamic params - render on-demand
+export const dynamicParams = true;
+// Revalidate every 30 minutes
+export const revalidate = 1800;
+
+// Generate static params - empty array for on-demand rendering
+export async function generateStaticParams() {
+  return [];
+}
 
 interface PageProps {
   params: Promise<{
@@ -17,14 +28,15 @@ async function getBlogPost(slug: string): Promise<IBlogPost | null> {
   try {
     await dbConnect();
 
-    const post = await (BlogPost as any).findBySlug(slug);
+    const post = await BlogPost.findOne({ slug, isPublished: true });
 
     if (!post) {
       return null;
     }
 
     // Increment views
-    await post.incrementViews();
+    post.viewCount += 1;
+    await post.save();
 
     return JSON.parse(JSON.stringify(post));
   } catch (error) {
@@ -191,11 +203,12 @@ export default async function BlogPostPage({ params }: PageProps) {
           {post.featuredImage?.url && (
             <FadeIn delay={0.2}>
               <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
-                <div className="aspect-video rounded-3xl overflow-hidden shadow-2xl">
-                  <img
+                <div className="aspect-video rounded-3xl overflow-hidden shadow-2xl relative">
+                  <Image
                     src={post.featuredImage.url}
                     alt={post.featuredImage.alt || post.title}
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
                   />
                 </div>
               </div>
@@ -277,12 +290,13 @@ export default async function BlogPostPage({ params }: PageProps) {
                     className="block group"
                   >
                     <article className="bg-cream-50 rounded-3xl overflow-hidden hover:shadow-gold-lg transition-shadow">
-                      <div className="aspect-video bg-cream-200 overflow-hidden">
+                      <div className="aspect-video bg-cream-200 overflow-hidden relative">
                         {relatedPost.featuredImage?.url && (
-                          <img
+                          <Image
                             src={relatedPost.featuredImage.url}
                             alt={relatedPost.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            fill
+                            className="object-cover group-hover:scale-105 transition-transform duration-300"
                           />
                         )}
                       </div>

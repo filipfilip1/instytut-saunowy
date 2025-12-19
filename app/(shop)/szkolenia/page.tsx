@@ -1,11 +1,15 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import dbConnect from '@/lib/mongodb';
 import Training from '@/lib/models/Training';
 import { ITraining } from '@/types';
 import FadeIn from '@/components/animations/FadeIn';
 import StaggerContainer, { StaggerItem } from '@/components/animations/StaggerContainer';
 import HoverCard from '@/components/animations/HoverCard';
+
+// Revalidate every hour (ISR)
+export const revalidate = 3600;
 
 export const metadata = {
   title: 'Szkolenia Aufguss - Instytut Saunowy',
@@ -96,10 +100,11 @@ export default async function SzkoleniaPage() {
                           {/* Image */}
                           <div className="relative aspect-video bg-gradient-to-br from-cream-200 to-cream-300">
                             {training.featuredImage?.url ? (
-                              <img
+                              <Image
                                 src={training.featuredImage.url}
                                 alt={training.name}
-                                className="w-full h-full object-cover"
+                                fill
+                                className="object-cover"
                               />
                             ) : (
                               <div className="w-full h-full flex items-center justify-center">

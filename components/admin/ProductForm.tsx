@@ -142,7 +142,7 @@ export default function ProductForm({ product, isEdit = false }: ProductFormProp
     setVariants(newVariants);
   };
 
-  const handleOptionChange = (varIndex: number, optIndex: number, field: string, value: any) => {
+  const handleOptionChange = (varIndex: number, optIndex: number, field: string, value: string) => {
     const newVariants = [...variants];
     newVariants[varIndex].options[optIndex] = {
       ...newVariants[varIndex].options[optIndex],

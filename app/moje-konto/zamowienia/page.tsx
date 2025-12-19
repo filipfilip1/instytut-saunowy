@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { IOrder } from '@/types';
@@ -9,20 +9,18 @@ import { ArrowRight, Package, Filter } from 'lucide-react';
 import OrderStatusBadge from '@/components/admin/OrderStatusBadge';
 import { ORDER_STATUSES } from '@/lib/constants/orderStatuses';
 
+interface OrderStats {
+  statusCounts?: Record<string, number>;
+}
+
 export default function UserOrdersPage() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const [orders, setOrders] = useState<IOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedStatus, setSelectedStatus] = useState<string>('');
-  const [stats, setStats] = useState<any>({});
+  const [stats, setStats] = useState<OrderStats>({});
 
-  useEffect(() => {
-    if (status === 'authenticated') {
-      fetchOrders();
-    }
-  }, [status, selectedStatus]);
-
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     try {
       setLoading(true);
       const params = new URLSearchParams();
@@ -40,7 +38,13 @@ export default function UserOrdersPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [selectedStatus]);
+
+  useEffect(() => {
+    if (status === 'authenticated') {
+      fetchOrders();
+    }
+  }, [status, fetchOrders]);
 
   if (status === 'loading' || loading) {
     return (
@@ -78,7 +82,7 @@ export default function UserOrdersPage() {
                   : 'bg-cream-100 text-graphite-600 hover:bg-cream-200'
               }`}
             >
-              Wszystkie {stats.statusCounts ? `(${Object.values(stats.statusCounts).reduce((a: any, b: any) => a + b, 0)})` : ''}
+              Wszystkie {stats.statusCounts ? `(${Object.values(stats.statusCounts).reduce((a: number, b: number) => a + b, 0)})` : ''}
             </button>
             {ORDER_STATUSES.map((status) => (
               <button
@@ -154,11 +158,8 @@ export default function UserOrdersPage() {
                         {order.items.length} {order.items.length === 1 ? 'produkt' : 'produkty'}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <OrderStatusBadge status={order.status} size="sm" />
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <OrderStatusBadge paymentStatus={order.paymentStatus} size="sm" />
+                    <td className="px-6 py-4 whitespace-nowrap" colSpan={2}>
+                      <OrderStatusBadge status={order.status} paymentStatus={order.paymentStatus} size="sm" />
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span className="text-sm font-semibold text-graphite-900">

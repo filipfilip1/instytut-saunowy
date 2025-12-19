@@ -57,9 +57,9 @@ export default function BookingActionsClient({ booking }: BookingActionsClientPr
       toast.success('Rezerwacja została anulowana');
       setShowCancelModal(false);
       router.refresh();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error cancelling booking:', error);
-      toast.error(error.message || 'Wystąpił błąd podczas anulowania');
+      toast.error(error instanceof Error ? error.message : 'Wystąpił błąd podczas anulowania');
     } finally {
       setLoading(false);
     }
@@ -82,9 +82,9 @@ export default function BookingActionsClient({ booking }: BookingActionsClientPr
       toast.success('Notatki zostały zaktualizowane');
       setShowNotesModal(false);
       router.refresh();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error updating notes:', error);
-      toast.error(error.message || 'Wystąpił błąd podczas aktualizacji notatek');
+      toast.error(error instanceof Error ? error.message : 'Wystąpił błąd podczas aktualizacji notatek');
     } finally {
       setLoading(false);
     }
@@ -116,9 +116,9 @@ export default function BookingActionsClient({ booking }: BookingActionsClientPr
       toast.success('Status płatności został zmieniony');
       setShowPaymentModal(false);
       router.refresh();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error updating payment status:', error);
-      toast.error(error.message || 'Wystąpił błąd podczas zmiany statusu');
+      toast.error(error instanceof Error ? error.message : 'Wystąpił błąd podczas zmiany statusu');
     } finally {
       setLoading(false);
     }

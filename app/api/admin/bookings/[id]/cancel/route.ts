@@ -41,12 +41,12 @@ export async function POST(
         ? 'Rezerwacja została anulowana i zwrot został przetworzony'
         : 'Rezerwacja została anulowana',
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error cancelling booking:', error);
     return NextResponse.json(
       {
         status: 'error',
-        message: error.message || 'Błąd podczas anulowania rezerwacji',
+        message: error instanceof Error ? error.message : 'Błąd podczas anulowania rezerwacji',
       },
       { status: 500 }
     );

@@ -1,11 +1,22 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import dbConnect from '@/lib/mongodb';
 import Training from '@/lib/models/Training';
 import { ITraining } from '@/types';
 import TrainingBookingForm from '@/components/trainings/TrainingBookingForm';
 import FadeIn from '@/components/animations/FadeIn';
+
+// Dynamic params - render on-demand
+export const dynamicParams = true;
+// Revalidate every 30 minutes
+export const revalidate = 1800;
+
+// Generate static params - empty array for on-demand rendering
+export async function generateStaticParams() {
+  return [];
+}
 
 interface PageProps {
   params: Promise<{
@@ -16,7 +27,7 @@ interface PageProps {
 async function getTraining(slug: string): Promise<ITraining | null> {
   try {
     await dbConnect();
-    const training = await (Training as any).findBySlug(slug);
+    const training = await Training.findOne({ slug, status: 'published' });
     if (!training) return null;
     return JSON.parse(JSON.stringify(training));
   } catch (error) {
@@ -69,12 +80,13 @@ export default async function TrainingDetailPage({ params }: PageProps) {
           <div className="lg:col-span-2 space-y-8">
             {/* Hero Image */}
             <FadeIn>
-              <div className="aspect-video rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-cream-200 to-cream-300">
+              <div className="aspect-video rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-cream-200 to-cream-300 relative">
                 {training.featuredImage?.url ? (
-                  <img
+                  <Image
                     src={training.featuredImage.url}
                     alt={training.name}
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">

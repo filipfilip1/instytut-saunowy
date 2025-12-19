@@ -5,6 +5,8 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/api/auth/[...nextauth]/route';
 import { Home, LayoutDashboard, Package, Calendar, User } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 export const metadata = {
   title: 'Moje Konto - Instytut Saunowy',
   description: 'Panel użytkownika - zamówienia, rezerwacje, profil',
@@ -13,7 +15,7 @@ export const metadata = {
 interface MenuItem {
   href: string;
   label: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
 }
 
 const menuItems: MenuItem[] = [
