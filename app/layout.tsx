@@ -8,6 +8,7 @@ import ToastProvider from '@/components/providers/ToastProvider';
 import Header from '@/components/layout/Header';
 import Footer from '@/components/layout/Footer';
 import QuickViewModal from '@/components/products/QuickViewModal';
+import CookieBanner from '@/components/cookie/CookieBanner';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -46,6 +47,7 @@ export default function RootLayout({
                 </div>
               </ToastProvider>
               <QuickViewModal />
+              <CookieBanner />
             </QuickViewProvider>
           </CartProvider>
         </AuthProvider>
