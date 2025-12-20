@@ -2,13 +2,11 @@
 
 import { useState } from 'react';
 import { useToast } from '@/hooks/useToast';
-import { Send } from 'lucide-react';
+import Link from 'next/link';
 
 interface FormData {
   name: string;
   email: string;
-  phone: string;
-  subject: string;
   message: string;
   rodoConsent: boolean;
 }
@@ -20,21 +18,12 @@ interface FormErrors {
   rodoConsent?: string;
 }
 
-const SUBJECT_OPTIONS = [
-  { value: 'general', label: 'Ogólne pytanie' },
-  { value: 'training', label: 'Pytanie o szkolenie' },
-  { value: 'product', label: 'Pytanie o produkt' },
-  { value: 'cooperation', label: 'Współpraca' },
-];
-
 export default function ContactForm() {
   const toast = useToast();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<FormData>({
     name: '',
     email: '',
-    phone: '',
-    subject: 'general',
     message: '',
     rodoConsent: false,
   });
@@ -44,7 +33,7 @@ export default function ContactForm() {
     const newErrors: FormErrors = {};
 
     if (!formData.name.trim()) {
-      newErrors.name = 'Imię i nazwisko są wymagane';
+      newErrors.name = 'Imię jest wymagane';
     }
 
     if (!formData.email.trim()) {
@@ -86,8 +75,7 @@ export default function ContactForm() {
         body: JSON.stringify({
           name: formData.name,
           email: formData.email,
-          phone: formData.phone || undefined,
-          subject: SUBJECT_OPTIONS.find((opt) => opt.value === formData.subject)?.label || formData.subject,
+          subject: 'Kontakt ze strony',
           message: formData.message,
         }),
       });
@@ -104,8 +92,6 @@ export default function ContactForm() {
       setFormData({
         name: '',
         email: '',
-        phone: '',
-        subject: 'general',
         message: '',
         rodoConsent: false,
       });
@@ -120,7 +106,7 @@ export default function ContactForm() {
   };
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value, type } = e.target;
 
@@ -139,113 +125,71 @@ export default function ContactForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Name */}
+    <form onSubmit={handleSubmit} className="space-y-8">
+      {/* Name - Ghost Style */}
       <div>
-        <label htmlFor="name" className="block text-sm font-semibold text-graphite-700 mb-2">
-          Imię i nazwisko <span className="text-warmwood-600">*</span>
-        </label>
         <input
           type="text"
           id="name"
           name="name"
           value={formData.name}
           onChange={handleChange}
-          className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-2 transition-all ${
+          placeholder="Twoje imię"
+          className={`w-full bg-transparent border-0 border-b-2 pb-3 text-lg focus:outline-none transition-colors ${
             errors.name
-              ? 'border-warmwood-400 focus:ring-warmwood-400'
-              : 'border-cream-300 focus:ring-gold-400'
+              ? 'border-warmwood-400 focus:border-warmwood-500'
+              : 'border-gray-500 text-cream-100 placeholder-gray-400 focus:border-gold-400'
           }`}
-          placeholder="Jan Kowalski"
         />
         {errors.name && (
-          <p className="mt-1 text-sm text-warmwood-600">{errors.name}</p>
+          <p className="mt-2 text-sm text-warmwood-400">{errors.name}</p>
         )}
       </div>
 
-      {/* Email */}
+      {/* Email - Ghost Style */}
       <div>
-        <label htmlFor="email" className="block text-sm font-semibold text-graphite-700 mb-2">
-          Email <span className="text-warmwood-600">*</span>
-        </label>
         <input
           type="email"
           id="email"
           name="email"
           value={formData.email}
           onChange={handleChange}
-          className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-2 transition-all ${
+          placeholder="Twój adres e-mail"
+          className={`w-full bg-transparent border-0 border-b-2 pb-3 text-lg focus:outline-none transition-colors ${
             errors.email
-              ? 'border-warmwood-400 focus:ring-warmwood-400'
-              : 'border-cream-300 focus:ring-gold-400'
+              ? 'border-warmwood-400 focus:border-warmwood-500'
+              : 'border-gray-500 text-cream-100 placeholder-gray-400 focus:border-gold-400'
           }`}
-          placeholder="jan@example.com"
         />
         {errors.email && (
-          <p className="mt-1 text-sm text-warmwood-600">{errors.email}</p>
+          <p className="mt-2 text-sm text-warmwood-400">{errors.email}</p>
         )}
       </div>
 
-      {/* Phone */}
+      {/* Message - Ghost Style Textarea with Auto-resize */}
       <div>
-        <label htmlFor="phone" className="block text-sm font-semibold text-graphite-700 mb-2">
-          Telefon <span className="text-graphite-400">(opcjonalnie)</span>
-        </label>
-        <input
-          type="tel"
-          id="phone"
-          name="phone"
-          value={formData.phone}
-          onChange={handleChange}
-          className="w-full px-4 py-3 border-2 border-cream-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-400 transition-all"
-          placeholder="+48 123 456 789"
-        />
-      </div>
-
-      {/* Subject */}
-      <div>
-        <label htmlFor="subject" className="block text-sm font-semibold text-graphite-700 mb-2">
-          Temat <span className="text-warmwood-600">*</span>
-        </label>
-        <select
-          id="subject"
-          name="subject"
-          value={formData.subject}
-          onChange={handleChange}
-          className="w-full px-4 py-3 border-2 border-cream-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-gold-400 transition-all bg-white"
-        >
-          {SUBJECT_OPTIONS.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      {/* Message */}
-      <div>
-        <label htmlFor="message" className="block text-sm font-semibold text-graphite-700 mb-2">
-          Wiadomość <span className="text-warmwood-600">*</span>
-        </label>
         <textarea
           id="message"
           name="message"
           value={formData.message}
           onChange={handleChange}
           rows={6}
-          className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-2 transition-all resize-none ${
+          placeholder="Twoja wiadomość"
+          className={`w-full bg-transparent border-0 border-b-2 pb-3 text-lg focus:outline-none transition-colors resize-none ${
             errors.message
-              ? 'border-warmwood-400 focus:ring-warmwood-400'
-              : 'border-cream-300 focus:ring-gold-400'
+              ? 'border-warmwood-400 focus:border-warmwood-500'
+              : 'border-gray-500 text-cream-100 placeholder-gray-400 focus:border-gold-400'
           }`}
-          placeholder="Opisz, w czym możemy Ci pomóc..."
+          style={{
+            minHeight: '150px',
+          }}
         />
         {errors.message && (
-          <p className="mt-1 text-sm text-warmwood-600">{errors.message}</p>
+          <p className="mt-2 text-sm text-warmwood-400">{errors.message}</p>
         )}
       </div>
 
-      {/* RODO Consent */}
+      {/* RODO Consent - Checkbox */}
       <div>
         <label className="flex items-start gap-3 cursor-pointer group">
           <input
@@ -253,42 +197,41 @@ export default function ContactForm() {
             name="rodoConsent"
             checked={formData.rodoConsent}
             onChange={handleChange}
-            className="mt-1 w-5 h-5 text-gold-600 border-2 border-cream-300 rounded focus:ring-2 focus:ring-gold-400"
+            className="mt-1 w-5 h-5 accent-gold-400 border-2 border-gray-500 rounded focus:ring-2 focus:ring-gold-400/50"
           />
-          <span className="text-sm text-graphite-700 leading-relaxed">
-            Wyrażam zgodę na przetwarzanie moich danych osobowych w celu udzielenia odpowiedzi
-            na przesłane zapytanie zgodnie z{' '}
-            <a href="/polityka-prywatnosci" className="text-nordic-600 hover:text-nordic-800 underline">
-              polityką prywatności
-            </a>
-            . <span className="text-warmwood-600">*</span>
+          <span className="text-sm text-cream-300 leading-relaxed">
+            Wyrażam zgodę na przetwarzanie danych osobowych w celu odpowiedzi na zapytanie. Szczegóły w{' '}
+            <Link
+              href="/polityka-prywatnosci"
+              className="text-gold-400 hover:text-gold-300 underline transition-colors"
+            >
+              Polityce Prywatności
+            </Link>
+            .
           </span>
         </label>
         {errors.rodoConsent && (
-          <p className="mt-2 text-sm text-warmwood-600">{errors.rodoConsent}</p>
+          <p className="mt-2 text-sm text-warmwood-400">{errors.rodoConsent}</p>
         )}
       </div>
 
-      {/* Submit Button */}
+      {/* Submit Button - Solid Gold */}
       <button
         type="submit"
         disabled={loading}
-        className="w-full px-6 py-4 bg-gradient-to-r from-gold-500 to-gold-600 text-white font-semibold rounded-xl hover:from-gold-600 hover:to-gold-700 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        className="w-full px-8 py-4 bg-gradient-to-r from-gold-500 to-warmwood-600 text-white font-semibold text-lg rounded-lg hover:from-gold-600 hover:to-warmwood-700 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {loading ? (
-          <>
+          <span className="flex items-center justify-center gap-2">
             <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
             Wysyłanie...
-          </>
+          </span>
         ) : (
-          <>
-            <Send className="w-5 h-5" />
-            Wyślij wiadomość
-          </>
+          'Wyślij wiadomość'
         )}
       </button>
 
-      <p className="text-xs text-graphite-500 text-center">
+      <p className="text-xs text-gray-400 text-center">
         Odpowiemy w ciągu 24-48 godzin roboczych
       </p>
     </form>

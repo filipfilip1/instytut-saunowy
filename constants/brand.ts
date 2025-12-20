@@ -36,16 +36,22 @@ export const BRAND = {
   },
 
   contact: {
-    email: 'kontakt@instytut-saunowy.pl',
-    phone: '+48 123 456 789',
-    phoneDisplay: '123 456 789', // For display without country code
+    email: 'kontakt@instytutsaunowy.pl',
+    phone: '+48533509795',
+    phoneDisplay: '+48 533 509 795', // For display with country code
   },
 
   address: {
-    street: 'ul. Saunowa 1',
-    city: 'Warszawa',
-    zipCode: '00-001',
+    street: 'Al. Józefa Piłsudskiego 34/129',
+    city: 'Dąbrowa Górnicza',
+    zipCode: '41-303',
     country: 'Polska',
+  },
+
+  legal: {
+    companyName: 'Instytut Saunowy Sp. z o.o.',
+    nip: '7322202061',
+    regon: '388000284',
   },
 
   social: {

@@ -493,6 +493,42 @@ export default async function Home() {
         </div>
       </section>
 
+      {/* ========================================
+          SECTION 7: PRE-FOOTER CTA (Homepage Only)
+      ======================================== */}
+      <section className="py-20 bg-gradient-to-br from-graphite-900 via-forest-900 to-graphite-900">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <FadeIn>
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-cream-100 mb-6">
+              Twój rytuał zaczyna się tutaj
+            </h2>
+            <p className="text-lg md:text-xl text-cream-300 mb-10 max-w-2xl mx-auto leading-relaxed">
+              Najlepsze produkty i mistrzowska wiedza w jednym miejscu. Sprawdź, jak możemy odmienić Twoje saunowanie.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              {/* Primary CTA - Solid Gold */}
+              <Link
+                href="/sklep"
+                className="px-8 py-4 bg-gradient-to-r from-gold-500 to-gold-600 text-white font-semibold text-lg rounded-xl hover:from-gold-600 hover:to-gold-700 transition-all shadow-lg hover:shadow-xl inline-flex items-center justify-center gap-2 group"
+              >
+                Odkryj Produkty
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
+
+              {/* Secondary CTA - Outline */}
+              <Link
+                href="/kontakt"
+                className="px-8 py-4 bg-transparent border-2 border-gold-400 text-gold-400 font-semibold text-lg rounded-xl hover:bg-gold-400 hover:text-white transition-all inline-flex items-center justify-center gap-2 group"
+              >
+                Zapytaj Eksperta
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </div>
+          </FadeIn>
+        </div>
+      </section>
+
     </div>
   );
 }

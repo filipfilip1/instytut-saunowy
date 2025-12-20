@@ -204,7 +204,7 @@ export default async function AdminDashboard() {
               <p className="text-graphite-500 text-center py-12">Brak danych</p>
             ) : (
               stats.topProducts.map((product: TopProduct, index: number) => (
-                <div key={product._id} className="flex items-start justify-between p-3 rounded-xl hover:bg-cream-50 transition-colors">
+                <div key={`${index}-${product.name}`} className="flex items-start justify-between p-3 rounded-xl hover:bg-cream-50 transition-colors">
                   <div className="flex items-start gap-3">
                     <span className={`text-xl font-serif font-bold ${
                       index === 0 ? 'text-gold-500' : index === 1 ? 'text-gold-400' : index === 2 ? 'text-gold-300' : 'text-graphite-400'
