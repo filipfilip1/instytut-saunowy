@@ -63,8 +63,8 @@ const CERTIFICATIONS = [
 export default function ONasPage() {
   return (
     <div className="min-h-screen">
-      {/* Section 1: Hero - Atmosfera */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-forest-900">
+      {/* Section 1: Hero - The Manifesto */}
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#2C2622]">
 
         {/* 1. BLURRED BACKGROUND VIDEO (fills entire screen) */}
         <video
@@ -97,46 +97,59 @@ export default function ONasPage() {
         </video>
 
         {/* 3. OVERLAY  */}
-        <div className="absolute inset-0 bg-forest-900/30 mix-blend-multiply z-[2]" />
+        <div className="absolute inset-0 bg-[#2C2622]/30 mix-blend-multiply z-[2]" />
         <div className="absolute inset-0 bg-black/20 z-[2]" />
 
 
         {/* 3. CONTENT  */}
         <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <FadeIn delay={0.3} direction="up" duration={0.8}>
-            <h1 className="text-5xl md:text-7xl font-serif font-bold text-white mb-6 leading-tight drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)]">
-              Gdzie rytuał staje się sztuką
-            </h1>
-            <p className="text-xl md:text-2xl text-cream-100 max-w-3xl mx-auto leading-relaxed drop-shadow-[0_3px_6px_rgba(0,0,0,0.8)] mb-16 md:mb-24 lg:mb-32">
+            <p className="text-sm md:text-base text-[#C47F52] uppercase tracking-[0.3em] mb-8 font-sans">
               Autentyczna kultura saunowa. Tradycja przekazywana z pasją.
             </p>
+            <h1 className="text-5xl md:text-7xl font-serif font-bold text-[#F0ECE2] mb-16 md:mb-24 lg:mb-32 leading-tight drop-shadow-[0_4px_8px_rgba(0,0,0,0.9)]">
+              Gdzie rytuał staje się sztuką
+            </h1>
           </FadeIn>
 
           {/* Scroll Indicator */}
           <div className="absolute bottom-8 md:bottom-12 lg:bottom-16 left-1/2 -translate-x-1/2 animate-bounce z-20">
-            <ChevronDown className="w-7 h-7 md:w-8 md:h-8 text-cream-200 drop-shadow-md" />
+            <ChevronDown className="w-7 h-7 md:w-8 md:h-8 text-[#F0ECE2] drop-shadow-md" />
           </div>
         </div>
       </section>
 
-      {/* Section 2: Nasza Historia - Emocje */}
-      <section className="py-24 bg-gradient-to-b from-white via-cream-50 to-white">
+      {/* Section 2: Nasza Podróż - The Story */}
+      <section className="py-24 bg-[#F0ECE2]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-16 items-start">
+            {/* Image Side - 40% */}
+            <div className="lg:col-span-2">
+              <FadeIn direction="right" delay={0.2}>
+                <div className="relative aspect-[3/4] overflow-hidden rounded-sm shadow-lg">
+                  <Image
+                    src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800&h=1000&fit=crop"
+                    alt="Fińska sauna - atmosfera"
+                    fill
+                    sizes="(max-width: 1024px) 100vw, 40vw"
+                    className="object-cover sepia-[0.15]"
+                  />
+                </div>
+              </FadeIn>
+            </div>
+
             {/* Text Side - 60% */}
             <div className="lg:col-span-3">
-              <FadeIn direction="right">
-                <div className="space-y-6">
-                  <p className="text-gold-600 uppercase tracking-wider text-sm font-semibold">
-                    Nasza Podróż
-                  </p>
-                  <h2 className="text-4xl md:text-5xl font-serif font-bold text-graphite-900 leading-tight">
-                    Jak pasja do fińskiej sauny zamieniła się w misję
+              <FadeIn direction="left">
+                <div className="space-y-8">
+                  <h2 className="text-4xl md:text-5xl font-serif font-bold text-[#2C2622] leading-tight">
+                    Jak pasja zmieniła się w misję
                   </h2>
 
-                  <div className="space-y-4 text-lg text-graphite-700 leading-relaxed">
+                  <div className="space-y-6 text-lg text-stone-700 leading-[1.8]">
                     <p>
-                      Wszystko zaczęło się podczas podróży do Finlandii, gdzie odkryliśmy, że sauna
+                      <span className="float-left text-6xl font-serif pr-3 leading-[0.85] text-[#C47F52]">W</span>
+                      szystko zaczęło się podczas podróży do Finlandii, gdzie odkryliśmy, że sauna
                       to nie tylko miejsce - to cała filozofia życia. Wróciliśmy z głębokim
                       przekonaniem, że Polska zasługuje na autentyczną kulturę saunową.
                     </p>
@@ -145,28 +158,6 @@ export default function ONasPage() {
                       Chcieliśmy pokazać, że prawdziwy rytuał saunowy to sztuka wymagająca wiedzy,
                       doświadczenia i szacunku dla tradycji.
                     </p>
-                    <p>
-                      Dziś jesteśmy dumni, że nasza społeczność liczy setki osób, które odkryły moc
-                      autentycznej sauny. Każde szkolenie, każda ceremonia to kolejny krok w
-                      budowaniu polskiej kultury saunowej.
-                    </p>
-                  </div>
-                </div>
-              </FadeIn>
-            </div>
-
-            {/* Image Side - 40% */}
-            <div className="lg:col-span-2">
-              <FadeIn direction="left" delay={0.2}>
-                <div className="relative h-[500px] -ml-8 lg:-ml-12">
-                  <div className="relative h-full rounded-3xl overflow-hidden shadow-2xl">
-                    <Image
-                      src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800&h=1000&fit=crop"
-                      alt="Fińska sauna - atmosfera"
-                      fill
-                      sizes="(max-width: 1024px) 100vw, 40vw"
-                      className="object-cover"
-                    />
                   </div>
                 </div>
               </FadeIn>
@@ -175,23 +166,20 @@ export default function ONasPage() {
         </div>
       </section>
 
-      {/* Section 3: Poznaj Nas - Founders */}
-      <section className="py-24 bg-cream-50">
+      {/* Section 3: Poznaj Mentorów - The Founders */}
+      <section className="py-24 bg-[#F0ECE2]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
-            <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-serif font-bold text-graphite-900 mb-4">
-                Poznaj Nas
+            <div className="text-center mb-20">
+              <h2 className="text-4xl md:text-5xl font-serif font-bold text-[#2C2622]">
+                Poznaj Mentorów
               </h2>
-              <p className="text-xl text-graphite-600">
-                Jesteśmy mentorami i pasjonatami.
-              </p>
             </div>
           </FadeIn>
 
-          <StaggerContainer staggerDelay={0.2} className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+          <StaggerContainer staggerDelay={0.2} className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
             {FOUNDERS.map((founder, index) => (
-              <StaggerItem key={index} className={index === 1 ? 'lg:mt-12' : ''}>
+              <StaggerItem key={index}>
                 <FounderCard {...founder} />
               </StaggerItem>
             ))}
@@ -199,23 +187,20 @@ export default function ONasPage() {
         </div>
       </section>
 
-      {/* Section 4: W Sercu Społeczności - Bento Grid */}
-      <section className="py-24 bg-white">
+      {/* Section 4: Żywa Społeczność - Gallery */}
+      <section className="py-24 bg-[#F0ECE2]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             <div className="text-center mb-16">
-              <h2 className="text-4xl md:text-5xl font-serif font-bold text-graphite-900 mb-4">
+              <h2 className="text-4xl md:text-5xl font-serif font-bold text-[#2C2622]">
                 Żywa Społeczność
               </h2>
-              <p className="text-xl text-graphite-600">
-                Autentyczne chwile z naszych wydarzeń i szkoleń
-              </p>
             </div>
           </FadeIn>
 
           <StaggerContainer
             staggerDelay={0.1}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-[250px] gap-4"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 auto-rows-[250px] gap-4 mb-12"
           >
             {COMMUNITY_PHOTOS.map((photo, index) => (
               <StaggerItem key={index} className="h-full">
@@ -225,41 +210,45 @@ export default function ONasPage() {
               </StaggerItem>
             ))}
           </StaggerContainer>
+
+          <FadeIn delay={0.3}>
+            <p className="text-center text-xl font-serif text-stone-600 italic max-w-2xl mx-auto">
+              Tworzymy historię z każdym machnięciem ręcznika.
+            </p>
+          </FadeIn>
         </div>
       </section>
 
-      {/* Section 5: Liczby i Zaufanie - Stats Strip */}
-      <section className="py-12 bg-gradient-to-r from-gold-50 via-cream-50 to-gold-50">
+      {/* Section 5: Trust & Stats - Minimalist */}
+      <section className="py-16 bg-[#2C2622]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn>
             {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-8 mb-12">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-12 mb-16">
               {STATS.map((stat, index) => (
                 <div key={index} className="text-center">
-                  <div className="text-4xl md:text-5xl font-serif font-bold text-gold-800 mb-2 tabular-nums">
+                  <div className="text-4xl md:text-5xl font-serif font-bold text-[#C47F52] mb-3 tabular-nums">
                     <AnimatedNumber value={stat.value} />
                     {stat.suffix}
                   </div>
-                  <div className="text-sm md:text-base text-graphite-600 font-medium">
+                  <div className="text-sm md:text-base text-white uppercase tracking-wider font-sans">
                     {stat.label}
                   </div>
                 </div>
               ))}
             </div>
 
-            {/* Certifications */}
-            <div className="flex flex-wrap items-center justify-center gap-8">
+            {/* Certifications - Monochrome */}
+            <div className="flex flex-wrap items-center justify-center gap-12 pt-8 border-t border-white/10">
               {CERTIFICATIONS.map((cert, index) => (
                 <div
                   key={index}
-                  className="flex flex-col items-center justify-center p-4 rounded-xl bg-cream-50 hover:bg-cream-100 transition-colors group"
+                  className="flex flex-col items-center justify-center group"
                 >
-                  <div
-                    className={`w-16 h-16 rounded-full bg-${cert.color}-100 flex items-center justify-center mb-2 group-hover:scale-110 transition-transform`}
-                  >
-                    <Award className={`w-8 h-8 text-${cert.color}-700`} />
+                  <div className="w-12 h-12 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                    <Award className="w-10 h-10 text-white/50 group-hover:text-white/70 transition-colors" />
                   </div>
-                  <div className="text-xs font-semibold text-graphite-700 text-center max-w-[120px]">
+                  <div className="text-xs font-medium text-white/60 text-center max-w-[140px] uppercase tracking-wide">
                     {cert.name}
                   </div>
                 </div>
@@ -270,15 +259,15 @@ export default function ONasPage() {
       </section>
 
       {/* Section 6: Instytut w Obiektywie - Instagram */}
-      <section className="py-24 bg-cream-50">
+      <section className="py-24 bg-[#F0ECE2]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn delay={0.2}>
             <div className="flex items-center justify-between mb-12">
               <div>
-                <h2 className="text-4xl font-serif font-bold text-graphite-900 mb-2">
+                <h2 className="text-4xl font-serif font-bold text-[#2C2622] mb-2">
                   Śledź nasze codzienne rytuały
                 </h2>
-                <p className="text-lg text-graphite-600">
+                <p className="text-lg text-stone-600">
                   Zajrzyj za kulisy Instytutu Saunowego
                 </p>
               </div>
@@ -286,7 +275,7 @@ export default function ONasPage() {
                 href="https://www.instagram.com/instytut_saunowy/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hidden md:inline-flex items-center gap-2 text-nordic-600 hover:text-nordic-800 font-semibold transition-colors"
+                className="hidden md:inline-flex items-center gap-2 text-[#C47F52] hover:text-[#2C2622] font-semibold transition-colors"
               >
                 Zobacz więcej →
               </a>
@@ -305,7 +294,7 @@ export default function ONasPage() {
                 href="https://www.instagram.com/instytut_saunowy/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-nordic-600 hover:text-nordic-800 font-semibold transition-colors"
+                className="inline-flex items-center gap-2 text-[#C47F52] hover:text-[#2C2622] font-semibold transition-colors"
               >
                 Zobacz więcej na Instagramie →
               </a>
@@ -315,26 +304,26 @@ export default function ONasPage() {
       </section>
 
       {/* Section 7: CTA - Zaproszenie */}
-      <section className="py-20 bg-gradient-to-br from-forest-600 via-nordic-600 to-forest-700 text-white">
+      <section className="py-20 bg-[#2C2622] text-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <FadeIn direction="up" delay={0.4}>
-            <h2 className="text-4xl md:text-5xl font-serif font-bold mb-6">
+            <h2 className="text-4xl md:text-5xl font-serif font-bold mb-6 text-[#F0ECE2]">
               Stań się częścią ceremonii
             </h2>
-            <p className="text-xl text-cream-100 mb-10 max-w-2xl mx-auto">
+            <p className="text-xl text-[#F0ECE2]/80 mb-10 max-w-2xl mx-auto">
               Nie sprzedajemy szkoleń. Zapraszamy do tradycji.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Link
                 href="/szkolenia"
-                className="px-8 py-4 bg-gold-500 hover:bg-gold-600 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl hover:scale-105 text-lg"
+                className="px-8 py-4 bg-[#C47F52] hover:bg-[#B36F42] text-white font-bold rounded-sm transition-all shadow-lg hover:shadow-xl hover:scale-105 text-lg"
               >
                 Poznaj nasze szkolenia
               </Link>
               <Link
                 href="/kontakt"
-                className="px-8 py-4 bg-white/10 backdrop-blur hover:bg-white/20 border-2 border-white/30 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-xl hover:scale-105 text-lg"
+                className="px-8 py-4 bg-transparent hover:bg-white/10 border-2 border-[#F0ECE2]/30 hover:border-[#F0ECE2]/50 text-[#F0ECE2] font-bold rounded-sm transition-all text-lg"
               >
                 Porozmawiajmy
               </Link>

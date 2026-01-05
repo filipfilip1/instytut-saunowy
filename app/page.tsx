@@ -12,7 +12,7 @@ import HoverCard from '@/components/animations/HoverCard';
 import ExperienceBlock from '@/components/home/StatsBar';
 import FeaturedTrainingCard from '@/components/home/FeaturedTrainingCard';
 import BlogCard from '@/components/blog/BlogCard';
-import { ArrowRight, Camera } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 // Revalidate every hour (ISR - Incremental Static Regeneration)
 export const revalidate = 3600;
@@ -110,14 +110,14 @@ export default async function Home() {
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Link
                 href="/sklep"
-                className="btn-gold px-10 py-4 text-lg shadow-gold-lg group"
+                className="bg-copper hover:bg-copper-800 text-white px-10 py-4 text-lg rounded-2xl shadow-lg transition-all font-medium group"
               >
                 Odkryj Kolekcję
                 <ArrowRight className="inline-block ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
                 href="/szkolenia"
-                className="btn-outline-gold px-10 py-4 text-lg bg-white/10 backdrop-blur-sm hover:bg-gold-400 group"
+                className="border-2 border-oat text-oat px-10 py-4 text-lg rounded-2xl bg-white/10 backdrop-blur-sm hover:bg-copper hover:border-copper transition-all font-medium group"
               >
                 Akademia Saunamistrzów
                 <ArrowRight className="inline-block ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -130,25 +130,25 @@ export default async function Home() {
       {/* ========================================
           SECTION 2: THREE PILLARS - MAGAZINE LAYOUT
       ======================================== */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-12 md:py-20">
+        <div className="max-w-7xl mx-auto md:px-4 sm:px-6 lg:px-8">
           <FadeIn>
-            <div className="text-center mb-16">
-              <h2 className="section-header">Trzy Filary Instytut Saunowy</h2>
-              <p className="text-graphite-600 text-lg max-w-2xl mx-auto">
+            <div className="text-center mb-8 md:mb-16 px-4 md:px-0">
+              <h2 className="section-header text-wood">Trzy Filary Instytut Saunowy</h2>
+              <p className="text-wood/70 text-lg max-w-2xl mx-auto">
                 Odkryj nasze obszary działalności - od produktów premium po edukację i społeczność
               </p>
             </div>
           </FadeIn>
 
-          {/* Magazine Layout: 3 Equal Columns */}
-          <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-10">
+          {/* Magazine Layout: Mobile horizontal scroll, Desktop 3 cols */}
+          <StaggerContainer className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8 px-4 scrollbar-hide md:px-0 md:grid md:grid-cols-3 md:gap-10 md:overflow-visible">
             {/* SKLEP */}
-            <StaggerItem>
+            <StaggerItem className="flex-shrink-0 w-[85vw] snap-center md:w-auto md:snap-align-none">
               <ScaleIn delay={0.1}>
                 <Link href="/sklep" className="group block">
-                  {/* Clean Image - Portrait Format (4:5 ratio) */}
-                  <div className="relative h-[28rem] rounded-lg overflow-hidden mb-6 bg-cream-100">
+                  {/* Clean Image - Landscape on mobile (4:3), Portrait on desktop (3:4) */}
+                  <div className="relative aspect-[4/3] md:aspect-[3/4] rounded-lg overflow-hidden mb-6">
                     <Image
                       src="https://images.unsplash.com/photo-1594736797933-d0501ba2fe65?w=600"
                       alt="Sklep - Premium produkty saunowe"
@@ -158,18 +158,18 @@ export default async function Home() {
                     />
                   </div>
 
-                  {/* Content on White Background */}
+                  {/* Content directly on oat background */}
                   <div className="space-y-3">
-                    <p className="text-xs font-bold text-gold-600 tracking-wider uppercase">
+                    <p className="text-xs font-bold text-copper tracking-wider uppercase">
                       01. SKLEP
                     </p>
-                    <h3 className="text-2xl md:text-3xl font-serif font-bold text-graphite-900 group-hover:text-gold-600 transition-colors">
+                    <h3 className="text-2xl md:text-3xl font-serif font-bold text-wood group-hover:text-copper transition-colors">
                       Niezbędnik Saunamistrza
                     </h3>
-                    <p className="text-graphite-600 leading-relaxed">
+                    <p className="text-wood/70 leading-relaxed font-light">
                       Odkryj kolekcję premium produktów - kilty, poncha i akcesoria najwyższej jakości.
                     </p>
-                    <div className="inline-flex items-center gap-2 text-gold-600 font-semibold group-hover:gap-3 transition-all pt-2">
+                    <div className="inline-flex items-center gap-2 text-copper font-semibold group-hover:gap-3 transition-all pt-2">
                       Odkryj więcej
                       <ArrowRight className="w-4 h-4" />
                     </div>
@@ -179,11 +179,11 @@ export default async function Home() {
             </StaggerItem>
 
             {/* EDUKACJA */}
-            <StaggerItem>
+            <StaggerItem className="flex-shrink-0 w-[85vw] snap-center md:w-auto md:snap-align-none">
               <ScaleIn delay={0.2}>
                 <Link href="/szkolenia" className="group block">
-                  {/* Clean Image - Portrait Format (4:5 ratio) */}
-                  <div className="relative h-[28rem] rounded-lg overflow-hidden mb-6 bg-cream-100">
+                  {/* Clean Image - Landscape on mobile (4:3), Portrait on desktop (3:4) */}
+                  <div className="relative aspect-[4/3] md:aspect-[3/4] rounded-lg overflow-hidden mb-6">
                     <Image
                       src="https://images.unsplash.com/photo-1524863479829-916d8e77f114?w=600"
                       alt="Edukacja - Szkolenia dla Saunamistrzów"
@@ -193,18 +193,18 @@ export default async function Home() {
                     />
                   </div>
 
-                  {/* Content on White Background */}
+                  {/* Content directly on oat background */}
                   <div className="space-y-3">
-                    <p className="text-xs font-bold text-forest-600 tracking-wider uppercase">
+                    <p className="text-xs font-bold text-copper tracking-wider uppercase">
                       02. EDUKACJA
                     </p>
-                    <h3 className="text-2xl md:text-3xl font-serif font-bold text-graphite-900 group-hover:text-forest-600 transition-colors">
+                    <h3 className="text-2xl md:text-3xl font-serif font-bold text-wood group-hover:text-copper transition-colors">
                       Akademia Saunamistrzów
                     </h3>
-                    <p className="text-graphite-600 leading-relaxed">
+                    <p className="text-wood/70 leading-relaxed font-light">
                       Profesjonalne szkolenia - od podstaw po poziom master. Certyfikowane kursy prowadzone przez ekspertów.
                     </p>
-                    <div className="inline-flex items-center gap-2 text-forest-600 font-semibold group-hover:gap-3 transition-all pt-2">
+                    <div className="inline-flex items-center gap-2 text-copper font-semibold group-hover:gap-3 transition-all pt-2">
                       Odkryj więcej
                       <ArrowRight className="w-4 h-4" />
                     </div>
@@ -214,11 +214,11 @@ export default async function Home() {
             </StaggerItem>
 
             {/* WIEDZA & COMMUNITY */}
-            <StaggerItem>
+            <StaggerItem className="flex-shrink-0 w-[85vw] snap-center md:w-auto md:snap-align-none">
               <ScaleIn delay={0.3}>
                 <Link href="/akademia" className="group block">
-                  {/* Clean Image - Portrait Format (4:5 ratio) */}
-                  <div className="relative h-[28rem] rounded-lg overflow-hidden mb-6 bg-cream-100">
+                  {/* Clean Image - Landscape on mobile (4:3), Portrait on desktop (3:4) */}
+                  <div className="relative aspect-[4/3] md:aspect-[3/4] rounded-lg overflow-hidden mb-6">
                     <Image
                       src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=600"
                       alt="Wiedza - Blog i społeczność"
@@ -228,18 +228,18 @@ export default async function Home() {
                     />
                   </div>
 
-                  {/* Content on White Background */}
+                  {/* Content directly on oat background */}
                   <div className="space-y-3">
-                    <p className="text-xs font-bold text-warmwood-600 tracking-wider uppercase">
+                    <p className="text-xs font-bold text-copper tracking-wider uppercase">
                       03. WIEDZA
                     </p>
-                    <h3 className="text-2xl md:text-3xl font-serif font-bold text-graphite-900 group-hover:text-warmwood-600 transition-colors">
+                    <h3 className="text-2xl md:text-3xl font-serif font-bold text-wood group-hover:text-copper transition-colors">
                       Społeczność & Wiedza
                     </h3>
-                    <p className="text-graphite-600 leading-relaxed">
+                    <p className="text-wood/70 leading-relaxed font-light">
                       Blog, poradniki, zawody MoA. Dołącz do społeczności pasjonatów saunowania.
                     </p>
-                    <div className="inline-flex items-center gap-2 text-warmwood-600 font-semibold group-hover:gap-3 transition-all pt-2">
+                    <div className="inline-flex items-center gap-2 text-copper font-semibold group-hover:gap-3 transition-all pt-2">
                       Odkryj więcej
                       <ArrowRight className="w-4 h-4" />
                     </div>
@@ -264,113 +264,93 @@ export default async function Home() {
       {/* ========================================
           SECTION 5: PRODUCT CATEGORIES (Condensed)
       ======================================== */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-12 md:py-20">
+        <div className="max-w-7xl mx-auto md:px-4 sm:px-6 lg:px-8">
           <FadeIn>
-            <div className="text-center mb-16">
-              <h2 className="section-header">Kategorie Produktów</h2>
-              <p className="text-graphite-600 text-lg">Odkryj produkty stworzone z myślą o Twoim komforcie</p>
+            <div className="text-center mb-8 md:mb-16 px-4 md:px-0">
+              <h2 className="section-header text-wood">Kategorie Produktów</h2>
+              <p className="text-wood/70 text-lg">Odkryj produkty stworzone z myślą o Twoim komforcie</p>
             </div>
           </FadeIn>
 
-          <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <StaggerContainer className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8 px-4 scrollbar-hide md:px-0 md:grid md:grid-cols-3 md:gap-8 md:overflow-visible">
             {/* Kilty */}
-            <StaggerItem>
+            <StaggerItem className="flex-shrink-0 min-w-[280px] snap-center md:min-w-0 md:snap-align-none">
               <ScaleIn delay={0.1}>
-                <Link href="/sklep/kilty" className="group">
-                  <HoverCard className="overflow-hidden h-full">
-                    <div className="aspect-w-16 aspect-h-9 bg-cream-100 overflow-hidden relative h-64">
-                      <Image
-                        src="https://images.unsplash.com/photo-1594736797933-d0501ba2fe65?w=600"
-                        alt="Kilty"
-                        fill
-                        className="object-cover group-hover:scale-110 transition-transform duration-500"
-                        sizes="(max-width: 768px) 100vw, 33vw"
-                      />
-                    </div>
-                    <div className="p-6 bg-white">
-                      <h3 className="text-2xl font-serif font-semibold mb-3 text-graphite-900 group-hover:text-gold-600 transition-colors">
-                        Kilty
-                      </h3>
-                      <p className="text-graphite-600 leading-relaxed mb-4">
-                        Tradycyjne kilty do sauny w różnych wzorach i kolorach.
-                        Dla kobiet i mężczyzn.
-                      </p>
-                      <span className="inline-flex items-center gap-2 text-gold-600 font-semibold group-hover:gap-3 transition-all">
-                        Zobacz więcej
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                        </svg>
-                      </span>
-                    </div>
-                  </HoverCard>
+                <Link href="/sklep/kilty" className="group block">
+                  <div className="relative aspect-video rounded-md overflow-hidden mb-4">
+                    <Image
+                      src="https://images.unsplash.com/photo-1594736797933-d0501ba2fe65?w=600"
+                      alt="Kilty"
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                    />
+                  </div>
+                  <h3 className="text-2xl font-serif font-semibold mb-2 text-wood group-hover:text-copper transition-colors">
+                    Kilty
+                  </h3>
+                  <p className="text-wood/70 leading-relaxed mb-2 font-light">
+                    Tradycyjne kilty do sauny w różnych wzorach i kolorach.
+                  </p>
+                  <span className="inline-flex items-center gap-2 text-copper font-medium group-hover:gap-3 transition-all">
+                    Zobacz więcej
+                    <ArrowRight className="w-4 h-4" />
+                  </span>
                 </Link>
               </ScaleIn>
             </StaggerItem>
 
             {/* Poncha */}
-            <StaggerItem>
+            <StaggerItem className="flex-shrink-0 min-w-[280px] snap-center md:min-w-0 md:snap-align-none">
               <ScaleIn delay={0.2}>
-                <Link href="/sklep/poncha" className="group">
-                  <HoverCard className="overflow-hidden h-full">
-                    <div className="aspect-w-16 aspect-h-9 bg-cream-100 overflow-hidden relative h-64">
-                      <Image
-                        src="https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=600"
-                        alt="Poncha"
-                        fill
-                        className="object-cover group-hover:scale-110 transition-transform duration-500"
-                        sizes="(max-width: 768px) 100vw, 33vw"
-                      />
-                    </div>
-                    <div className="p-6 bg-white">
-                      <h3 className="text-2xl font-serif font-semibold mb-3 text-graphite-900 group-hover:text-gold-600 transition-colors">
-                        Poncha
-                      </h3>
-                      <p className="text-graphite-600 leading-relaxed mb-4">
-                        Wygodne poncha idealne po wyjściu z sauny.
-                        Bambusowe i bawełniane.
-                      </p>
-                      <span className="inline-flex items-center gap-2 text-gold-600 font-semibold group-hover:gap-3 transition-all">
-                        Zobacz więcej
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                        </svg>
-                      </span>
-                    </div>
-                  </HoverCard>
+                <Link href="/sklep/poncha" className="group block">
+                  <div className="relative aspect-video rounded-md overflow-hidden mb-4">
+                    <Image
+                      src="https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=600"
+                      alt="Poncha"
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                    />
+                  </div>
+                  <h3 className="text-2xl font-serif font-semibold mb-2 text-wood group-hover:text-copper transition-colors">
+                    Poncha
+                  </h3>
+                  <p className="text-wood/70 leading-relaxed mb-2 font-light">
+                    Wygodne poncha idealne po wyjściu z sauny.
+                  </p>
+                  <span className="inline-flex items-center gap-2 text-copper font-medium group-hover:gap-3 transition-all">
+                    Zobacz więcej
+                    <ArrowRight className="w-4 h-4" />
+                  </span>
                 </Link>
               </ScaleIn>
             </StaggerItem>
 
             {/* Accessories */}
-            <StaggerItem>
+            <StaggerItem className="flex-shrink-0 min-w-[280px] snap-center md:min-w-0 md:snap-align-none">
               <ScaleIn delay={0.3}>
-                <Link href="/sklep/akcesoria" className="group">
-                  <HoverCard className="overflow-hidden h-full">
-                    <div className="aspect-w-16 aspect-h-9 bg-cream-100 overflow-hidden relative h-64">
-                      <Image
-                        src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600"
-                        alt="Akcesoria"
-                        fill
-                        className="object-cover group-hover:scale-110 transition-transform duration-500"
-                        sizes="(max-width: 768px) 100vw, 33vw"
-                      />
-                    </div>
-                    <div className="p-6 bg-white">
-                      <h3 className="text-2xl font-serif font-semibold mb-3 text-graphite-900 group-hover:text-gold-600 transition-colors">
-                        Akcesoria
-                      </h3>
-                      <p className="text-graphite-600 leading-relaxed mb-4">
-                        Ręczniki, olejki eteryczne i wszystko czego potrzebujesz do sauny.
-                      </p>
-                      <span className="inline-flex items-center gap-2 text-gold-600 font-semibold group-hover:gap-3 transition-all">
-                        Zobacz więcej
-                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                        </svg>
-                      </span>
-                    </div>
-                  </HoverCard>
+                <Link href="/sklep/akcesoria" className="group block">
+                  <div className="relative aspect-video rounded-md overflow-hidden mb-4">
+                    <Image
+                      src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600"
+                      alt="Akcesoria"
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                    />
+                  </div>
+                  <h3 className="text-2xl font-serif font-semibold mb-2 text-wood group-hover:text-copper transition-colors">
+                    Akcesoria
+                  </h3>
+                  <p className="text-wood/70 leading-relaxed mb-2 font-light">
+                    Ręczniki, olejki eteryczne i wszystko czego potrzebujesz do sauny.
+                  </p>
+                  <span className="inline-flex items-center gap-2 text-copper font-medium group-hover:gap-3 transition-all">
+                    Zobacz więcej
+                    <ArrowRight className="w-4 h-4" />
+                  </span>
                 </Link>
               </ScaleIn>
             </StaggerItem>
@@ -381,7 +361,7 @@ export default async function Home() {
             <div className="text-center mt-12">
               <Link
                 href="/sklep"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-gold-600 text-white font-bold rounded-xl hover:bg-gold-700 transition-colors shadow-lg hover:shadow-xl text-lg group"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-copper text-white font-bold rounded-2xl hover:bg-copper-800 transition-colors shadow-lg hover:shadow-xl text-lg group"
               >
                 Zobacz wszystkie produkty
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -394,22 +374,22 @@ export default async function Home() {
       {/* ========================================
           SECTION 6: BLOG + COMMUNITY HYBRID
       ======================================== */}
-      <section className="py-20 bg-gradient-to-br from-cream-50 via-white to-cream-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-12 md:py-20">
+        <div className="max-w-7xl mx-auto md:px-4 sm:px-6 lg:px-8">
           {/* Blog Part */}
           <FadeIn>
-            <div className="text-center mb-16">
-              <h2 className="section-header">Akademia Saunowania</h2>
-              <p className="text-graphite-600 text-lg max-w-2xl mx-auto">
+            <div className="text-center mb-8 md:mb-16 px-4 md:px-0">
+              <h2 className="section-header text-wood">Akademia Saunowania</h2>
+              <p className="text-wood/70 text-lg max-w-2xl mx-auto">
                 Odkryj wiedzę, trendy i inspiracje ze świata sauny i wellness
               </p>
             </div>
           </FadeIn>
 
           {recentBlogPosts.length > 0 ? (
-            <StaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+            <StaggerContainer className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-8 px-4 mb-8 md:mb-16 scrollbar-hide md:px-0 md:grid md:grid-cols-3 md:gap-8 md:overflow-visible">
               {recentBlogPosts.map((post, index) => (
-                <StaggerItem key={post._id.toString()}>
+                <StaggerItem key={post._id.toString()} className="flex-shrink-0 w-[85vw] snap-center md:w-auto md:snap-align-none">
                   <ScaleIn delay={index * 0.1}>
                     <BlogCard post={post} />
                   </ScaleIn>
@@ -426,62 +406,80 @@ export default async function Home() {
             <div className="text-center mb-20">
               <Link
                 href="/akademia"
-                className="inline-flex items-center gap-2 px-8 py-4 border-2 border-forest-600 text-forest-700 font-bold rounded-xl hover:bg-forest-600 hover:text-white transition-colors text-lg group"
+                className="inline-flex items-center gap-2 px-8 py-4 border-2 border-copper text-copper font-bold rounded-2xl hover:bg-copper hover:text-white transition-colors text-lg group"
               >
                 Czytaj wszystkie artykuły
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </Link>
             </div>
           </FadeIn>
+        </div>
+      </section>
 
-          {/* Community Part - Masters of Aufguss */}
+      {/* ========================================
+          SECTION 6.5: MASTERS OF AUFGUSS - Premium Dark Bento Card
+      ======================================== */}
+      <section className="py-12 md:py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <FadeIn delay={0.4}>
-            <div className="bg-gradient-to-br from-gold-50 to-warmwood-50 rounded-3xl p-8 md:p-12 border-2 border-gold-200">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-                {/* Community Image Placeholder */}
-                <div className="relative h-80 rounded-2xl overflow-hidden shadow-xl">
-                  <div className="w-full h-full bg-gradient-to-br from-gold-400 via-warmwood-500 to-forest-500 flex items-center justify-center">
-                    <div className="text-center text-white">
-                      <div className="text-8xl mb-4">🏆</div>
-                      <Camera className="w-16 h-16 text-white/30 mx-auto" />
-                      <p className="mt-4 text-lg font-semibold">Zdjęcia z zawodów MoA</p>
-                    </div>
-                  </div>
-                </div>
+            {/* Bento Card with Photo Background */}
+            <div className="relative rounded-3xl overflow-hidden h-auto md:h-[600px]">
+              {/* Background Image */}
+              <div className="relative h-48 md:h-auto md:absolute md:inset-0">
+                <Image
+                  src="https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=1200"
+                  alt="Masters of Aufguss - Zawody Saunamistrzów"
+                  fill
+                  className="object-cover"
+                  sizes="100vw"
+                />
+              </div>
 
-                {/* Community Content */}
-                <div>
-                  <div className="inline-block px-4 py-2 bg-gold-600 text-white font-bold rounded-full text-sm mb-4">
-                    🏆 SPOŁECZNOŚĆ
+              {/* Sage Overlay for readability */}
+              <div className="absolute inset-0 bg-sage/90 mix-blend-multiply" />
+
+              {/* Content */}
+              <div className="relative h-full flex flex-col justify-end p-6 md:p-12 lg:p-16">
+                <div className="max-w-3xl">
+                  {/* Badge */}
+                  <div className="inline-block px-3 py-1 bg-transparent border border-oat/40 rounded-sm mb-6">
+                    <span className="uppercase tracking-widest text-[10px] font-bold text-oat">Społeczność</span>
                   </div>
-                  <h3 className="text-3xl md:text-4xl font-serif font-bold text-graphite-900 mb-4">
+
+                  {/* Title */}
+                  <h3 className="text-3xl md:text-5xl lg:text-6xl font-serif font-bold text-white mb-4 md:mb-6">
                     Masters of Aufguss
                   </h3>
-                  <p className="text-graphite-600 text-lg leading-relaxed mb-6">
+
+                  {/* Description */}
+                  <p className="text-oat/90 text-base md:text-lg lg:text-xl leading-relaxed mb-6 md:mb-8 font-light">
                     Dołącz do najbardziej prestiżowych zawodów Saunamistrzów w Polsce.
                     Pokaż swoje umiejętności, poznaj innych pasjonatów i rywalizuj o tytuł
                     najlepszego Saunamistrza.
                   </p>
 
-                  {/* MoA Stats */}
-                  <div className="grid grid-cols-3 gap-4 mb-6">
-                    <div className="text-center p-4 bg-white rounded-xl border border-gold-200">
-                      <div className="text-2xl font-bold text-gold-600 mb-1">3</div>
-                      <div className="text-xs text-graphite-600">Edycje</div>
+                  {/* Stats - Simple text with dividers - 2 cols on mobile */}
+                  <div className="grid grid-cols-2 gap-4 mb-6 md:flex md:items-center md:gap-6 md:mb-8 text-oat/90">
+                    <div>
+                      <span className="text-2xl md:text-3xl font-serif font-bold text-copper">3</span>
+                      <span className="ml-2 text-xs md:text-sm uppercase tracking-wider">Edycje</span>
                     </div>
-                    <div className="text-center p-4 bg-white rounded-xl border border-gold-200">
-                      <div className="text-2xl font-bold text-gold-600 mb-1">24+</div>
-                      <div className="text-xs text-graphite-600">Zawodników</div>
+                    <div className="hidden md:block w-px h-8 bg-oat/30" />
+                    <div>
+                      <span className="text-2xl md:text-3xl font-serif font-bold text-copper">24+</span>
+                      <span className="ml-2 text-xs md:text-sm uppercase tracking-wider">Zawodników</span>
                     </div>
-                    <div className="text-center p-4 bg-white rounded-xl border border-gold-200">
-                      <div className="text-2xl font-bold text-gold-600 mb-1">155</div>
-                      <div className="text-xs text-graphite-600">Max punktów</div>
+                    <div className="hidden md:block w-px h-8 bg-oat/30" />
+                    <div className="col-span-2 md:col-span-1">
+                      <span className="text-2xl md:text-3xl font-serif font-bold text-copper">155</span>
+                      <span className="ml-2 text-xs md:text-sm uppercase tracking-wider">Max punktów</span>
                     </div>
                   </div>
 
+                  {/* CTA */}
                   <Link
                     href="/zawody-moa"
-                    className="inline-flex items-center gap-2 px-6 py-3 bg-gold-600 text-white font-bold rounded-xl hover:bg-gold-700 transition-colors shadow-lg group"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-copper text-white font-bold rounded-2xl hover:bg-copper-800 transition-colors shadow-lg group"
                   >
                     Poznaj zawody MoA
                     <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -496,21 +494,21 @@ export default async function Home() {
       {/* ========================================
           SECTION 7: PRE-FOOTER CTA (Homepage Only)
       ======================================== */}
-      <section className="py-20 bg-gradient-to-br from-graphite-900 via-forest-900 to-graphite-900">
+      <section className="py-12 md:py-20 bg-wood">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <FadeIn>
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-cream-100 mb-6">
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-oat mb-6">
               Twój rytuał zaczyna się tutaj
             </h2>
-            <p className="text-lg md:text-xl text-cream-300 mb-10 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-lg md:text-xl text-oat/80 mb-10 max-w-2xl mx-auto leading-relaxed font-light">
               Najlepsze produkty i mistrzowska wiedza w jednym miejscu. Sprawdź, jak możemy odmienić Twoje saunowanie.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              {/* Primary CTA - Solid Gold */}
+              {/* Primary CTA - Copper */}
               <Link
                 href="/sklep"
-                className="px-8 py-4 bg-gradient-to-r from-gold-500 to-gold-600 text-white font-semibold text-lg rounded-xl hover:from-gold-600 hover:to-gold-700 transition-all shadow-lg hover:shadow-xl inline-flex items-center justify-center gap-2 group"
+                className="px-8 py-4 bg-copper text-white font-semibold text-lg rounded-2xl hover:bg-copper-800 transition-all shadow-lg hover:shadow-xl inline-flex items-center justify-center gap-2 group"
               >
                 Odkryj Produkty
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
@@ -519,7 +517,7 @@ export default async function Home() {
               {/* Secondary CTA - Outline */}
               <Link
                 href="/kontakt"
-                className="px-8 py-4 bg-transparent border-2 border-gold-400 text-gold-400 font-semibold text-lg rounded-xl hover:bg-gold-400 hover:text-white transition-all inline-flex items-center justify-center gap-2 group"
+                className="px-8 py-4 bg-transparent border-2 border-copper text-copper font-semibold text-lg rounded-2xl hover:bg-copper hover:text-white transition-all inline-flex items-center justify-center gap-2 group"
               >
                 Zapytaj Eksperta
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />

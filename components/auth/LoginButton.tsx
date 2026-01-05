@@ -15,9 +15,9 @@ export default function LoginButton() {
   if (session) {
     return (
       <div className="relative group">
-        <button className="flex items-center space-x-2">
+        <button className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
           <Avatar src={session.user.image} name={session.user.name} size="sm" />
-          <span className="hidden md:block text-sm font-light">{session.user.name}</span>
+          <span className="hidden md:block text-sm font-light text-oat">{session.user.name}</span>
         </button>
 
         {/* Dropdown menu - Premium Style */}
@@ -79,7 +79,7 @@ export default function LoginButton() {
   return (
     <button
       onClick={() => signIn()}
-      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+      className="bg-copper hover:bg-copper-800 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-md hover:shadow-lg"
     >
       Zaloguj się
     </button>

@@ -3,9 +3,12 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { IProduct } from '@/types';
+import { IProduct, ProductCategory } from '@/types';
 import { getProductRecommendations } from '@/lib/client/recommendations';
 import { formatPriceRounded } from '@/lib/utils/currency';
+import { CATEGORY_CONFIG } from '@/lib/constants/categories';
+import HoverCard from '@/components/animations/HoverCard';
+import FadeIn from '@/components/animations/FadeIn';
 
 interface ProductRecommendationsProps {
   /**
@@ -37,7 +40,7 @@ interface ProductRecommendationsProps {
 export default function ProductRecommendations({
   baseProduct,
   allProducts,
-  title = "Polecane produkty",
+  title = "Może Ci się spodobać",
   maxItems = 6,
   className = ""
 }: ProductRecommendationsProps) {
@@ -54,79 +57,88 @@ export default function ProductRecommendations({
   }
 
   return (
-    <section className={`py-8 ${className}`}>
-      <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-graphite-900">{title}</h2>
-        <div className="flex items-center gap-2 text-sm text-graphite-600">
-          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
-          </svg>
-          <span>Wybrane dla Ciebie</span>
-        </div>
+    <section className={`border-t border-[#2C2622]/10 ${className}`}>
+      {/* Header - Minimalist */}
+      <div className="mb-4 md:mb-8 px-4 md:px-0">
+        <h2 className="text-xl md:text-3xl font-serif text-[#2C2622] text-center">
+          {title}
+        </h2>
       </div>
 
-      {/* Grid layout */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-        {recommendations.map((product) => (
-          <Link
-            key={product._id}
-            href={`/produkt/${product.slug}`}
-            className="group"
-          >
-            <div className="bg-white rounded-lg border border-gray-200 overflow-hidden transition-all hover:shadow-lg hover:border-gray-300">
-              {/* Product Image */}
-              <div className="relative aspect-square bg-gray-100 overflow-hidden">
-                {product.images[0]?.url ? (
-                  <Image
-                    src={product.images[0].url}
-                    alt={product.name}
-                    fill
-                    className="object-cover transition-transform duration-300 group-hover:scale-105"
-                    loading="lazy"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-400">
-                    <svg className="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
+      {/* Product Grid - Mobile: horizontal scroll, Desktop: grid */}
+      <div className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 px-4 scrollbar-hide md:px-0 md:grid md:grid-cols-3 lg:grid-cols-6 md:gap-4 md:overflow-visible">
+        {recommendations.map((product, index) => {
+          const categoryConfig = CATEGORY_CONFIG[product.category as ProductCategory];
+          const categoryLabel = categoryConfig?.label || product.category;
+          const primaryImage = product.images.find(img => img.isPrimary) || product.images[0];
+
+          return (
+            <FadeIn key={product._id} delay={index * 0.05} className="flex-shrink-0 w-40 snap-start md:w-auto md:snap-align-none">
+              <HoverCard>
+                <Link
+                  href={`/produkt/${product.slug}`}
+                  className="block group"
+                >
+                  {/* Product Image - 3:4 aspect with warm filter */}
+                  <div className="relative aspect-[3/4] overflow-hidden rounded-sm bg-stone/10 mb-2">
+                    {primaryImage?.url ? (
+                      <Image
+                        src={primaryImage.url}
+                        alt={product.name}
+                        fill
+                        className="object-cover transition-transform duration-700 group-hover:scale-105 sepia-[.15] contrast-[1.05]"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-[#2C2622]/30">
+                        <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                      </div>
+                    )}
+
+                    {/* Minimalist Badge - Hidden on mobile */}
+                    <div className="hidden md:block absolute top-2 right-2 px-2 py-1 bg-[#2C2622]/80 border border-[#C47F52]/60 rounded-sm backdrop-blur-sm">
+                      <span className="uppercase tracking-widest text-[10px] font-bold text-[#C47F52]">
+                        Polecane
+                      </span>
+                    </div>
                   </div>
-                )}
 
-                {/* Recommendation Badge */}
-                <div className="absolute top-2 right-2 bg-forest-600 text-white text-xs px-2 py-1 rounded-full shadow-sm">
-                  Polecane
-                </div>
-              </div>
+                  {/* Product Info - Clean */}
+                  <div className="space-y-0.5 md:space-y-1">
+                    {/* Category - Hidden on mobile */}
+                    <p className="hidden md:block text-[10px] text-stone-500 uppercase tracking-widest truncate">
+                      {categoryLabel}
+                    </p>
 
-              {/* Product Info */}
-              <div className="p-3">
-                <p className="text-xs text-graphite-600 uppercase mb-1 truncate">
-                  {product.category}
-                </p>
-                <h3 className="font-medium text-graphite-900 mb-2 line-clamp-2 min-h-[2.5rem]">
-                  {product.name}
-                </h3>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-lg font-bold text-graphite-900 tabular-nums">
-                    {formatPriceRounded(product.basePrice)}
-                  </span>
-                </div>
+                    {/* Name */}
+                    <h3 className="text-xs md:text-sm font-serif text-[#2C2622] group-hover:text-[#C47F52] transition-colors line-clamp-2 min-h-[2rem] md:min-h-[2.5rem]">
+                      {product.name}
+                    </h3>
 
-                {/* View count as social proof */}
-                {product.stats?.views && product.stats.views > 10 && (
-                  <div className="mt-2 flex items-center gap-1 text-xs text-graphite-600">
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                    </svg>
-                    <span>{product.stats.views} wyświetleń</span>
+                    {/* Price */}
+                    <p className="text-xs md:text-sm text-[#C47F52] font-medium tabular-nums">
+                      {formatPriceRounded(product.basePrice)}
+                    </p>
                   </div>
-                )}
-              </div>
-            </div>
-          </Link>
-        ))}
+                </Link>
+              </HoverCard>
+            </FadeIn>
+          );
+        })}
       </div>
+
+      {/* Custom scrollbar hide styles */}
+      <style jsx>{`
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
     </section>
   );
 }

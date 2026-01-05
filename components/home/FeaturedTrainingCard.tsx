@@ -43,22 +43,22 @@ const FeaturedTrainingCard: React.FC<FeaturedTrainingCardProps> = ({ training })
   const levelBadge = levelLabels[training.level];
 
   return (
-    <section className="py-20 bg-gradient-to-br from-forest-50 to-cream-100 relative overflow-hidden">
+    <section className="py-12 md:py-20 bg-wood relative overflow-hidden">
       {/* Background decorative pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-gold-400 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-forest-400 rounded-full blur-3xl"></div>
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-copper rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-oat rounded-full blur-3xl"></div>
       </div>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <FadeIn>
           <div className="text-center mb-12">
-            <div className="inline-block px-4 py-2 bg-gold-100 text-gold-800 font-bold rounded-full text-sm mb-4">
-              🎓 POLECANE SZKOLENIE
+            <div className="inline-block px-3 py-1 bg-transparent border border-copper/40 rounded-sm mb-4">
+              <span className="uppercase tracking-widest text-[10px] font-bold text-copper">Polecane Szkolenie</span>
             </div>
-            <h2 className="section-header">Zacznij swoją przygodę jako Saunamistrz</h2>
-            <p className="text-graphite-600 text-lg max-w-2xl mx-auto">
+            <h2 className="section-header text-oat">Zacznij swoją przygodę jako Saunamistrz</h2>
+            <p className="text-oat/80 text-lg max-w-2xl mx-auto font-light">
               Profesjonalne szkolenia prowadzone przez doświadczonych instruktorów
             </p>
           </div>
@@ -66,9 +66,9 @@ const FeaturedTrainingCard: React.FC<FeaturedTrainingCardProps> = ({ training })
 
         {/* Featured Training Card */}
         <ScaleIn delay={0.2}>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 bg-white rounded-3xl shadow-2xl overflow-hidden border-2 border-cream-300">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 bg-white/5 backdrop-blur-sm rounded-3xl overflow-hidden border border-white/10">
             {/* Image Section */}
-            <div className="relative h-64 lg:h-auto">
+            <div className="relative h-48 md:h-64 lg:h-auto">
               {training.featuredImage?.url ? (
                 <Image
                   src={training.featuredImage.url}
@@ -79,53 +79,59 @@ const FeaturedTrainingCard: React.FC<FeaturedTrainingCardProps> = ({ training })
                   priority
                 />
               ) : (
-                <div className="w-full h-full bg-gradient-to-br from-forest-400 via-gold-400 to-warmwood-400 flex items-center justify-center">
+                <div className="w-full h-full bg-gradient-to-br from-copper/40 to-wood/60 flex items-center justify-center">
                   <Award className="w-32 h-32 text-white/30" />
                 </div>
               )}
 
               {/* Availability Badge */}
               {isAlmostFull && (
-                <div className="absolute top-4 right-4 px-4 py-2 bg-warmwood-600 text-white font-bold rounded-xl shadow-lg">
-                  ⚠️ Zostało {availableSpots} {availableSpots === 1 ? 'miejsce' : 'miejsca'}!
+                <div className="absolute top-4 right-4 px-3 py-1 bg-wood/95 backdrop-blur-sm border border-copper/60 rounded-sm">
+                  <span className="uppercase tracking-widest text-[10px] font-bold text-copper">
+                    Zostało {availableSpots} {availableSpots === 1 ? 'miejsce' : 'miejsca'}
+                  </span>
                 </div>
               )}
 
               {isFull && (
-                <div className="absolute top-4 right-4 px-4 py-2 bg-graphite-700 text-white font-bold rounded-xl shadow-lg">
-                  😔 Wyprzedane
+                <div className="absolute top-4 right-4 px-3 py-1 bg-wood/95 backdrop-blur-sm border border-oat/40 rounded-sm">
+                  <span className="uppercase tracking-widest text-[10px] font-bold text-oat">
+                    Wyprzedane
+                  </span>
                 </div>
               )}
 
               {/* Level Badge */}
-              <div className={`absolute bottom-4 left-4 px-4 py-2 bg-${levelBadge.color}-600 text-white font-semibold rounded-xl shadow-lg`}>
-                📊 {levelBadge.text}
+              <div className="absolute bottom-4 left-4 px-3 py-1 bg-wood/95 backdrop-blur-sm border border-oat/40 rounded-sm">
+                <span className="uppercase tracking-widest text-[10px] font-bold text-oat">
+                  {levelBadge.text}
+                </span>
               </div>
             </div>
 
             {/* Content Section */}
-            <div className="p-8 lg:p-10 flex flex-col justify-between">
+            <div className="p-6 md:p-8 lg:p-10 flex flex-col justify-between">
               <div>
                 {/* Title */}
-                <h3 className="text-3xl md:text-4xl font-serif font-bold text-graphite-900 mb-4">
+                <h3 className="text-3xl md:text-4xl font-serif font-bold text-oat mb-4">
                   {training.name}
                 </h3>
 
                 {/* Short Description */}
-                <p className="text-graphite-600 text-lg leading-relaxed mb-6">
+                <p className="text-oat/80 text-lg leading-relaxed mb-6 font-light">
                   {training.shortDescription || training.description.substring(0, 150) + '...'}
                 </p>
 
-                {/* Training Details Grid */}
-                <StaggerContainer className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+                {/* Training Details Grid - 2 cols on all breakpoints */}
+                <StaggerContainer className="grid grid-cols-2 gap-3 md:gap-4 mb-6">
                   <StaggerItem>
-                    <div className="flex items-start gap-3 p-4 bg-cream-50 rounded-xl border border-cream-300">
-                      <Calendar className="w-5 h-5 text-gold-600 mt-0.5 flex-shrink-0" />
+                    <div className="flex items-start gap-2 md:gap-3 p-3 md:p-4 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
+                      <Calendar className="w-4 h-4 md:w-5 md:h-5 text-copper mt-0.5 flex-shrink-0" />
                       <div>
-                        <p className="text-xs text-graphite-500 font-semibold uppercase mb-1">
+                        <p className="text-[10px] md:text-xs text-oat/60 font-semibold uppercase mb-1">
                           Data
                         </p>
-                        <p className="text-graphite-900 font-medium">
+                        <p className="text-xs md:text-sm text-oat font-medium">
                           {formatDate(training.date)}
                         </p>
                       </div>
@@ -133,13 +139,13 @@ const FeaturedTrainingCard: React.FC<FeaturedTrainingCardProps> = ({ training })
                   </StaggerItem>
 
                   <StaggerItem>
-                    <div className="flex items-start gap-3 p-4 bg-cream-50 rounded-xl border border-cream-300">
-                      <Clock className="w-5 h-5 text-gold-600 mt-0.5 flex-shrink-0" />
+                    <div className="flex items-start gap-2 md:gap-3 p-3 md:p-4 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
+                      <Clock className="w-4 h-4 md:w-5 md:h-5 text-copper mt-0.5 flex-shrink-0" />
                       <div>
-                        <p className="text-xs text-graphite-500 font-semibold uppercase mb-1">
+                        <p className="text-[10px] md:text-xs text-oat/60 font-semibold uppercase mb-1">
                           Czas trwania
                         </p>
-                        <p className="text-graphite-900 font-medium">
+                        <p className="text-xs md:text-sm text-oat font-medium">
                           {training.duration} {training.duration === 1 ? 'dzień' : 'dni'}
                         </p>
                       </div>
@@ -147,13 +153,13 @@ const FeaturedTrainingCard: React.FC<FeaturedTrainingCardProps> = ({ training })
                   </StaggerItem>
 
                   <StaggerItem>
-                    <div className="flex items-start gap-3 p-4 bg-cream-50 rounded-xl border border-cream-300">
-                      <MapPin className="w-5 h-5 text-gold-600 mt-0.5 flex-shrink-0" />
+                    <div className="flex items-start gap-2 md:gap-3 p-3 md:p-4 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
+                      <MapPin className="w-4 h-4 md:w-5 md:h-5 text-copper mt-0.5 flex-shrink-0" />
                       <div>
-                        <p className="text-xs text-graphite-500 font-semibold uppercase mb-1">
+                        <p className="text-[10px] md:text-xs text-oat/60 font-semibold uppercase mb-1">
                           Lokalizacja
                         </p>
-                        <p className="text-graphite-900 font-medium">
+                        <p className="text-xs md:text-sm text-oat font-medium">
                           {training.location.city}
                         </p>
                       </div>
@@ -161,17 +167,17 @@ const FeaturedTrainingCard: React.FC<FeaturedTrainingCardProps> = ({ training })
                   </StaggerItem>
 
                   <StaggerItem>
-                    <div className="flex items-start gap-3 p-4 bg-cream-50 rounded-xl border border-cream-300">
-                      <Users className="w-5 h-5 text-gold-600 mt-0.5 flex-shrink-0" />
+                    <div className="flex items-start gap-2 md:gap-3 p-3 md:p-4 bg-white/10 backdrop-blur-sm rounded-xl border border-white/20">
+                      <Users className="w-4 h-4 md:w-5 md:h-5 text-copper mt-0.5 flex-shrink-0" />
                       <div>
-                        <p className="text-xs text-graphite-500 font-semibold uppercase mb-1">
+                        <p className="text-[10px] md:text-xs text-oat/60 font-semibold uppercase mb-1">
                           Dostępność
                         </p>
-                        <p className="text-graphite-900 font-medium">
+                        <p className="text-xs md:text-sm text-oat font-medium">
                           {availableSpots > 0 ? (
                             <span>{availableSpots} / {training.maxParticipants} miejsc</span>
                           ) : (
-                            <span className="text-warmwood-600">Brak miejsc</span>
+                            <span className="text-copper">Brak miejsc</span>
                           )}
                         </p>
                       </div>
@@ -182,13 +188,13 @@ const FeaturedTrainingCard: React.FC<FeaturedTrainingCardProps> = ({ training })
                 {/* Key Learning Points */}
                 {training.whatYouLearn && training.whatYouLearn.length > 0 && (
                   <div className="mb-6">
-                    <h4 className="text-sm font-bold text-graphite-700 uppercase mb-3">
+                    <h4 className="text-sm font-bold text-oat/70 uppercase mb-3">
                       ✨ Czego się nauczysz:
                     </h4>
                     <ul className="space-y-2">
                       {training.whatYouLearn.slice(0, 3).map((item, index) => (
-                        <li key={index} className="flex items-start gap-2 text-graphite-600">
-                          <span className="text-gold-600 mt-1">✓</span>
+                        <li key={index} className="flex items-start gap-2 text-oat/80 font-light">
+                          <span className="text-copper mt-1">✓</span>
                           <span>{item}</span>
                         </li>
                       ))}
@@ -198,15 +204,15 @@ const FeaturedTrainingCard: React.FC<FeaturedTrainingCardProps> = ({ training })
               </div>
 
               {/* Price & CTA */}
-              <div className="pt-6 border-t-2 border-cream-300">
+              <div className="pt-6 border-t border-white/20">
                 <div className="flex items-center justify-between mb-4">
                   <div>
-                    <p className="text-sm text-graphite-500 mb-1">Cena szkolenia</p>
-                    <p className="text-3xl font-serif font-bold text-graphite-900">
+                    <p className="text-sm text-oat/60 mb-1">Cena szkolenia</p>
+                    <p className="text-3xl font-serif font-bold text-oat">
                       {training.price.toLocaleString('pl-PL')} zł
                     </p>
                     {training.depositPercentage > 0 && (
-                      <p className="text-sm text-graphite-500">
+                      <p className="text-sm text-oat/60">
                         Zadatek: {training.depositPercentage}% ({(training.price * training.depositPercentage / 100).toFixed(0)} zł)
                       </p>
                     )}
@@ -215,7 +221,7 @@ const FeaturedTrainingCard: React.FC<FeaturedTrainingCardProps> = ({ training })
 
                 <Link
                   href={`/szkolenia/${training.slug}`}
-                  className={`btn-gold w-full flex items-center justify-center gap-2 group ${
+                  className={`bg-copper hover:bg-copper-800 text-white px-6 py-3 rounded-2xl font-medium transition-all shadow-lg w-full flex items-center justify-center gap-2 group ${
                     isFull ? 'opacity-50 cursor-not-allowed' : ''
                   }`}
                 >
@@ -231,7 +237,7 @@ const FeaturedTrainingCard: React.FC<FeaturedTrainingCardProps> = ({ training })
 
                 <Link
                   href="/szkolenia"
-                  className="mt-3 text-center block text-gold-600 hover:text-gold-700 font-medium transition-colors"
+                  className="mt-3 text-center block text-copper hover:text-copper-800 font-medium transition-colors"
                 >
                   Zobacz wszystkie szkolenia →
                 </Link>

@@ -7,6 +7,7 @@ import Training from '@/lib/models/Training';
 import { ITraining } from '@/types';
 import TrainingBookingForm from '@/components/trainings/TrainingBookingForm';
 import FadeIn from '@/components/animations/FadeIn';
+import { Calendar, Clock, MapPin, Users, Check } from 'lucide-react';
 
 // Dynamic params - render on-demand
 export const dynamicParams = true;
@@ -59,130 +60,133 @@ export default async function TrainingDetailPage({ params }: PageProps) {
   const availableSpots = training.maxParticipants - training.currentParticipants;
 
   return (
-    <div className="min-h-screen bg-cream-50">
+    <div className="min-h-screen bg-[#F0ECE2]">
       {/* Breadcrumbs */}
-      <div className="bg-white border-b border-cream-300">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center gap-2 text-sm text-graphite-600">
-            <Link href="/" className="hover:text-gold-600">Strona główna</Link>
+      <div className="bg-[#F0ECE2] border-b border-[#2C2622]/10">
+        <div className="max-w-[1400px] mx-auto px-4 md:px-8 py-4">
+          <div className="flex items-center gap-2 text-sm text-stone-500">
+            <Link href="/" className="hover:text-[#C47F52] transition-colors">Strona główna</Link>
             <span>/</span>
-            <Link href="/szkolenia" className="hover:text-gold-600">Szkolenia</Link>
+            <Link href="/szkolenia" className="hover:text-[#C47F52] transition-colors">Szkolenia</Link>
             <span>/</span>
-            <span className="text-graphite-900">{training.name}</span>
+            <span className="text-[#2C2622]">{training.name}</span>
           </div>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Left Column - Details */}
-          <div className="lg:col-span-2 space-y-8">
+      {/* Main Content - Sticky Split Layout */}
+      <div className="max-w-[1400px] mx-auto px-4 md:px-8 py-8 md:py-12">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 lg:gap-12">
+
+          {/* Left Column: Editorial Content (3/5 = 60%) */}
+          <div className="lg:col-span-3 space-y-10">
+
             {/* Hero Image */}
             <FadeIn>
-              <div className="aspect-video rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-cream-200 to-cream-300 relative">
+              <div className="w-full aspect-video rounded-sm overflow-hidden bg-stone-200">
                 {training.featuredImage?.url ? (
                   <Image
                     src={training.featuredImage.url}
                     alt={training.name}
-                    fill
-                    className="object-cover"
+                    width={1200}
+                    height={675}
+                    className="w-full h-full object-cover"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
-                    <span className="text-8xl">🎓</span>
+                    <span className="text-8xl opacity-20">🎓</span>
                   </div>
                 )}
               </div>
             </FadeIn>
 
-            {/* Title & Basic Info */}
+            {/* Title & Meta Info */}
             <FadeIn delay={0.1}>
-              <div className="bg-white rounded-3xl border-2 border-cream-400 p-8">
-                <h1 className="font-serif text-4xl font-bold text-graphite-900 mb-4">{training.name}</h1>
+              <div>
+                <h1 className="font-fraunces text-4xl md:text-5xl text-[#2C2622] mb-6 leading-tight">
+                  {training.name}
+                </h1>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                  <div className="flex items-center gap-3 text-graphite-700">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                    </svg>
+                {/* Meta Data Row */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="flex items-start gap-2">
+                    <Calendar className="w-5 h-5 text-[#C47F52] flex-shrink-0 mt-0.5" strokeWidth={1.5} />
                     <div>
-                      <div className="text-sm text-graphite-500">Data</div>
-                      <div className="font-semibold">{trainingDate.toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' })}</div>
+                      <div className="text-xs text-stone-500 uppercase tracking-wider">Data</div>
+                      <div className="text-sm font-medium text-[#2C2622]">
+                        {trainingDate.toLocaleDateString('pl-PL', { day: 'numeric', month: 'long', year: 'numeric' })}
+                      </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 text-graphite-700">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
+                  <div className="flex items-start gap-2">
+                    <Clock className="w-5 h-5 text-[#C47F52] flex-shrink-0 mt-0.5" strokeWidth={1.5} />
                     <div>
-                      <div className="text-sm text-graphite-500">Czas trwania</div>
-                      <div className="font-semibold">{training.duration} godzin</div>
+                      <div className="text-xs text-stone-500 uppercase tracking-wider">Czas trwania</div>
+                      <div className="text-sm font-medium text-[#2C2622]">{training.duration} godzin</div>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 text-graphite-700">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
+                  <div className="flex items-start gap-2">
+                    <MapPin className="w-5 h-5 text-[#C47F52] flex-shrink-0 mt-0.5" strokeWidth={1.5} />
                     <div>
-                      <div className="text-sm text-graphite-500">Lokalizacja</div>
-                      <div className="font-semibold">{training.location.city}</div>
+                      <div className="text-xs text-stone-500 uppercase tracking-wider">Lokalizacja</div>
+                      <div className="text-sm font-medium text-[#2C2622]">{training.location.city}</div>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3 text-graphite-700">
-                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                    </svg>
+                  <div className="flex items-start gap-2">
+                    <Users className="w-5 h-5 text-[#C47F52] flex-shrink-0 mt-0.5" strokeWidth={1.5} />
                     <div>
-                      <div className="text-sm text-graphite-500">Miejsca</div>
-                      <div className="font-semibold">
+                      <div className="text-xs text-stone-500 uppercase tracking-wider">Miejsca</div>
+                      <div className="text-sm font-medium text-[#2C2622]">
                         {availableSpots === 0 ? 'Brak' : availableSpots < 5 ? `Zostało ${availableSpots}!` : `${availableSpots} wolnych`}
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="prose prose-graphite max-w-none">
-                  <div dangerouslySetInnerHTML={{ __html: training.description }} />
+                {/* Description */}
+                <div className="mt-8 prose prose-stone max-w-none">
+                  <div
+                    className="text-stone-700 leading-relaxed"
+                    dangerouslySetInnerHTML={{ __html: training.description }}
+                  />
                 </div>
               </div>
             </FadeIn>
 
-            {/* What You Learn */}
+            {/* What You Learn - No Box, 2-Column Grid */}
             {training.whatYouLearn && training.whatYouLearn.length > 0 && (
               <FadeIn delay={0.2}>
-                <div className="bg-white rounded-3xl border-2 border-cream-400 p-8">
-                  <h2 className="font-serif text-2xl font-bold text-graphite-900 mb-4">Czego się nauczysz?</h2>
-                  <ul className="space-y-3">
+                <div>
+                  <h2 className="font-fraunces text-3xl text-[#2C2622] mb-6">
+                    Czego się nauczysz?
+                  </h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
                     {training.whatYouLearn.map((item, index) => (
-                      <li key={index} className="flex items-start gap-3">
-                        <svg className="w-6 h-6 text-forest-500 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
-                        <span className="text-graphite-700">{item}</span>
-                      </li>
+                      <div key={index} className="flex items-start gap-3">
+                        <Check className="w-5 h-5 text-[#C47F52] flex-shrink-0 mt-1" strokeWidth={2} />
+                        <span className="text-lg text-[#2C2622]">{item}</span>
+                      </div>
                     ))}
-                  </ul>
+                  </div>
                 </div>
               </FadeIn>
             )}
 
-            {/* Requirements */}
+            {/* Requirements - No Blue Background */}
             {training.requirements && training.requirements.length > 0 && (
               <FadeIn delay={0.25}>
-                <div className="bg-gradient-to-br from-nordic-50 to-nordic-100 rounded-3xl border-2 border-nordic-200 p-8">
-                  <h2 className="font-serif text-2xl font-bold text-graphite-900 mb-4">Wymagania</h2>
-                  <ul className="space-y-2">
+                <div>
+                  <h2 className="font-fraunces text-3xl text-[#2C2622] mb-6">
+                    Wymagania
+                  </h2>
+                  <ul className="space-y-3">
                     {training.requirements.map((item, index) => (
                       <li key={index} className="flex items-start gap-3">
-                        <svg className="w-5 h-5 text-nordic-600 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                        </svg>
-                        <span className="text-graphite-700">{item}</span>
+                        <div className="w-1.5 h-1.5 rounded-full bg-[#C47F52] flex-shrink-0 mt-2.5" />
+                        <span className="text-stone-600">{item}</span>
                       </li>
                     ))}
                   </ul>
@@ -190,18 +194,34 @@ export default async function TrainingDetailPage({ params }: PageProps) {
               </FadeIn>
             )}
 
-            {/* Instructor */}
+            {/* Instructor - Rectangular Portrait */}
             <FadeIn delay={0.3}>
-              <div className="bg-white rounded-3xl border-2 border-cream-400 p-8">
-                <h2 className="font-serif text-2xl font-bold text-graphite-900 mb-4">Instruktor</h2>
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 rounded-full bg-gradient-to-br from-forest-500 to-forest-700 flex items-center justify-center text-white text-2xl font-bold">
-                    {training.instructor.name.charAt(0)}
-                  </div>
-                  <div>
-                    <div className="text-xl font-bold text-graphite-900">{training.instructor.name}</div>
+              <div>
+                <h2 className="font-fraunces text-3xl text-[#2C2622] mb-6">
+                  Instruktor
+                </h2>
+                <div className="flex items-start gap-6">
+                  {training.instructor.photo?.url ? (
+                    <div className="w-32 h-40 rounded-sm overflow-hidden bg-stone-200 flex-shrink-0">
+                      <Image
+                        src={training.instructor.photo.url}
+                        alt={training.instructor.name}
+                        width={128}
+                        height={160}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-32 h-40 rounded-sm bg-gradient-to-br from-[#C47F52] to-[#2C2622] flex items-center justify-center text-white text-4xl font-bold flex-shrink-0">
+                      {training.instructor.name.charAt(0)}
+                    </div>
+                  )}
+                  <div className="flex-grow">
+                    <h3 className="font-fraunces text-2xl text-[#2C2622] mb-2">
+                      {training.instructor.name}
+                    </h3>
                     {training.instructor.bio && (
-                      <p className="text-graphite-600 mt-1">{training.instructor.bio}</p>
+                      <p className="text-stone-600 leading-relaxed">{training.instructor.bio}</p>
                     )}
                   </div>
                 </div>
@@ -209,9 +229,9 @@ export default async function TrainingDetailPage({ params }: PageProps) {
             </FadeIn>
           </div>
 
-          {/* Right Column - Booking Form */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-8">
+          {/* Right Column: Sticky Booking Panel (2/5 = 40%) */}
+          <div className="lg:col-span-2">
+            <div className="sticky top-24">
               <FadeIn delay={0.4}>
                 <TrainingBookingForm training={training} />
               </FadeIn>

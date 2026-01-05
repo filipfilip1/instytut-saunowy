@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { ITraining } from '@/types';
+import { Lock } from 'lucide-react';
 
 interface TrainingBookingFormProps {
   training: ITraining;
@@ -58,32 +59,40 @@ export default function TrainingBookingForm({ training }: TrainingBookingFormPro
   const isDeposit = training.depositPercentage < 100;
 
   return (
-    <div className="bg-white rounded-3xl border-2 border-cream-400 p-8 shadow-lg">
-      <h3 className="font-serif text-2xl font-bold text-graphite-900 mb-6">Zapisz się na szkolenie</h3>
+    <div className="bg-white border border-[#2C2622]/20 rounded-lg shadow-lg shadow-[#2C2622]/5 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto">
+      <div className="p-8">
+        <h3 className="font-fraunces text-2xl text-[#2C2622] mb-6">
+          Zapisz się na szkolenie
+        </h3>
 
-      {/* Price Info */}
-      <div className="bg-gradient-to-br from-gold-50 to-gold-100 border-2 border-gold-200 rounded-3xl p-6 mb-6">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-graphite-700 font-medium">Koszt szkolenia:</span>
-          <span className="text-2xl font-bold text-gold-600">{training.price.toLocaleString('pl-PL')} zł</span>
+      {/* Price Header */}
+      <div className="mb-6 pb-6 border-b border-[#2C2622]/20">
+        <div className="flex items-baseline justify-between mb-3">
+          <span className="text-sm text-stone-500 uppercase tracking-wider">Koszt szkolenia</span>
+          <span className="font-fraunces text-4xl text-[#C47F52]">
+            {training.price.toLocaleString('pl-PL')} zł
+          </span>
         </div>
         {isDeposit && (
-          <div className="flex items-center justify-between pt-2 border-t border-gold-300">
-            <span className="text-graphite-700">Wymagana wpłata ({training.depositPercentage}%):</span>
-            <span className="text-xl font-bold text-gold-700">{depositAmount.toLocaleString('pl-PL')} zł</span>
+          <div className="flex items-baseline justify-between text-sm">
+            <span className="text-stone-600">Wymagana wpłata ({training.depositPercentage}%)</span>
+            <span className="font-semibold text-[#2C2622]">
+              {depositAmount.toLocaleString('pl-PL')} zł
+            </span>
           </div>
         )}
       </div>
 
       {error && (
-        <div className="bg-gradient-to-r from-warmwood-50 to-warmwood-100 border-2 border-warmwood-300 rounded-2xl p-4 mb-6">
-          <p className="text-warmwood-800 font-medium">{error}</p>
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+          <p className="text-red-800 text-sm">{error}</p>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Name */}
         <div>
-          <label htmlFor="name" className="block text-sm font-semibold text-graphite-700 mb-2">
+          <label htmlFor="name" className="block text-xs font-semibold uppercase tracking-wider text-[#2C2622]/80 mb-2">
             Imię i nazwisko *
           </label>
           <input
@@ -93,13 +102,14 @@ export default function TrainingBookingForm({ training }: TrainingBookingFormPro
             value={formData.name}
             onChange={handleChange}
             required
-            className="input w-full"
+            className="w-full h-12 px-4 py-3 text-base bg-white border border-[#2C2622]/20 rounded-md text-[#2C2622] placeholder:text-stone-500 focus:outline-none focus:border-[#C47F52] focus:ring-1 focus:ring-[#C47F52] transition-all"
             placeholder="Jan Kowalski"
           />
         </div>
 
+        {/* Email */}
         <div>
-          <label htmlFor="email" className="block text-sm font-semibold text-graphite-700 mb-2">
+          <label htmlFor="email" className="block text-xs font-semibold uppercase tracking-wider text-[#2C2622]/80 mb-2">
             Email *
           </label>
           <input
@@ -109,13 +119,14 @@ export default function TrainingBookingForm({ training }: TrainingBookingFormPro
             value={formData.email}
             onChange={handleChange}
             required
-            className="input w-full"
-            placeholder="jan@example.com"
+            className="w-full h-12 px-4 py-3 text-base bg-white border border-[#2C2622]/20 rounded-md text-[#2C2622] placeholder:text-stone-500 focus:outline-none focus:border-[#C47F52] focus:ring-1 focus:ring-[#C47F52] transition-all"
+            placeholder="jan@przykład.pl"
           />
         </div>
 
+        {/* Phone */}
         <div>
-          <label htmlFor="phone" className="block text-sm font-semibold text-graphite-700 mb-2">
+          <label htmlFor="phone" className="block text-xs font-semibold uppercase tracking-wider text-[#2C2622]/80 mb-2">
             Telefon *
           </label>
           <input
@@ -125,13 +136,14 @@ export default function TrainingBookingForm({ training }: TrainingBookingFormPro
             value={formData.phone}
             onChange={handleChange}
             required
-            className="input w-full"
+            className="w-full h-12 px-4 py-3 text-base bg-white border border-[#2C2622]/20 rounded-md text-[#2C2622] placeholder:text-stone-500 focus:outline-none focus:border-[#C47F52] focus:ring-1 focus:ring-[#C47F52] transition-all"
             placeholder="+48 123 456 789"
           />
         </div>
 
+        {/* Experience */}
         <div>
-          <label htmlFor="experience" className="block text-sm font-semibold text-graphite-700 mb-2">
+          <label htmlFor="experience" className="block text-xs font-semibold uppercase tracking-wider text-[#2C2622]/80 mb-2">
             Doświadczenie z sauną / Aufguss
           </label>
           <textarea
@@ -140,13 +152,14 @@ export default function TrainingBookingForm({ training }: TrainingBookingFormPro
             value={formData.experience}
             onChange={handleChange}
             rows={3}
-            className="input w-full resize-none"
+            className="w-full px-4 py-3 text-base bg-white border border-[#2C2622]/20 rounded-md text-[#2C2622] placeholder:text-stone-500 focus:outline-none focus:border-[#C47F52] focus:ring-1 focus:ring-[#C47F52] transition-all resize-none"
             placeholder="Opisz swoje doświadczenie (opcjonalnie)"
           />
         </div>
 
+        {/* Special Requirements */}
         <div>
-          <label htmlFor="specialRequirements" className="block text-sm font-semibold text-graphite-700 mb-2">
+          <label htmlFor="specialRequirements" className="block text-xs font-semibold uppercase tracking-wider text-[#2C2622]/80 mb-2">
             Uwagi specjalne
           </label>
           <textarea
@@ -155,23 +168,38 @@ export default function TrainingBookingForm({ training }: TrainingBookingFormPro
             value={formData.specialRequirements}
             onChange={handleChange}
             rows={2}
-            className="input w-full resize-none"
+            className="w-full px-4 py-3 text-base bg-white border border-[#2C2622]/20 rounded-md text-[#2C2622] placeholder:text-stone-500 focus:outline-none focus:border-[#C47F52] focus:ring-1 focus:ring-[#C47F52] transition-all resize-none"
             placeholder="Alergie, dieta, inne wymagania (opcjonalnie)"
           />
         </div>
 
+        {/* CTA Button */}
         <button
           type="submit"
           disabled={isSubmitting || training.isFull}
-          className="btn-gold w-full px-8 py-4 text-lg shadow-gold-lg disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full bg-[#C47F52] text-white py-3.5 rounded-lg font-medium uppercase tracking-widest text-xs hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {isSubmitting ? 'Przetwarzanie...' : training.isFull ? 'Brak miejsc' : `Zapłać ${depositAmount.toLocaleString('pl-PL')} zł`}
+          {isSubmitting ? (
+            <span className="flex items-center justify-center gap-2">
+              <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
+              Przetwarzanie...
+            </span>
+          ) : training.isFull ? (
+            'Brak miejsc'
+          ) : (
+            'Zapisz się i opłać'
+          )}
         </button>
 
-        <p className="text-sm text-graphite-600 text-center">
-          Po kliknięciu zostaniesz przekierowany do bezpiecznej płatności Stripe
-        </p>
+        {/* Security Note */}
+        <div className="flex items-center justify-center gap-1.5 pt-2">
+          <Lock className="w-3.5 h-3.5 text-stone-400" strokeWidth={1.5} />
+          <p className="text-[10px] text-stone-500 text-center">
+            Płatność przetwarzana bezpiecznie przez Stripe
+          </p>
+        </div>
       </form>
+      </div>
     </div>
   );
 }

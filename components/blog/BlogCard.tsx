@@ -4,125 +4,60 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { IBlogPost } from '@/types';
 import { CATEGORY_LABELS } from '@/lib/constants/blog';
-import HoverCard from '@/components/animations/HoverCard';
+import { Clock } from 'lucide-react';
 
 interface BlogCardProps {
   post: IBlogPost;
 }
 
+/**
+ * BlogCard Component - "Ghost Card" Design
+ * Editorial-style card with no shadows or backgrounds
+ * Content floats on the page background
+ * Part of the Fire & Earth Ritual Design System
+ */
+
 export default function BlogCard({ post }: BlogCardProps) {
-  // Skandynawskie kolory dla kategorii
-  const categoryColors: Record<string, string> = {
-    poradniki: 'bg-nordic-500',
-    trendy: 'bg-gold-500',
-    diy: 'bg-forest-500',
-    szkolenia: 'bg-warmwood-500',
-    zdrowie: 'bg-nordic-400',
-    przepisy: 'bg-forest-600',
-  };
-
-  const categoryColor = categoryColors[post.category] || 'bg-graphite-500';
-
   return (
-    <HoverCard>
-      <Link href={`/akademia/${post.slug}`} className="block h-full">
-        <article className="bg-white rounded-3xl border-2 border-cream-400 overflow-hidden shadow-md hover:shadow-gold-lg transition-all duration-300 h-full flex flex-col">
-          {/* Featured Image */}
-          <div className="relative aspect-video bg-cream-100 overflow-hidden">
-            {post.featuredImage?.url ? (
-              <Image
-                src={post.featuredImage.url}
-                alt={post.featuredImage.alt || post.title}
-                fill
-                className="object-cover group-hover:scale-105 transition-transform duration-300"
-                loading="lazy"
-              />
-            ) : (
-              <div className="w-full h-full flex items-center justify-center text-graphite-400">
-                <svg className="w-20 h-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-              </div>
-            )}
-
-            {/* Category Badge */}
-            <div className={`absolute top-3 left-3 ${categoryColor} text-white text-xs font-semibold px-3 py-1 rounded-full shadow-lg`}>
-              {CATEGORY_LABELS[post.category]}
+    <Link href={`/akademia/${post.slug}`} className="block group w-full min-w-0">
+      <article className="w-full min-w-0">
+        {/* Image */}
+        <div className="relative w-full aspect-[4/3] overflow-hidden rounded-sm mb-4">
+          {post.featuredImage?.url ? (
+            <Image
+              src={post.featuredImage.url}
+              alt={post.featuredImage.alt || post.title}
+              fill
+              className="object-cover max-w-full group-hover:scale-105 transition-transform duration-700 ease-out"
+              loading="lazy"
+            />
+          ) : (
+            <div className="w-full h-full bg-[#2C2622]/10 flex items-center justify-center">
+              <svg className="w-16 h-16 text-[#2C2622]/20" fill="none" stroke="currentColor" strokeWidth={1} viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
             </div>
-          </div>
+          )}
+        </div>
 
-          {/* Content */}
-          <div className="p-6 flex-grow flex flex-col">
-            {/* Meta info */}
-            <div className="flex items-center gap-4 text-sm text-graphite-500 mb-3">
-              <div className="flex items-center gap-1">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                </svg>
-                <time dateTime={post.publishedAt.toString()}>
-                  {new Date(post.publishedAt).toLocaleDateString('pl-PL', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric',
-                  })}
-                </time>
-              </div>
-              <div className="flex items-center gap-1">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <span>{post.readTime} min czytania</span>
-              </div>
-            </div>
+        {/* Meta row */}
+        <div className="flex items-center gap-2 text-xs text-stone-500 mb-3">
+          <Clock className="w-3.5 h-3.5 flex-shrink-0" strokeWidth={1.5} />
+          <span className="truncate">{post.readTime} min czytania</span>
+          <span className="flex-shrink-0">•</span>
+          <span className="truncate">{CATEGORY_LABELS[post.category]}</span>
+        </div>
 
-            {/* Title */}
-            <h3 className="font-serif text-xl font-bold text-graphite-900 mb-3 line-clamp-2 flex-grow">
-              {post.title}
-            </h3>
+        {/* Title */}
+        <h3 className="font-serif text-xl md:text-2xl font-bold text-[#2C2622] leading-tight mb-3 line-clamp-2 group-hover:text-[#C47F52] transition-colors break-words">
+          {post.title}
+        </h3>
 
-            {/* Excerpt */}
-            <p className="text-graphite-600 mb-4 line-clamp-3">
-              {post.excerpt}
-            </p>
-
-            {/* Author & CTA */}
-            <div className="flex items-center justify-between mt-auto pt-4 border-t border-cream-300">
-              <div className="flex items-center gap-3">
-                {/* Author Avatar */}
-                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-forest-500 to-forest-700 flex items-center justify-center text-white font-semibold text-sm">
-                  {post.author.name.charAt(0)}
-                </div>
-                <div>
-                  <div className="text-sm font-medium text-graphite-900">
-                    {post.author.name}
-                  </div>
-                  <div className="text-xs text-graphite-500">
-                    {post.author.role}
-                  </div>
-                </div>
-              </div>
-
-              <div className="inline-flex items-center gap-1 text-sm text-gold-600 font-medium">
-                Czytaj
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </div>
-            </div>
-
-            {/* View count (if > 10) */}
-            {post.viewCount > 10 && (
-              <div className="mt-3 flex items-center gap-2 text-xs text-graphite-500">
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                </svg>
-                <span>{post.viewCount} wyświetleń</span>
-              </div>
-            )}
-          </div>
-        </article>
-      </Link>
-    </HoverCard>
+        {/* Excerpt */}
+        <p className="text-stone-500 line-clamp-2 font-light leading-relaxed break-words">
+          {post.excerpt}
+        </p>
+      </article>
+    </Link>
   );
 }

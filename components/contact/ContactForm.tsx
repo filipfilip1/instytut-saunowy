@@ -125,71 +125,77 @@ export default function ContactForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
-      {/* Name - Ghost Style */}
+    <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Name - Solid & Clear */}
       <div>
+        <label htmlFor="name" className="block text-xs font-semibold uppercase tracking-wider text-[#2C2622]/80 mb-2">
+          Imię i nazwisko *
+        </label>
         <input
           type="text"
           id="name"
           name="name"
           value={formData.name}
           onChange={handleChange}
-          placeholder="Twoje imię"
-          className={`w-full bg-transparent border-0 border-b-2 pb-3 text-lg focus:outline-none transition-colors ${
+          placeholder="Jan Kowalski"
+          className={`w-full h-12 px-4 py-3 text-base bg-white border rounded-md text-[#2C2622] placeholder:text-stone-500 transition-all ${
             errors.name
-              ? 'border-warmwood-400 focus:border-warmwood-500'
-              : 'border-gray-500 text-cream-100 placeholder-gray-400 focus:border-gold-400'
-          }`}
+              ? 'border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500'
+              : 'border-[#2C2622]/20 focus:border-[#C47F52] focus:ring-1 focus:ring-[#C47F52]'
+          } focus:outline-none`}
         />
         {errors.name && (
-          <p className="mt-2 text-sm text-warmwood-400">{errors.name}</p>
+          <p className="text-red-600 text-xs mt-1.5">{errors.name}</p>
         )}
       </div>
 
-      {/* Email - Ghost Style */}
+      {/* Email - Solid & Clear */}
       <div>
+        <label htmlFor="email" className="block text-xs font-semibold uppercase tracking-wider text-[#2C2622]/80 mb-2">
+          Email *
+        </label>
         <input
           type="email"
           id="email"
           name="email"
           value={formData.email}
           onChange={handleChange}
-          placeholder="Twój adres e-mail"
-          className={`w-full bg-transparent border-0 border-b-2 pb-3 text-lg focus:outline-none transition-colors ${
+          placeholder="jan@przykład.pl"
+          className={`w-full h-12 px-4 py-3 text-base bg-white border rounded-md text-[#2C2622] placeholder:text-stone-500 transition-all ${
             errors.email
-              ? 'border-warmwood-400 focus:border-warmwood-500'
-              : 'border-gray-500 text-cream-100 placeholder-gray-400 focus:border-gold-400'
-          }`}
+              ? 'border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500'
+              : 'border-[#2C2622]/20 focus:border-[#C47F52] focus:ring-1 focus:ring-[#C47F52]'
+          } focus:outline-none`}
         />
         {errors.email && (
-          <p className="mt-2 text-sm text-warmwood-400">{errors.email}</p>
+          <p className="text-red-600 text-xs mt-1.5">{errors.email}</p>
         )}
       </div>
 
-      {/* Message - Ghost Style Textarea with Auto-resize */}
+      {/* Message - Solid & Clear Textarea */}
       <div>
+        <label htmlFor="message" className="block text-xs font-semibold uppercase tracking-wider text-[#2C2622]/80 mb-2">
+          Wiadomość *
+        </label>
         <textarea
           id="message"
           name="message"
           value={formData.message}
           onChange={handleChange}
           rows={6}
-          placeholder="Twoja wiadomość"
-          className={`w-full bg-transparent border-0 border-b-2 pb-3 text-lg focus:outline-none transition-colors resize-none ${
+          placeholder="Opisz swoje pytanie lub projekt..."
+          className={`w-full min-h-[120px] px-4 py-3 text-base bg-white border rounded-md text-[#2C2622] placeholder:text-stone-500 transition-all resize-none ${
             errors.message
-              ? 'border-warmwood-400 focus:border-warmwood-500'
-              : 'border-gray-500 text-cream-100 placeholder-gray-400 focus:border-gold-400'
-          }`}
-          style={{
-            minHeight: '150px',
-          }}
+              ? 'border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500'
+              : 'border-[#2C2622]/20 focus:border-[#C47F52] focus:ring-1 focus:ring-[#C47F52]'
+          } focus:outline-none`}
         />
         {errors.message && (
-          <p className="mt-2 text-sm text-warmwood-400">{errors.message}</p>
+          <p className="text-red-600 text-xs mt-1.5">{errors.message}</p>
         )}
       </div>
 
-      {/* RODO Consent - Checkbox */}
+      {/* RODO Consent - Custom Checkbox */}
       <div>
         <label className="flex items-start gap-3 cursor-pointer group">
           <input
@@ -197,13 +203,13 @@ export default function ContactForm() {
             name="rodoConsent"
             checked={formData.rodoConsent}
             onChange={handleChange}
-            className="mt-1 w-5 h-5 accent-gold-400 border-2 border-gray-500 rounded focus:ring-2 focus:ring-gold-400/50"
+            className="mt-1 w-5 h-5 accent-[#C47F52] border-2 border-[#C47F52] rounded focus:ring-2 focus:ring-[#C47F52]/30"
           />
-          <span className="text-sm text-cream-300 leading-relaxed">
+          <span className="text-xs text-stone-500 leading-relaxed">
             Wyrażam zgodę na przetwarzanie danych osobowych w celu odpowiedzi na zapytanie. Szczegóły w{' '}
             <Link
               href="/polityka-prywatnosci"
-              className="text-gold-400 hover:text-gold-300 underline transition-colors"
+              className="text-[#C47F52] hover:text-[#2C2622] underline transition-colors"
             >
               Polityce Prywatności
             </Link>
@@ -211,19 +217,19 @@ export default function ContactForm() {
           </span>
         </label>
         {errors.rodoConsent && (
-          <p className="mt-2 text-sm text-warmwood-400">{errors.rodoConsent}</p>
+          <p className="mt-2 text-sm text-red-600">{errors.rodoConsent}</p>
         )}
       </div>
 
-      {/* Submit Button - Solid Gold */}
+      {/* Submit Button - Copper */}
       <button
         type="submit"
         disabled={loading}
-        className="w-full px-8 py-4 bg-gradient-to-r from-gold-500 to-warmwood-600 text-white font-semibold text-lg rounded-lg hover:from-gold-600 hover:to-warmwood-700 transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full bg-[#C47F52] text-white py-3.5 rounded-lg font-medium uppercase tracking-widest text-xs hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {loading ? (
           <span className="flex items-center justify-center gap-2">
-            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></span>
             Wysyłanie...
           </span>
         ) : (
@@ -231,7 +237,7 @@ export default function ContactForm() {
         )}
       </button>
 
-      <p className="text-xs text-gray-400 text-center">
+      <p className="text-[10px] text-stone-500 text-center pt-2">
         Odpowiemy w ciągu 24-48 godzin roboczych
       </p>
     </form>

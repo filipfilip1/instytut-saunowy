@@ -35,7 +35,17 @@ export interface IProductStats {
   purchases: number;
 }
 
-export type ProductCategory = 'kilty' | 'poncha' | 'spodnie' | 'bluzy' | 'akcesoria' | 'zestawy';
+export type ProductCategory =
+  | 'kilty'
+  | 'poncha'
+  | 'spodnie'
+  | 'pareo'
+  | 'nalesnik-z-ramiaczkami'
+  | 'topy'
+  | 'stroje-baniowe'
+  | 'akcesoria'
+  | 'szlafroki'
+  | 'vouchery';
 
 export interface IProduct {
   _id: string;

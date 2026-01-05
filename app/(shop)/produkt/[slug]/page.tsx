@@ -1,10 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { ChevronRight } from 'lucide-react';
 import dbConnect from '@/lib/mongodb';
 import Product from '@/lib/models/Product';
 import ProductDetailClient from './ProductDetailClient';
-import { IProduct } from '@/types';
+import { IProduct, ProductCategory } from '@/types';
+import { CATEGORY_CONFIG } from '@/lib/constants/categories';
 
 // Dynamic params - render on-demand
 export const dynamicParams = true;
@@ -60,36 +62,34 @@ export default async function ProductDetailPage({ params }: PageProps) {
   // Fetch all products for recommendations
   const allProducts = await getAllProducts();
 
+  // Get category label
+  const categoryConfig = CATEGORY_CONFIG[product.category as ProductCategory];
+  const categoryLabel = categoryConfig?.label || product.category;
+
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      {/* Breadcrumbs */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8">
-        <nav className="text-sm">
-          <ol className="flex items-center space-x-2">
-            <li>
-              <Link href="/" className="text-gray-500 hover:text-gray-700">
-                Strona główna
-              </Link>
-            </li>
-            <li className="text-gray-500">/</li>
-            <li>
-              <Link href="/sklep" className="text-gray-500 hover:text-gray-700">
-                Sklep
-              </Link>
-            </li>
-            <li className="text-gray-500">/</li>
-            <li>
-              <Link
-                href={`/sklep/${product.category}`}
-                className="text-gray-500 hover:text-gray-700 capitalize"
-              >
-                {product.category}
-              </Link>
-            </li>
-            <li className="text-gray-500">/</li>
-            <li className="text-gray-900 font-medium">{product.name}</li>
-          </ol>
-        </nav>
+    <div className="min-h-screen">
+      {/* Breadcrumbs - Minimalist Premium style */}
+      <div className="bg-oat">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-2 mb-4 md:mt-4 md:mb-8">
+          <nav className="flex items-center gap-2 text-xs uppercase tracking-widest">
+            <Link href="/" className="text-wood/50 hover:text-copper transition-colors">
+              Strona główna
+            </Link>
+            <span className="text-wood/30">/</span>
+            <Link href="/sklep" className="text-wood/50 hover:text-copper transition-colors">
+              Sklep
+            </Link>
+            <span className="text-wood/30">/</span>
+            <Link
+              href={`/sklep/${product.category}`}
+              className="text-wood/50 hover:text-copper transition-colors"
+            >
+              {categoryLabel}
+            </Link>
+            <span className="text-wood/30">/</span>
+            <span className="text-copper font-bold truncate">{product.name}</span>
+          </nav>
+        </div>
       </div>
 
       <ProductDetailClient product={product} allProducts={allProducts} />

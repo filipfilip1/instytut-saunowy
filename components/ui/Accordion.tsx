@@ -14,26 +14,26 @@ export function AccordionItem({ title, children, defaultOpen = false, darkMode =
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
-    <div className={`border-b last:border-b-0 ${darkMode ? 'border-gray-700/50' : 'border-cream-200'}`}>
+    <div className={`border-b ${darkMode ? 'border-[#F0ECE2]/10' : 'border-cream-200'}`}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-full px-6 py-5 flex items-center justify-between text-left transition-colors group ${
+        className={`w-full py-4 md:py-6 flex items-center justify-between text-left transition-colors group min-h-[56px] ${
           darkMode
-            ? 'hover:bg-graphite-700/30'
-            : 'hover:bg-cream-50'
+            ? 'hover:opacity-80'
+            : 'hover:opacity-80'
         }`}
         aria-expanded={isOpen}
       >
-        <span className={`text-lg font-semibold transition-colors pr-4 ${
+        <span className={`text-base md:text-lg font-serif transition-colors pr-4 ${
           darkMode
-            ? 'text-cream-100 group-hover:text-gold-400'
-            : 'text-graphite-900 group-hover:text-gold-700'
+            ? 'text-[#F0ECE2] group-hover:text-[#C47F52]'
+            : 'text-graphite-900 group-hover:text-[#C47F52]'
         }`}>
           {title}
         </span>
         <ChevronDown
-          className={`w-6 h-6 transition-transform duration-300 flex-shrink-0 ${
-            darkMode ? 'text-gold-400' : 'text-gold-600'
+          className={`w-6 h-6 md:w-5 md:h-5 transition-transform duration-300 flex-shrink-0 ${
+            darkMode ? 'text-[#C47F52]' : 'text-[#C47F52]'
           } ${isOpen ? 'rotate-180' : ''}`}
         />
       </button>
@@ -42,8 +42,8 @@ export function AccordionItem({ title, children, defaultOpen = false, darkMode =
           isOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
         }`}
       >
-        <div className={`px-6 pb-5 pt-2 leading-relaxed ${
-          darkMode ? 'text-cream-300' : 'text-graphite-700'
+        <div className={`pb-4 md:pb-6 pt-2 leading-relaxed font-sans ${
+          darkMode ? 'text-stone-400' : 'text-graphite-700'
         }`}>
           {children}
         </div>
@@ -68,11 +68,7 @@ export default function Accordion({ children, className = '', darkMode = false }
   });
 
   return (
-    <div className={`rounded-2xl overflow-hidden ${
-      darkMode
-        ? 'bg-graphite-800/50 border border-gray-700/50'
-        : 'bg-white shadow-lg border-2 border-cream-200'
-    } ${className}`}>
+    <div className={`${className}`}>
       {childrenWithProps}
     </div>
   );

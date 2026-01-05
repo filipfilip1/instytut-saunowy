@@ -3,7 +3,7 @@
  * Single source of truth for all category-related enums and configurations
  */
 
-import { ShoppingBag, Scroll, Shirt, Scissors, Sparkles, Package, Store } from 'lucide-react';
+import { ShoppingBag, Scroll, Shirt, Scissors, Sparkles, Package, Store, Wind, User, Crown, Gift } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import type { ProductCategory } from '@/types';
 
@@ -23,9 +23,13 @@ export const PRODUCT_CATEGORIES: ProductCategory[] = [
   'kilty',
   'poncha',
   'spodnie',
-  'bluzy',
+  'pareo',
+  'nalesnik-z-ramiaczkami',
+  'topy',
+  'stroje-baniowe',
   'akcesoria',
-  'zestawy'
+  'szlafroki',
+  'vouchery'
 ];
 
 /**
@@ -47,20 +51,40 @@ export const CATEGORY_CONFIG: Record<ProductCategory, CategoryConfig> = {
     label: 'Spodnie',
     description: 'Przewiewne spodnie do relaksu w saunie',
   },
-  bluzy: {
+  pareo: {
+    icon: Wind,
+    label: 'Pareo',
+    description: 'Lekkie pareo do noszenia w saunie i po kąpieli',
+  },
+  'nalesnik-z-ramiaczkami': {
+    icon: User,
+    label: 'Naleśnik z ramiączkami',
+    description: 'Wygodny naleśnik z ramiączkami do sauny',
+  },
+  topy: {
     icon: Shirt,
-    label: 'Bluzy',
-    description: 'Komfortowe bluzy na chłodniejsze dni',
+    label: 'Topy',
+    description: 'Przewiewne topy idealne do relaksu',
+  },
+  'stroje-baniowe': {
+    icon: Crown,
+    label: 'Stroje Baniowe',
+    description: 'Specjalistyczne stroje dla Saunamistrzów',
   },
   akcesoria: {
     icon: Sparkles,
-    label: 'Akcesoria',
-    description: 'Niezbędne dodatki do saunowania',
+    label: 'Akcesoria dla Saunamistrza',
+    description: 'Niezbędne dodatki i akcesoria do profesjonalnego saunowania',
   },
-  zestawy: {
+  szlafroki: {
     icon: Package,
-    label: 'Zestawy',
-    description: 'Kompletne zestawy dla prawdziwych miłośników sauny',
+    label: 'Szlafroki',
+    description: 'Miękkie szlafroki do relaksu po saunie',
+  },
+  vouchery: {
+    icon: Gift,
+    label: 'Vouchery',
+    description: 'Vouchery na produkty i szkolenia - idealny prezent',
   },
 };
 

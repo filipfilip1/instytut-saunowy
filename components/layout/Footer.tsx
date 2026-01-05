@@ -5,7 +5,7 @@ import { BRAND } from '@/constants/brand';
 
 const Footer = () => {
   return (
-    <footer className="bg-gradient-to-br from-graphite-900 via-graphite-900 to-forest-900 text-cream-100">
+    <footer className="bg-wood">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Main Footer Content - 4 Columns */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-12">
@@ -18,17 +18,17 @@ const Footer = () => {
                 alt={BRAND.logo.alt}
                 width={BRAND.logo.dimensions.footer.width}
                 height={BRAND.logo.dimensions.footer.height}
-                className="h-10 w-auto brightness-[1.2]"
+                className="h-10 w-auto"
               />
             </div>
 
-            <p className="text-cream-200 text-sm leading-relaxed">
+            <p className="text-oat/80 text-sm leading-relaxed font-light">
               Instytut Saunowy: szkolenia dla Saunamistrzów i odzież do sauny, łączące pasję i profesjonalizm.
             </p>
 
             {/* Legal Data - Required by law */}
-            <div className="text-xs text-gray-400 leading-relaxed space-y-1 pt-4 border-t border-gray-700">
-              <p className="font-semibold text-gray-300">{BRAND.legal.companyName}</p>
+            <div className="text-xs text-oat/60 leading-relaxed space-y-1 pt-4 border-t border-oat/10">
+              <p className="font-medium text-oat/70">{BRAND.legal.companyName}</p>
               <p>{BRAND.address.street}</p>
               <p>{BRAND.address.zipCode} {BRAND.address.city}</p>
               <p className="pt-2">
@@ -36,11 +36,11 @@ const Footer = () => {
               </p>
             </div>
 
-            {/* Social Media - Clean SVG Icons */}
+            {/* Social Media */}
             <div className="flex gap-4 pt-4">
               <a
                 href={BRAND.social.facebook.url}
-                className="text-cream-300 hover:text-gold-400 transition-colors"
+                className="text-oat/70 hover:text-copper transition-colors"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Facebook"
@@ -51,7 +51,7 @@ const Footer = () => {
               </a>
               <a
                 href={BRAND.social.instagram.url}
-                className="text-cream-300 hover:text-gold-400 transition-colors"
+                className="text-oat/70 hover:text-copper transition-colors"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
@@ -67,12 +67,12 @@ const Footer = () => {
 
           {/* Column 2: Kategorie (Oferta) */}
           <div>
-            <h3 className="text-lg font-serif font-semibold mb-6 text-gold-400">Kategorie</h3>
+            <h3 className="text-lg font-serif font-medium mb-6 text-copper">Kategorie</h3>
             <ul className="space-y-3 text-sm">
               <li>
                 <Link
                   href="/sklep/kilty"
-                  className="text-cream-300 hover:text-gold-400 transition-colors inline-block"
+                  className="text-oat/90 hover:text-copper transition-colors inline-block font-light"
                 >
                   Kilty
                 </Link>
@@ -80,7 +80,7 @@ const Footer = () => {
               <li>
                 <Link
                   href="/sklep/poncha"
-                  className="text-cream-300 hover:text-gold-400 transition-colors inline-block"
+                  className="text-oat/90 hover:text-copper transition-colors inline-block font-light"
                 >
                   Poncha
                 </Link>
@@ -88,7 +88,7 @@ const Footer = () => {
               <li>
                 <Link
                   href="/sklep/bluzy"
-                  className="text-cream-300 hover:text-gold-400 transition-colors inline-block"
+                  className="text-oat/90 hover:text-copper transition-colors inline-block font-light"
                 >
                   Bluzy
                 </Link>
@@ -96,7 +96,7 @@ const Footer = () => {
               <li>
                 <Link
                   href="/sklep/akcesoria"
-                  className="text-cream-300 hover:text-gold-400 transition-colors inline-block"
+                  className="text-oat/90 hover:text-copper transition-colors inline-block font-light"
                 >
                   Akcesoria
                 </Link>
@@ -106,12 +106,12 @@ const Footer = () => {
 
           {/* Column 3: Pomoc */}
           <div>
-            <h3 className="text-lg font-serif font-semibold mb-6 text-gold-400">Pomoc</h3>
+            <h3 className="text-lg font-serif font-medium mb-6 text-copper">Pomoc</h3>
             <ul className="space-y-3 text-sm mb-8">
               <li>
                 <Link
                   href="/dostawa"
-                  className="text-cream-300 hover:text-gold-400 transition-colors inline-block"
+                  className="text-oat/90 hover:text-copper transition-colors inline-block font-light"
                 >
                   Dostawa
                 </Link>
@@ -119,7 +119,7 @@ const Footer = () => {
               <li>
                 <Link
                   href="/zwroty"
-                  className="text-cream-300 hover:text-gold-400 transition-colors inline-block"
+                  className="text-oat/90 hover:text-copper transition-colors inline-block font-light"
                 >
                   Zwroty
                 </Link>
@@ -127,7 +127,7 @@ const Footer = () => {
               <li>
                 <Link
                   href="/regulamin"
-                  className="text-cream-300 hover:text-gold-400 transition-colors inline-block"
+                  className="text-oat/90 hover:text-copper transition-colors inline-block font-light"
                 >
                   Regulamin
                 </Link>
@@ -135,59 +135,53 @@ const Footer = () => {
               <li>
                 <Link
                   href="/polityka-prywatnosci"
-                  className="text-cream-300 hover:text-gold-400 transition-colors inline-block"
+                  className="text-oat/90 hover:text-copper transition-colors inline-block font-light"
                 >
                   Polityka Prywatności
                 </Link>
               </li>
             </ul>
 
-            {/* Trust Badges - Premium SVG Logos (Fixed ViewBox) */}
+            {/* Trust Badges - Premium Text Badges */}
             <div className="mt-8">
-              <h4 className="text-xs uppercase tracking-widest text-gray-500 mb-4 font-semibold">
+              <h4 className="text-xs uppercase tracking-widest text-oat/50 mb-4 font-medium">
                 Bezpieczne płatności
               </h4>
               <div className="flex flex-wrap gap-2">
-
-                {/* Styl "Badge" - Elegancki, tekstowy, niezawodny */}
-                <span className="border border-gray-700 text-gray-400 text-[10px] font-medium px-2 py-1 rounded tracking-wider uppercase hover:border-[#d4af37] hover:text-[#d4af37] transition-colors cursor-default">
+                <span className="border border-oat/20 text-oat/80 text-[10px] font-medium px-2 py-1 rounded tracking-wider uppercase hover:border-copper hover:text-copper transition-colors cursor-default">
                   BLIK
                 </span>
-
-                <span className="border border-gray-700 text-gray-400 text-[10px] font-medium px-2 py-1 rounded tracking-wider uppercase hover:border-[#d4af37] hover:text-[#d4af37] transition-colors cursor-default">
+                <span className="border border-oat/20 text-oat/80 text-[10px] font-medium px-2 py-1 rounded tracking-wider uppercase hover:border-copper hover:text-copper transition-colors cursor-default">
                   Visa
                 </span>
-
-                <span className="border border-gray-700 text-gray-400 text-[10px] font-medium px-2 py-1 rounded tracking-wider uppercase hover:border-[#d4af37] hover:text-[#d4af37] transition-colors cursor-default">
+                <span className="border border-oat/20 text-oat/80 text-[10px] font-medium px-2 py-1 rounded tracking-wider uppercase hover:border-copper hover:text-copper transition-colors cursor-default">
                   Mastercard
                 </span>
-
-                <span className="border border-gray-700 text-gray-400 text-[10px] font-medium px-2 py-1 rounded tracking-wider uppercase hover:border-[#d4af37] hover:text-[#d4af37] transition-colors cursor-default">
+                <span className="border border-oat/20 text-oat/80 text-[10px] font-medium px-2 py-1 rounded tracking-wider uppercase hover:border-copper hover:text-copper transition-colors cursor-default">
                   Przelewy24
                 </span>
-
               </div>
             </div>
           </div>
 
-          {/* Column 4: Kontakt - Clean, No Icons */}
+          {/* Column 4: Kontakt */}
           <div>
-            <h3 className="text-lg font-serif font-semibold mb-6 text-gold-400">Kontakt</h3>
+            <h3 className="text-lg font-serif font-medium mb-6 text-copper">Kontakt</h3>
             <div className="space-y-4 text-sm">
               <div>
-                <p className="text-xs text-gray-400 mb-1 uppercase tracking-wide">Email</p>
+                <p className="text-xs text-oat/50 mb-1 uppercase tracking-wide font-medium">Email</p>
                 <a
                   href={`mailto:${BRAND.contact.email}`}
-                  className="text-cream-100 hover:text-gold-400 transition-colors text-base font-medium inline-block"
+                  className="text-oat hover:text-copper transition-colors text-base font-light inline-block"
                 >
                   {BRAND.contact.email}
                 </a>
               </div>
               <div>
-                <p className="text-xs text-gray-400 mb-1 uppercase tracking-wide">Telefon</p>
+                <p className="text-xs text-oat/50 mb-1 uppercase tracking-wide font-medium">Telefon</p>
                 <a
                   href={`tel:${BRAND.contact.phone}`}
-                  className="text-cream-100 hover:text-gold-400 transition-colors text-base font-medium inline-block"
+                  className="text-oat hover:text-copper transition-colors text-base font-light inline-block"
                 >
                   {BRAND.contact.phoneDisplay}
                 </a>
@@ -196,28 +190,25 @@ const Footer = () => {
 
             {/* Delivery Badge */}
             <div className="mt-8">
-              <h4 className="text-xs uppercase tracking-widest text-gray-500 mb-4 font-semibold">
+              <h4 className="text-xs uppercase tracking-widest text-oat/50 mb-4 font-medium">
                 Dostawa
               </h4>
               <div className="flex flex-wrap gap-2">
-
-                <span className="border border-gray-700 text-gray-400 text-[10px] font-medium px-2 py-1 rounded tracking-wider uppercase hover:border-[#d4af37] hover:text-[#d4af37] transition-colors cursor-default">
+                <span className="border border-oat/20 text-oat/80 text-[10px] font-medium px-2 py-1 rounded tracking-wider uppercase hover:border-copper hover:text-copper transition-colors cursor-default">
                   InPost Paczkomat
                 </span>
-
-                <span className="border border-gray-700 text-gray-400 text-[10px] font-medium px-2 py-1 rounded tracking-wider uppercase hover:border-[#d4af37] hover:text-[#d4af37] transition-colors cursor-default">
+                <span className="border border-oat/20 text-oat/80 text-[10px] font-medium px-2 py-1 rounded tracking-wider uppercase hover:border-copper hover:text-copper transition-colors cursor-default">
                   Kurier
                 </span>
-
               </div>
             </div>
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-cream-700/20 pt-8">
+        <div className="border-t border-oat/10 pt-8">
           <div className="text-center">
-            <p className="text-sm text-cream-400">
+            <p className="text-sm text-oat/60 font-light">
               &copy; 2025 Instytut Saunowy. Wszelkie prawa zastrzeżone.
             </p>
           </div>

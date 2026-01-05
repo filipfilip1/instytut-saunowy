@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter, Cormorant_Garamond } from 'next/font/google';
+import { Manrope, Fraunces } from 'next/font/google';
 import './globals.css';
 import { CartProvider } from '@/contexts/CartContext';
 import { QuickViewProvider } from '@/contexts/QuickViewContext';
@@ -10,15 +10,20 @@ import Footer from '@/components/layout/Footer';
 import QuickViewModal from '@/components/products/QuickViewModal';
 import CookieBanner from '@/components/cookie/CookieBanner';
 
-const inter = Inter({
+// Warm Premium Design System - Typography
+const manrope = Manrope({
   subsets: ['latin'],
-  variable: '--font-inter',
+  weight: ['400', '500', '600'],
+  variable: '--font-manrope',
+  display: 'swap',
 });
 
-const cormorant = Cormorant_Garamond({
-  weight: ['300', '400', '500', '600', '700'],
+const fraunces = Fraunces({
   subsets: ['latin'],
-  variable: '--font-cormorant',
+  weight: ['300', '400', '500', '600'],
+  style: ['normal', 'italic'],
+  variable: '--font-fraunces',
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
@@ -33,12 +38,12 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pl">
-      <body className={`${inter.variable} ${cormorant.variable} font-sans`}>
+      <body className={`${manrope.variable} ${fraunces.variable} font-sans`}>
         <AuthProvider>
           <CartProvider>
             <QuickViewProvider>
               <ToastProvider>
-                <div className="min-h-screen flex flex-col bg-cream-200">
+                <div className="min-h-screen flex flex-col">
                   <Header />
                   <main className="flex-grow">
                     {children}

@@ -12,6 +12,8 @@ import VariantSelector from '@/components/products/VariantSelector';
 import AnimatedNumber from '@/components/animations/AnimatedNumber';
 import ProductImageFallback from '@/components/ui/ProductImageFallback';
 import { formatPriceRounded } from '@/lib/utils/currency';
+import { CATEGORY_CONFIG } from '@/lib/constants/categories';
+import { ProductCategory } from '@/types';
 
 export default function QuickViewModal() {
   const { product, isOpen, closeQuickView } = useQuickView();
@@ -94,18 +96,20 @@ export default function QuickViewModal() {
   };
 
   const primaryImage = product.images.find(img => img.isPrimary) || product.images[0];
+  const categoryConfig = CATEGORY_CONFIG[product.category as ProductCategory];
+  const categoryLabel = categoryConfig?.label || product.category;
 
   return (
     <AnimatePresence mode="wait">
       {isOpen && (
         <>
-          {/* Backdrop - blocks all pointer events */}
+          {/* Backdrop - with blur */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={closeQuickView}
-            className="fixed inset-0 bg-graphite-900/90 backdrop-blur-md z-[9998] cursor-pointer"
+            className="fixed inset-0 bg-wood/60 backdrop-blur-sm z-[9998] cursor-pointer"
             style={{ pointerEvents: 'auto' }}
           />
 
@@ -116,23 +120,23 @@ export default function QuickViewModal() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.96, y: 20 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="relative bg-white rounded-2xl shadow-2xl w-full max-w-6xl pointer-events-auto max-h-[90vh] overflow-y-auto"
+              className="relative bg-oat rounded-2xl shadow-2xl w-full max-w-6xl pointer-events-auto max-h-[90vh] overflow-y-auto"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Close Button */}
+              {/* Close Button - Minimalist */}
               <button
                 onClick={closeQuickView}
-                className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white shadow-lg flex items-center justify-center hover:bg-cream-200 transition-colors text-graphite-700 hover:text-gold-600"
+                className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full flex items-center justify-center hover:bg-wood/10 transition-colors text-wood"
                 aria-label="Zamknij"
               >
-                <X className="w-5 h-5" />
+                <X className="w-6 h-6" />
               </button>
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 p-6 md:p-8">
                 {/* Left: Images */}
                 <div>
                   {/* Main Image */}
-                  <div className="mb-4 bg-cream-100 rounded-xl overflow-hidden relative aspect-square">
+                  <div className="mb-4 bg-stone/10 rounded-xl overflow-hidden relative aspect-square">
                     {primaryImage?.url ? (
                       <Image
                         src={product.images[selectedImage]?.url || primaryImage.url}
@@ -161,8 +165,8 @@ export default function QuickViewModal() {
                           className={`
                             rounded-lg overflow-hidden border-2 transition-all relative h-20
                             ${selectedImage === index
-                              ? 'border-gold-400 ring-2 ring-gold-200'
-                              : 'border-cream-300 hover:border-gold-300'
+                              ? 'border-copper ring-2 ring-copper/30'
+                              : 'border-stone/30 hover:border-copper/50'
                             }
                           `}
                         >
@@ -181,42 +185,28 @@ export default function QuickViewModal() {
                 {/* Right: Product Info */}
                 <div className="flex flex-col">
                   <div className="mb-6">
-                    <span className="inline-block badge-nordic text-sm uppercase tracking-wider mb-3">
-                      {product.category}
+                    <span className="inline-block text-xs uppercase tracking-widest text-wood/60 mb-3">
+                      {categoryLabel}
                     </span>
-                    <h2 className="text-3xl lg:text-4xl font-serif font-bold text-graphite-900 mb-4">
+                    <h2 className="text-3xl lg:text-4xl font-serif font-bold text-wood mb-4">
                       {product.name}
                     </h2>
-                    <p className="text-3xl lg:text-4xl font-sans font-bold text-gold-600 tabular-nums">
+                    <p className="text-3xl lg:text-4xl font-bold text-copper tabular-nums">
                       {formatPriceRounded(calculatePrice())}
                     </p>
                   </div>
 
-                  <p className="text-base text-graphite-600 mb-6 leading-relaxed">
+                  <p className="text-base text-wood/70 mb-6 leading-relaxed">
                     {product.description}
                   </p>
 
-                  {/* Features */}
+                  {/* Features - Bullet List */}
                   {product.features && product.features.length > 0 && (
                     <div className="mb-6">
-                      <h3 className="text-sm font-semibold text-graphite-900 mb-3 uppercase tracking-wide">
-                        Cechy produktu
-                      </h3>
-                      <div className="flex flex-wrap gap-2">
-                        {product.features.slice(0, 6).map((feature, index) => (
-                          <span
-                            key={index}
-                            className="text-sm bg-cream-200 text-graphite-700 px-3 py-2 rounded-lg"
-                          >
-                            {feature}
-                          </span>
-                        ))}
-                        {product.features.length > 6 && (
-                          <span className="text-sm text-graphite-500 px-3 py-2">
-                            +{product.features.length - 6} więcej
-                          </span>
-                        )}
-                      </div>
+                      <p className="text-sm text-wood/70 leading-relaxed">
+                        {product.features.slice(0, 6).join(' • ')}
+                        {product.features.length > 6 && ` • +${product.features.length - 6} więcej`}
+                      </p>
                     </div>
                   )}
 
@@ -234,23 +224,23 @@ export default function QuickViewModal() {
                   {/* Quantity */}
                   {!isAdmin && (
                     <div className="mb-6">
-                      <label className="block text-sm font-semibold text-graphite-900 mb-2 uppercase tracking-wide">
+                      <label className="block text-sm font-bold text-wood mb-2 uppercase tracking-widest">
                         Ilość
                       </label>
                       <div className="flex items-center gap-4">
                         <button
                           onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                          className="w-12 h-12 rounded-xl border-2 border-cream-300 flex items-center justify-center hover:bg-gold-50 hover:border-gold-300 transition-all text-graphite-700 font-bold text-xl"
+                          className="w-12 h-12 rounded-md border-2 border-wood/20 flex items-center justify-center hover:bg-wood hover:text-oat hover:border-wood transition-all text-wood font-bold text-xl"
                           aria-label="Zmniejsz ilość"
                         >
                           −
                         </button>
-                        <div className="w-24 text-center border-2 border-cream-300 rounded-xl px-4 py-3 text-xl font-bold text-graphite-900 tabular-nums">
+                        <div className="w-24 text-center border-2 border-wood/20 rounded-md px-4 py-3 text-xl font-bold text-wood tabular-nums">
                           <AnimatedNumber value={quantity} />
                         </div>
                         <button
                           onClick={() => setQuantity(quantity + 1)}
-                          className="w-12 h-12 rounded-xl border-2 border-cream-300 flex items-center justify-center hover:bg-gold-50 hover:border-gold-300 transition-all text-graphite-700 font-bold text-xl"
+                          className="w-12 h-12 rounded-md border-2 border-wood/20 flex items-center justify-center hover:bg-wood hover:text-oat hover:border-wood transition-all text-wood font-bold text-xl"
                           aria-label="Zwiększ ilość"
                         >
                           +
@@ -266,10 +256,10 @@ export default function QuickViewModal() {
                         onClick={handleAddToCart}
                         disabled={isAddToCartDisabled() || showSuccess}
                         className={`
-                          w-full py-4 px-8 rounded-2xl font-bold transition-all shadow-md text-lg
+                          w-full py-4 px-8 rounded-md font-bold transition-all text-lg uppercase tracking-widest
                           ${isAddToCartDisabled() || showSuccess
-                            ? 'bg-graphite-200 text-graphite-500 cursor-not-allowed shadow-none'
-                            : 'btn-gold'
+                            ? 'bg-wood/20 text-wood/40 cursor-not-allowed'
+                            : 'bg-copper text-white hover:bg-wood shadow-md'
                           }
                         `}
                       >
@@ -280,7 +270,7 @@ export default function QuickViewModal() {
                     <Link
                       href={`/produkt/${product.slug}`}
                       onClick={closeQuickView}
-                      className="block w-full py-4 px-8 rounded-2xl font-bold text-center border-2 border-cream-300 hover:border-gold-300 hover:bg-gold-50 transition-all text-graphite-800 text-lg"
+                      className="block w-full py-4 px-8 rounded-md font-bold text-center border-2 border-wood/20 hover:border-copper hover:bg-copper/5 transition-all text-wood text-lg uppercase tracking-widest"
                     >
                       Zobacz pełne szczegóły
                     </Link>

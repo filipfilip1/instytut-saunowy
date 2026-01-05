@@ -14,6 +14,7 @@ import { formatPriceExact } from '@/lib/utils/currency';
 import { addToRecentlyViewed } from '@/lib/client/recentlyViewed';
 import RecentlyViewed from '@/components/products/RecentlyViewed';
 import ProductRecommendations from '@/components/products/ProductRecommendations';
+import { ChevronDown, Truck, RefreshCw, Shield } from 'lucide-react';
 
 interface ProductDetailClientProps {
   product: IProduct;
@@ -29,6 +30,9 @@ export default function ProductDetailClient({ product, allProducts }: ProductDet
   const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({});
   const [quantity, setQuantity] = useState(1);
   const [showAddedMessage, setShowAddedMessage] = useState(false);
+  const [openAccordion, setOpenAccordion] = useState<string | null>(null);
+  const [shakeSelectors, setShakeSelectors] = useState(false);
+  const [showMissingOptionsToast, setShowMissingOptionsToast] = useState(false);
 
   const isAdmin = session?.user?.role === 'admin';
 
@@ -54,217 +58,255 @@ export default function ProductDetailClient({ product, allProducts }: ProductDet
   };
 
   const handleAddToCart = () => {
+    // Check if all variants are selected
+    const allVariantsSelected = product.variants.every(variant =>
+      selectedVariants[variant.id]
+    );
+
+    if (!allVariantsSelected || quantity < 1) {
+      // Trigger shake animation on selectors
+      setShakeSelectors(true);
+      setShowMissingOptionsToast(true);
+
+      // Reset shake after animation
+      setTimeout(() => setShakeSelectors(false), 500);
+
+      // Hide toast after 3 seconds
+      setTimeout(() => setShowMissingOptionsToast(false), 3000);
+
+      return;
+    }
+
+    // Proceed with adding to cart
     addToCart(product, selectedVariants, quantity);
     setShowAddedMessage(true);
   };
 
-  const isAddToCartDisabled = () => {
-    // Check that all variants are selected
-    const allVariantsSelected = product.variants.every(variant =>
-      selectedVariants[variant.id]
-    );
-
-    return !allVariantsSelected || quantity < 1;
-  };
-
-  const getButtonText = () => {
-    const allVariantsSelected = product.variants.every(variant =>
-      selectedVariants[variant.id]
-    );
-
-    if (!allVariantsSelected) {
-      return 'Wybierz wszystkie opcje';
-    }
-    return 'Dodaj do koszyka';
-  };
-
   return (
     <>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-cream-50 rounded-lg shadow-gold-lg overflow-hidden">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 p-8">
-            {/* Photo Gallery */}
-            <div>
-              <div className="aspect-w-1 aspect-h-1 mb-4 relative h-[500px]">
-                {product.images[selectedImage]?.url ? (
-                  <Image
-                    src={product.images[selectedImage].url}
-                    alt={product.images[selectedImage].alt || product.name}
-                    fill
-                    className="object-cover rounded-lg"
-                  />
-                ) : (
-                  <ProductImageFallback
-                    productName={product.name}
-                    className="w-full h-[500px] rounded-lg"
-                    iconSize={96}
-                  />
-                )}
-              </div>
-
-              {/* Thumbnails */}
-              {product.images.length > 1 && (
-                <div className="grid grid-cols-4 gap-2">
-                  {product.images.map((image, index) => (
-                    <button
-                      key={image.id}
-                      onClick={() => setSelectedImage(index)}
-                      className={`
-                        relative aspect-w-1 aspect-h-1 rounded-lg overflow-hidden h-24
-                        ${selectedImage === index ? 'ring-2 ring-gold-400' : ''}
-                      `}
-                    >
-                      <Image
-                        src={image.url}
-                        alt={image.alt}
-                        fill
-                        className="object-cover hover:opacity-80 transition-opacity"
-                      />
-                    </button>
-                  ))}
+      {/* Main Content - Atelier Layout */}
+      <div className="w-full max-w-[100vw] bg-[#F0ECE2] overflow-x-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 lg:gap-16">
+            {/* Left Column - Vertical Stack Gallery */}
+            <div className="space-y-4">
+              {product.images.slice(0, 3).map((image, index) => (
+                <div
+                  key={image.id}
+                  className="relative w-full aspect-[4/3] overflow-hidden rounded-sm bg-[#2C2622]/10"
+                >
+                  {image.url ? (
+                    <Image
+                      src={image.url}
+                      alt={image.alt || `${product.name} - ${index + 1}`}
+                      fill
+                      className="object-cover"
+                      priority={index === 0}
+                      loading={index === 0 ? 'eager' : 'lazy'}
+                    />
+                  ) : (
+                    <ProductImageFallback
+                      productName={product.name}
+                      className="w-full h-full"
+                      iconSize={96}
+                    />
+                  )}
                 </div>
+              ))}
+            </div>
+
+          {/* Right Column - Product Info (Sticky) */}
+          <div className="lg:sticky lg:top-24 lg:h-fit space-y-6">
+            {/* Title - Fraunces Serif */}
+            <h1 className="font-serif text-3xl md:text-4xl font-bold text-[#2C2622] leading-tight">
+              {product.name}
+            </h1>
+
+            {/* Price - Manrope Sans, Copper */}
+            <div className="flex items-baseline gap-3">
+              <span className="text-2xl md:text-3xl font-bold text-[#C47F52] tabular-nums">
+                {formatPriceExact(calculatePrice() / quantity)}
+              </span>
+              {product.priceRange && product.priceRange.min !== product.priceRange.max && (
+                <span className="text-sm text-stone-500">
+                  {formatPriceExact(product.priceRange.min)} - {formatPriceExact(product.priceRange.max)}
+                </span>
               )}
             </div>
 
-            {/* Product information */}
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-4">
-                {product.name}
-              </h1>
+            {/* Short Description */}
+            <p className="text-sm md:text-base text-stone-600 leading-relaxed font-light">
+              {product.description}
+            </p>
 
-              <div className="flex items-center gap-4 mb-6">
-                <span className="text-3xl font-bold text-gray-900">
-                  {formatPriceExact(calculatePrice() / quantity)}
-                </span>
-                {product.priceRange && product.priceRange.min !== product.priceRange.max && (
-                  <span className="text-sm text-gray-500">
-                    (zakres: {formatPriceExact(product.priceRange.min)} - {formatPriceExact(product.priceRange.max)})
+            {/* Variant Selector */}
+            {product.variants.length > 0 && (
+              <div className={`transition-transform ${shakeSelectors ? 'animate-shake' : ''}`}>
+                <VariantSelector
+                  variants={product.variants}
+                  onChange={setSelectedVariants}
+                  basePrice={product.basePrice}
+                />
+              </div>
+            )}
+
+            {/* Quantity & CTA - The Buy Box */}
+            {!isAdmin && (
+              <div className="flex flex-col md:flex-row gap-3 md:gap-4">
+                {/* Quantity - Minimalist with Rounded Buttons */}
+                <div className="flex items-center gap-4">
+                  <button
+                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                    className="w-8 h-8 flex items-center justify-center border border-[#2C2622]/20 rounded-full hover:border-[#C47F52] transition-colors text-[#2C2622] text-lg"
+                    aria-label="Zmniejsz ilość"
+                  >
+                    −
+                  </button>
+                  <span className="font-serif text-xl text-[#2C2622] tabular-nums min-w-[2rem] text-center">
+                    {quantity}
                   </span>
+                  <button
+                    onClick={() => setQuantity(quantity + 1)}
+                    className="w-8 h-8 flex items-center justify-center border border-[#2C2622]/20 rounded-full hover:border-[#C47F52] transition-colors text-[#2C2622] text-lg"
+                    aria-label="Zwiększ ilość"
+                  >
+                    +
+                  </button>
+                </div>
+
+                {/* CTA Button - ALWAYS ACTIVE, ALWAYS COPPER */}
+                <button
+                  onClick={handleAddToCart}
+                  className="flex-1 bg-[#C47F52] text-white py-3 md:py-3.5 px-6 rounded-md font-bold text-sm uppercase tracking-widest hover:brightness-110 transition-all"
+                >
+                  Dodaj do koszyka
+                </button>
+              </div>
+            )}
+
+            {/* Success notification */}
+            {showAddedMessage && (
+              <div className="p-4 bg-[#C47F52]/10 border border-[#C47F52]/30 text-[#2C2622] rounded-sm">
+                <div className="flex items-center justify-between">
+                  <span className="font-medium">✓ Produkt został dodany do koszyka</span>
+                  <Link
+                    href="/koszyk"
+                    className="text-[#C47F52] underline font-bold hover:text-[#2C2622] transition-colors"
+                  >
+                    Zobacz koszyk
+                  </Link>
+                </div>
+              </div>
+            )}
+
+            {/* Missing Options Toast */}
+            {showMissingOptionsToast && (
+              <div className="p-3 bg-red-50 border border-red-200 text-red-800 rounded-sm text-sm">
+                Wybierz wszystkie opcje produktu przed dodaniem do koszyka
+              </div>
+            )}
+
+            {/* Trust Badges - Simple horizontal row */}
+            <div className="flex flex-wrap items-center gap-4 text-xs text-stone-500 pt-2">
+              <span className="flex items-center gap-1.5">
+                <span className="text-[#C47F52]">✓</span> Szybka wysyłka
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="text-[#C47F52]">✓</span> 30 dni na zwrot
+              </span>
+              <span className="flex items-center gap-1.5">
+                <span className="text-[#C47F52]">✓</span> 2 lata gwarancji
+              </span>
+            </div>
+
+            {/* Accordions - Features, Delivery, Returns */}
+            <div className="space-y-0 pt-6 border-t border-[#2C2622]/10">
+              {/* Features Accordion */}
+              {product.features && product.features.length > 0 && (
+                <div className="border-b border-[#2C2622]/10">
+                  <button
+                    onClick={() => setOpenAccordion(openAccordion === 'features' ? null : 'features')}
+                    className="w-full flex items-center justify-between py-4 text-left"
+                  >
+                    <span className="text-sm font-bold text-[#2C2622] uppercase tracking-wide">
+                      Cechy produktu
+                    </span>
+                    <ChevronDown
+                      className={`w-5 h-5 text-[#2C2622] transition-transform ${
+                        openAccordion === 'features' ? 'rotate-180' : ''
+                      }`}
+                    />
+                  </button>
+                  {openAccordion === 'features' && (
+                    <div className="pb-4">
+                      <ul className="space-y-2">
+                        {product.features.map((feature, index) => (
+                          <li key={index} className="flex items-start gap-2 text-stone-600 text-sm">
+                            <span className="text-[#C47F52] mt-0.5">•</span>
+                            <span>{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Delivery Accordion */}
+              <div className="border-b border-[#2C2622]/10">
+                <button
+                  onClick={() => setOpenAccordion(openAccordion === 'delivery' ? null : 'delivery')}
+                  className="w-full flex items-center justify-between py-4 text-left"
+                >
+                  <span className="text-sm font-bold text-[#2C2622] uppercase tracking-wide">
+                    Dostawa
+                  </span>
+                  <ChevronDown
+                    className={`w-5 h-5 text-[#2C2622] transition-transform ${
+                      openAccordion === 'delivery' ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
+                {openAccordion === 'delivery' && (
+                  <div className="pb-4 space-y-2 text-sm text-stone-600">
+                    <p>• Darmowa dostawa od 200 zł</p>
+                    <p>• Wysyłka w ciągu 24h (dni robocze)</p>
+                    <p>• Kurier DPD lub InPost Paczkomaty</p>
+                  </div>
                 )}
               </div>
 
-              <p className="text-gray-600 mb-6 leading-relaxed">
-                {product.description}
-              </p>
-
-              {/* Variant Selector */}
-              {product.variants.length > 0 && (
-                <div className="mb-6">
-                  <VariantSelector
-                    variants={product.variants}
-                    onChange={setSelectedVariants}
-                    basePrice={product.basePrice}
-                  />
-                </div>
-              )}
-
-              {/* Quantity */}
-              {!isAdmin && (
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Ilość
-                  </label>
-                  <div className="flex items-center gap-4">
-                    <button
-                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className="w-10 h-10 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-50"
-                    >
-                      -
-                    </button>
-                    <input
-                      type="number"
-                      value={quantity}
-                      onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                      className="w-20 text-center border border-gray-300 rounded-lg px-3 py-2"
-                      min="1"
-                    />
-                    <button
-                      onClick={() => setQuantity(quantity + 1)}
-                      className="w-10 h-10 rounded-lg border border-gray-300 flex items-center justify-center hover:bg-gray-50"
-                    >
-                      +
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* Add to cart button */}
-              {!isAdmin && (
+              {/* Returns Accordion */}
+              <div className="border-b border-[#2C2622]/10">
                 <button
-                  onClick={handleAddToCart}
-                  disabled={isAddToCartDisabled()}
-                  className={`
-                    w-full py-4 px-6 rounded-lg font-semibold text-lg transition-all
-                    ${isAddToCartDisabled()
-                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                      : 'bg-warmwood-500 text-white hover:bg-warmwood-600'
-                    }
-                  `}
+                  onClick={() => setOpenAccordion(openAccordion === 'returns' ? null : 'returns')}
+                  className="w-full flex items-center justify-between py-4 text-left"
                 >
-                  {getButtonText()}
+                  <span className="text-sm font-bold text-[#2C2622] uppercase tracking-wide">
+                    Zwroty
+                  </span>
+                  <ChevronDown
+                    className={`w-5 h-5 text-[#2C2622] transition-transform ${
+                      openAccordion === 'returns' ? 'rotate-180' : ''
+                    }`}
+                  />
                 </button>
-              )}
-
-              {/* Addition notification */}
-              {showAddedMessage && (
-                <div className="mt-4 p-4 bg-gold-50 border border-gold-400 text-warmwood-800 rounded-lg animate-fade-in">
-                  <div className="flex items-center justify-between">
-                    <span>✓ Produkt został dodany do koszyka</span>
-                    <Link
-                      href="/koszyk"
-                      className="text-warmwood-900 underline font-medium hover:text-graphite-950"
-                    >
-                      Zobacz koszyk
-                    </Link>
+                {openAccordion === 'returns' && (
+                  <div className="pb-4 space-y-2 text-sm text-stone-600">
+                    <p>• 30 dni na zwrot towaru</p>
+                    <p>• Bezpłatny zwrot w Polsce</p>
+                    <p>• Pełen zwrot kosztów zakupu</p>
                   </div>
-                </div>
-              )}
-
-              {/* Product features */}
-              {product.features && product.features.length > 0 && (
-                <div className="mt-8 border-t pt-8">
-                  <h3 className="text-lg font-semibold mb-4">Cechy produktu:</h3>
-                  <ul className="space-y-2">
-                    {product.features.map((feature, index) => (
-                      <li key={index} className="flex items-start">
-                        <svg className="w-5 h-5 text-forest-600 mr-2 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
-                        <span className="text-gray-600">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              {/* Additional information */}
-              <div className="mt-8 border-t pt-8 space-y-4">
-                <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  <span>Darmowa dostawa od 200 zł</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                  </svg>
-                  <span>30 dni na zwrot</span>
-                </div>
-                <div className="flex items-center gap-2 text-sm text-gray-600">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                  </svg>
-                  <span>2 lata gwarancji</span>
-                </div>
+                )}
               </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
 
       {/* Product Recommendations */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-12">
+      <div className="max-w-7xl mx-auto md:px-6 lg:px-8 py-6 md:py-12">
         <ProductRecommendations
           baseProduct={product}
           allProducts={allProducts}
@@ -274,7 +316,7 @@ export default function ProductDetailClient({ product, allProducts }: ProductDet
       </div>
 
       {/* Recently Viewed Products */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-8">
+      <div className="max-w-7xl mx-auto md:px-6 lg:px-8 py-6 md:py-12">
         <RecentlyViewed excludeProductId={product._id} maxItems={6} />
       </div>
 

@@ -79,118 +79,71 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
 
   return (
     <>
-      <div className="group card-nordic overflow-hidden">
-        <Link href={`/produkt/${product.slug}`} className="block">
-          {/* Image */}
-          <div className="relative aspect-[4/5] overflow-hidden bg-cream-100">
-            {primaryImage?.url ? (
-              <Image
-                src={primaryImage.url}
-                alt={primaryImage.alt || product.name}
-                fill
-                className="object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-            ) : (
-              <ProductImageFallback
-                productName={product.name}
-                className="w-full h-full"
-                iconSize={64}
-              />
-            )}
+      <Link href={`/produkt/${product.slug}`} className="group block">
+        {/* Image - Portrait 3:4 */}
+        <div className="relative aspect-[3/4] overflow-hidden rounded-md bg-stone/10 mb-4">
+          {primaryImage?.url ? (
+            <Image
+              src={primaryImage.url}
+              alt={primaryImage.alt || product.name}
+              fill
+              className="object-cover group-hover:scale-105 transition-transform duration-700"
+            />
+          ) : (
+            <ProductImageFallback
+              productName={product.name}
+              className="w-full h-full"
+              iconSize={64}
+            />
+          )}
 
-            {/* Quick View Button */}
-            <button
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                openQuickView(product);
-              }}
-              className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/95 backdrop-blur-sm shadow-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-gold-50 hover:scale-110 text-graphite-700 hover:text-gold-600"
-              aria-label="Szybki podgląd"
-            >
-              <Eye className="w-5 h-5" />
-            </button>
+          {/* Quick View Button - subtle, on hover - Desktop only */}
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              openQuickView(product);
+            }}
+            className="hidden md:flex absolute top-4 right-4 w-10 h-10 rounded-full bg-wood/90 backdrop-blur-sm shadow-lg items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-copper text-oat"
+            aria-label="Szybki podgląd"
+          >
+            <Eye className="w-5 h-5" />
+          </button>
 
-            {/* Number of variants */}
-            {product.variants.length > 0 && (
-              <div className="absolute bottom-4 left-4 flex gap-2">
-                {product.variants.map(variant => (
-                  <span
-                    key={variant.id}
-                    className="bg-white/95 backdrop-blur-sm px-3 py-1.5 text-xs font-medium text-graphite-800 rounded-xl shadow-md tabular-nums"
-                  >
-                    <AnimatedNumber value={variant.options.length} /> {variant.name.toLowerCase()}
-                  </span>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Content */}
-          <div className="p-5">
-            {/* Category */}
-            <span className="badge-nordic text-xs uppercase tracking-wider">
-              {getCategoryLabel(product.category)}
-            </span>
-
-            {/* Name */}
-            <h3 className="mt-2 text-xl font-serif font-semibold text-graphite-900 group-hover:text-gold-600 transition-colors leading-tight">
-              {product.name}
-            </h3>
-
-            {/* Description */}
-            <p className="mt-2 text-sm text-graphite-600 line-clamp-2 leading-relaxed">
-              {product.description}
-            </p>
-
-            {/* Features */}
-            {product.features && product.features.length > 0 && (
-              <div className="mt-3 flex flex-wrap gap-2">
-                {product.features.slice(0, 2).map((feature, index) => (
-                  <span
-                    key={index}
-                    className="text-xs bg-cream-200 text-graphite-700 px-2.5 py-1 rounded-lg"
-                  >
-                    {feature}
-                  </span>
-                ))}
-                {product.features.length > 2 && (
-                  <span className="text-xs text-graphite-500 px-2 py-1 tabular-nums">
-                    +<AnimatedNumber value={product.features.length - 2} /> więcej
-                  </span>
-                )}
-              </div>
-            )}
-          </div>
-        </Link>
-
-        {/* Footer with price - outside Link for button interaction */}
-        <div className="px-5 pb-5">
-          <div className="flex items-center justify-between gap-3">
-            <span className="text-2xl font-sans font-bold text-graphite-900 tabular-nums">
-              {getPriceRange()}
-            </span>
-            {!isAdmin && (
-              <button
-                onClick={handleQuickAdd}
-                className={`
-                  px-5 py-2.5 text-sm font-semibold rounded-2xl transition-all shadow-md
-                  ${isInStock
-                    ? 'btn-gold'
-                    : 'bg-graphite-200 text-graphite-500 cursor-not-allowed shadow-none'
-                  }
-                `}
-                disabled={!isInStock}
-              >
-                {isInStock
-                  ? (product.variants.length > 0 ? 'Wybierz' : 'Do koszyka')
-                  : 'Niedostępny'
-                }
-              </button>
-            )}
-          </div>
+          {/* Color swatches on image (if variants exist) */}
+          {product.variants.length > 0 && product.variants[0].name.toLowerCase() === 'kolor' && (
+            <div className="absolute bottom-4 left-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+              {product.variants[0].options.slice(0, 4).map((option, idx) => (
+                <div
+                  key={idx}
+                  className="w-6 h-6 rounded-full bg-white border-2 border-wood/20 shadow-sm"
+                  title={option.value}
+                />
+              ))}
+            </div>
+          )}
         </div>
-      </div>
+
+        {/* Metadata - directly on background */}
+        <div className="space-y-1 sm:space-y-2">
+          {/* Name */}
+          <h3 className="text-sm md:text-lg font-serif text-wood group-hover:text-copper transition-colors">
+            {product.name}
+          </h3>
+
+          {/* Price */}
+          <p className="text-sm md:text-base text-copper font-medium tabular-nums">
+            {getPriceRange()}
+          </p>
+
+          {/* Stock status (if out of stock) */}
+          {!isInStock && (
+            <p className="text-xs text-wood/50 uppercase tracking-wider">
+              Niedostępny
+            </p>
+          )}
+        </div>
+      </Link>
 
       {/* Toast notification */}
       {showToast && (

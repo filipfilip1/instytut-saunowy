@@ -9,7 +9,7 @@ import { checkoutShippingSchema, type CheckoutShippingData } from '@/lib/schemas
 import ProductImageFallback from '@/components/ui/ProductImageFallback';
 import { formatPriceExact } from '@/lib/utils/currency';
 import { useToast } from '@/hooks/useToast';
-import { User, UserCheck, LogIn } from 'lucide-react';
+import { ShoppingBag, ArrowRight, Lock } from 'lucide-react';
 
 export default function CheckoutPage() {
   const { data: session } = useSession();
@@ -138,21 +138,26 @@ export default function CheckoutPage() {
 
   if (items.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 py-8">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white rounded-lg shadow-sm p-8 text-center">
-            <span className="text-6xl mb-4 block">🛒</span>
-            <h2 className="text-xl font-semibold text-gray-900 mb-2">
+      <div className="min-h-screen bg-[#F0ECE2]">
+        <div className="max-w-[1400px] mx-auto px-4 md:px-8 py-16 md:py-24">
+          <div className="max-w-md mx-auto text-center">
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-[#2C2622]/5 mb-6">
+              <ShoppingBag className="w-10 h-10 text-[#2C2622]/40" strokeWidth={1.5} />
+            </div>
+
+            <h1 className="font-fraunces text-2xl md:text-3xl text-[#2C2622] mb-3">
               Twój koszyk jest pusty
-            </h2>
-            <p className="text-gray-600 mb-6">
+            </h1>
+            <p className="text-stone-500 text-sm mb-8 leading-relaxed">
               Dodaj produkty do koszyka, aby móc złożyć zamówienie.
             </p>
+
             <Link
               href="/sklep"
-              className="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+              className="inline-flex items-center gap-2 bg-[#C47F52] text-white px-6 py-3 rounded-lg font-medium uppercase tracking-widest text-xs hover:brightness-110 transition-all"
             >
-              Przejdź do sklepu
+              <span>Przejdź do sklepu</span>
+              <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </div>
@@ -161,53 +166,46 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">Finalizacja zamówienia</h1>
+    <div className="min-h-screen bg-[#F0ECE2] py-8 md:py-12">
+      <div className="max-w-[1400px] mx-auto px-4 md:px-8">
+
+        {/* Page Header */}
+        <div className="mb-8">
+          <h1 className="font-fraunces text-3xl md:text-4xl text-[#2C2622] mb-2">
+            Finalizacja zamówienia
+          </h1>
+          {!session && (
+            <p className="text-sm text-stone-500">
+              Masz konto?{' '}
+              <Link
+                href="/auth/signin?callbackUrl=/checkout"
+                className="text-[#C47F52] hover:text-[#2C2622] transition-colors underline underline-offset-2"
+              >
+                Zaloguj się
+              </Link>
+            </p>
+          )}
+          {session && (
+            <p className="text-sm text-stone-500">
+              Zalogowany jako <span className="text-[#2C2622] font-medium">{session.user?.email}</span>
+            </p>
+          )}
+        </div>
 
         <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2">
-              <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-                {/* Auth status badge */}
-                <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                  <div className="flex items-center gap-2">
-                    {session ? (
-                      <>
-                        <UserCheck className="w-5 h-5 text-green-600 flex-shrink-0" />
-                        <div className="flex-grow">
-                          <p className="text-sm font-medium text-gray-900">
-                            Zalogowany jako <span className="text-blue-600">{session.user?.email}</span>
-                          </p>
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <User className="w-5 h-5 text-gray-500 flex-shrink-0" />
-                        <div className="flex-grow">
-                          <p className="text-sm text-gray-700">
-                            <span className="font-medium">Kupujesz jako gość</span> • Nie musisz tworzyć konta
-                          </p>
-                        </div>
-                        <Link
-                          href="/auth/signin?callbackUrl=/checkout"
-                          className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-700 font-medium transition-colors whitespace-nowrap"
-                        >
-                          <LogIn className="w-4 h-4" />
-                          Zaloguj się
-                        </Link>
-                      </>
-                    )}
-                  </div>
-                </div>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
 
-                <h2 className="text-xl font-semibold text-gray-900 mb-6">
+            {/* Left Column: The Guest Book (8 cols) */}
+            <div className="lg:col-span-8">
+              <div className="mb-8">
+                <h2 className="font-fraunces text-2xl text-[#2C2622] mb-6">
                   Dane do dostawy
                 </h2>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                <div className="space-y-6">
+                  {/* Name */}
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-[#2C2622]/80 mb-2">
                       Imię i nazwisko *
                     </label>
                     <input
@@ -215,56 +213,71 @@ export default function CheckoutPage() {
                       name="name"
                       value={formData.name}
                       onChange={handleChange}
-                      className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${errors.name ? 'border-red-500' : 'border-gray-300'
-                        }`}
+                      className={`w-full h-12 px-4 py-3 text-base bg-white border rounded-md text-[#2C2622] placeholder:text-stone-500 transition-all ${
+                        errors.name
+                          ? 'border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500'
+                          : 'border-[#2C2622]/20 focus:border-[#C47F52] focus:ring-1 focus:ring-[#C47F52]'
+                      } focus:outline-none`}
+                      placeholder="Jan Kowalski"
                     />
                     {errors.name && (
-                      <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+                      <p className="text-red-600 text-xs mt-1.5">{errors.name}</p>
                     )}
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Email *
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${errors.email ? 'border-red-500' : 'border-gray-300'
-                        }`}
-                    />
-                    {errors.email && (
-                      <p className="text-red-500 text-sm mt-1">{errors.email}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Telefon *
-                    </label>
-                    <div className={`flex items-center border rounded-lg focus-within:ring-2 focus-within:ring-blue-500 ${errors.phone ? 'border-red-500' : 'border-gray-300'}`}>
-                      {/* Fixed prefix */}
-                      <span className="px-3 py-2 bg-gray-50 text-gray-600 border-r border-gray-300 font-medium">
-                        +48
-                      </span>
-                      {/* Phone input */}
+                  {/* Email & Phone Row */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-[#2C2622]/80 mb-2">
+                        Email *
+                      </label>
                       <input
-                        type="tel"
-                        name="phone"
-                        value={formData.phone}
+                        type="email"
+                        name="email"
+                        value={formData.email}
                         onChange={handleChange}
-                        className="flex-1 px-3 py-2 border-0 rounded-r-lg focus:outline-none focus:ring-0"
+                        className={`w-full h-12 px-4 py-3 text-base bg-white border rounded-md text-[#2C2622] placeholder:text-stone-500 transition-all ${
+                          errors.email
+                            ? 'border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500'
+                            : 'border-[#2C2622]/20 focus:border-[#C47F52] focus:ring-1 focus:ring-[#C47F52]'
+                        } focus:outline-none`}
+                        placeholder="jan@przykład.pl"
                       />
+                      {errors.email && (
+                        <p className="text-red-600 text-xs mt-1.5">{errors.email}</p>
+                      )}
                     </div>
-                    {errors.phone && (
-                      <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
-                    )}
+
+                    <div>
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-[#2C2622]/80 mb-2">
+                        Telefon *
+                      </label>
+                      <div className={`flex items-center h-12 bg-white border rounded-md transition-all ${
+                        errors.phone
+                          ? 'border-red-500 focus-within:border-red-500 focus-within:ring-1 focus-within:ring-red-500'
+                          : 'border-[#2C2622]/20 focus-within:border-[#C47F52] focus-within:ring-1 focus-within:ring-[#C47F52]'
+                      }`}>
+                        <span className="pl-4 pr-2 text-stone-600 text-base font-medium border-r border-[#2C2622]/10">
+                          +48
+                        </span>
+                        <input
+                          type="tel"
+                          name="phone"
+                          value={formData.phone}
+                          onChange={handleChange}
+                          className="flex-1 h-full px-3 text-base bg-transparent border-0 text-[#2C2622] placeholder:text-stone-500 focus:outline-none focus:ring-0"
+                          placeholder="123 456 789"
+                        />
+                      </div>
+                      {errors.phone && (
+                        <p className="text-red-600 text-xs mt-1.5">{errors.phone}</p>
+                      )}
+                    </div>
                   </div>
 
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                  {/* Street */}
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-[#2C2622]/80 mb-2">
                       Ulica i numer *
                     </label>
                     <input
@@ -272,50 +285,66 @@ export default function CheckoutPage() {
                       name="street"
                       value={formData.street}
                       onChange={handleChange}
-                      className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${errors.street ? 'border-red-500' : 'border-gray-300'
-                        }`}
+                      className={`w-full h-12 px-4 py-3 text-base bg-white border rounded-md text-[#2C2622] placeholder:text-stone-500 transition-all ${
+                        errors.street
+                          ? 'border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500'
+                          : 'border-[#2C2622]/20 focus:border-[#C47F52] focus:ring-1 focus:ring-[#C47F52]'
+                      } focus:outline-none`}
+                      placeholder="ul. Przykładowa 123"
                     />
                     {errors.street && (
-                      <p className="text-red-500 text-sm mt-1">{errors.street}</p>
+                      <p className="text-red-600 text-xs mt-1.5">{errors.street}</p>
                     )}
                   </div>
 
+                  {/* City & Zip Row */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-[#2C2622]/80 mb-2">
+                        Miasto *
+                      </label>
+                      <input
+                        type="text"
+                        name="city"
+                        value={formData.city}
+                        onChange={handleChange}
+                        className={`w-full h-12 px-4 py-3 text-base bg-white border rounded-md text-[#2C2622] placeholder:text-stone-500 transition-all ${
+                          errors.city
+                            ? 'border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500'
+                            : 'border-[#2C2622]/20 focus:border-[#C47F52] focus:ring-1 focus:ring-[#C47F52]'
+                        } focus:outline-none`}
+                        placeholder="Warszawa"
+                      />
+                      {errors.city && (
+                        <p className="text-red-600 text-xs mt-1.5">{errors.city}</p>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold uppercase tracking-wider text-[#2C2622]/80 mb-2">
+                        Kod pocztowy *
+                      </label>
+                      <input
+                        type="text"
+                        name="zipCode"
+                        value={formData.zipCode}
+                        onChange={handleChange}
+                        className={`w-full h-12 px-4 py-3 text-base bg-white border rounded-md text-[#2C2622] placeholder:text-stone-500 transition-all ${
+                          errors.zipCode
+                            ? 'border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500'
+                            : 'border-[#2C2622]/20 focus:border-[#C47F52] focus:ring-1 focus:ring-[#C47F52]'
+                        } focus:outline-none`}
+                        placeholder="00-000"
+                      />
+                      {errors.zipCode && (
+                        <p className="text-red-600 text-xs mt-1.5">{errors.zipCode}</p>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Country (Read-only) */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Miasto *
-                    </label>
-                    <input
-                      type="text"
-                      name="city"
-                      value={formData.city}
-                      onChange={handleChange}
-                      className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${errors.city ? 'border-red-500' : 'border-gray-300'
-                        }`}
-                    />
-                    {errors.city && (
-                      <p className="text-red-500 text-sm mt-1">{errors.city}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Kod pocztowy *
-                    </label>
-                    <input
-                      type="text"
-                      name="zipCode"
-                      value={formData.zipCode}
-                      onChange={handleChange}
-                      className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 ${errors.zipCode ? 'border-red-500' : 'border-gray-300'
-                        }`}
-                    />
-                    {errors.zipCode && (
-                      <p className="text-red-500 text-sm mt-1">{errors.zipCode}</p>
-                    )}
-                  </div>
-
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-[#2C2622]/80 mb-2">
                       Kraj
                     </label>
                     <input
@@ -323,7 +352,7 @@ export default function CheckoutPage() {
                       name="country"
                       value={formData.country}
                       onChange={handleChange}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-gray-50"
+                      className="w-full h-12 px-4 py-3 text-base bg-stone-50 border border-[#2C2622]/10 rounded-md text-stone-500 focus:outline-none cursor-not-allowed"
                       readOnly
                     />
                   </div>
@@ -331,65 +360,77 @@ export default function CheckoutPage() {
               </div>
             </div>
 
-            <div className="lg:col-span-1">
-              <div className="bg-white rounded-lg shadow-sm p-6 sticky top-24">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">
+            {/* Right Column: The Receipt (4 cols) */}
+            <div className="lg:col-span-4">
+              <div className="sticky top-32 bg-[#F0ECE2] border border-[#2C2622]/20 rounded-lg p-6 shadow-lg shadow-[#2C2622]/5">
+                <h2 className="font-fraunces text-xl text-[#2C2622] mb-5">
                   Podsumowanie
                 </h2>
 
-                <div className="space-y-3 mb-6 max-h-64 overflow-y-auto">
+                {/* Product List */}
+                <div className="space-y-4 mb-6 max-h-64 overflow-y-auto">
                   {items.map(item => (
                     <div key={item.id} className="flex gap-3">
-                      {item.product.images[0]?.url ? (
-                        <Image
-                          src={item.product.images[0].url}
-                          alt={item.product.name}
-                          width={64}
-                          height={64}
-                          className="object-cover rounded"
-                        />
-                      ) : (
-                        <ProductImageFallback
-                          productName={item.product.name}
-                          className="w-16 h-16 rounded"
-                          iconSize={24}
-                        />
-                      )}
-                      <div className="flex-grow">
-                        <p className="font-medium text-sm text-gray-900">
+                      <div className="flex-shrink-0">
+                        {item.product.images[0]?.url ? (
+                          <div className="relative w-16 aspect-[3/4] rounded-sm overflow-hidden bg-stone-200">
+                            <Image
+                              src={item.product.images[0].url}
+                              alt={item.product.name}
+                              fill
+                              className="object-cover"
+                            />
+                          </div>
+                        ) : (
+                          <ProductImageFallback
+                            productName={item.product.name}
+                            className="w-16 aspect-[3/4] rounded-sm"
+                            iconSize={20}
+                          />
+                        )}
+                      </div>
+                      <div className="flex-grow min-w-0">
+                        <p className="font-fraunces text-sm text-[#2C2622] line-clamp-2 leading-tight">
                           {item.product.name}
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-stone-500 mt-0.5">
                           {item.quantity} × {formatPriceExact(item.pricePerItem)}
                         </p>
                       </div>
-                      <p className="font-semibold text-sm text-gray-900">
-                        {formatPriceExact(item.pricePerItem * item.quantity)}
-                      </p>
+                      <div className="flex-shrink-0">
+                        <p className="text-sm font-medium text-[#2C2622]">
+                          {formatPriceExact(item.pricePerItem * item.quantity)}
+                        </p>
+                      </div>
                     </div>
                   ))}
                 </div>
 
-                {/* Price summary */}
-                <div className="border-t pt-4 space-y-2 mb-6">
-                  <div className="flex justify-between text-gray-600">
+                {/* Price Breakdown */}
+                <div className="border-t border-[#2C2622]/20 pt-4 space-y-2 mb-5">
+                  <div className="flex justify-between text-sm text-stone-500">
                     <span>Produkty</span>
                     <span>{formatPriceExact(getTotal())}</span>
                   </div>
-                  <div className="flex justify-between text-gray-600">
+                  <div className="flex justify-between text-sm text-stone-500">
                     <span>Dostawa</span>
-                    <span>Darmowa</span>
-                  </div>
-                  <div className="flex justify-between text-xl font-bold text-gray-900 pt-2 border-t">
-                    <span>Suma</span>
-                    <span>{formatPriceExact(getTotal())}</span>
+                    <span className="text-[#C47F52] font-medium">Gratis</span>
                   </div>
                 </div>
 
+                {/* Total */}
+                <div className="border-t border-[#2C2622]/20 pt-4 flex justify-between items-baseline mb-6">
+                  <span className="font-fraunces text-lg text-[#2C2622]">Razem</span>
+                  <span className="font-fraunces text-4xl text-[#2C2622]">
+                    {formatPriceExact(getTotal())}
+                  </span>
+                </div>
+
+                {/* CTA Button */}
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full bg-[#C47F52] text-white py-3.5 rounded-lg font-medium uppercase tracking-widest text-xs hover:brightness-110 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {loading ? (
                     <span className="flex items-center justify-center gap-2">
@@ -397,13 +438,17 @@ export default function CheckoutPage() {
                       Przetwarzanie...
                     </span>
                   ) : (
-                    'Przejdź do płatności'
+                    'Opłać zamówienie'
                   )}
                 </button>
 
-                <p className="text-xs text-gray-500 text-center mt-4">
-                  Płatność jest przetwarzana bezpiecznie przez Stripe
-                </p>
+                {/* Security Note */}
+                <div className="flex items-center justify-center gap-1.5 mt-4">
+                  <Lock className="w-3.5 h-3.5 text-stone-400" strokeWidth={1.5} />
+                  <p className="text-[10px] text-stone-500 text-center">
+                    Płatność przetwarzana bezpiecznie przez Stripe
+                  </p>
+                </div>
               </div>
             </div>
           </div>
